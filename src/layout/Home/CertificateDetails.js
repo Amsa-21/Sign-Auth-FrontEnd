@@ -27,7 +27,7 @@ function CertificateDetails({ certificates }) {
   const items = [];
   const { token } = theme.useToken();
   const panelStyle = {
-    background: "#0C356A",
+    background: token.background,
     borderRadius: token.borderRadiusLG,
     border: "none",
   };
@@ -35,7 +35,7 @@ function CertificateDetails({ certificates }) {
     items.push({
       key: keys,
       label: (
-        <Typography.Text strong style={{ color: "white" }}>
+        <Typography.Text strong style={{ color: "#000" }}>
           {keys}
         </Typography.Text>
       ),
@@ -50,13 +50,13 @@ function CertificateDetails({ certificates }) {
       bordered={false}
       expandIcon={({ isActive }) => (
         <CaretRightOutlined
-          style={{ color: "white" }}
+          style={{ color: "#000" }}
           rotate={isActive ? 90 : 0}
         />
       )}
       expandIconPosition="end"
       style={{
-        background: "#0C356A",
+        background: token.background,
       }}
       items={items}
     />

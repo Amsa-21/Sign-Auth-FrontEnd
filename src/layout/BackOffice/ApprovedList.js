@@ -44,7 +44,7 @@ function TrustList(c, loading) {
   const { token } = theme.useToken();
   const panelStyle = {
     marginBottom: 10,
-    background: "#0C356A",
+    background: token.background,
     borderRadius: token.borderRadiusLG,
     border: "none",
   };
@@ -53,7 +53,7 @@ function TrustList(c, loading) {
     items.push({
       key: codePaysRegion,
       label: (
-        <Typography.Text strong style={{ color: "#fff" }}>
+        <Typography.Text strong style={{ color: "#000" }}>
           {codePaysRegion}
         </Typography.Text>
       ),
@@ -71,12 +71,12 @@ function TrustList(c, loading) {
         expandIcon={({ isActive }) => (
           <CaretRightOutlined
             rotate={isActive ? 90 : 0}
-            style={{ color: "#fff" }}
+            style={{ color: "#000" }}
           />
         )}
         expandIconPosition="end"
         style={{
-          background: "#0C356A",
+          background: token.background,
         }}
         items={items}
       />

@@ -102,7 +102,7 @@ function CollectionCreateFormModal({
   return (
     <Modal
       open={open}
-      title="New Trust Member"
+      title="New user"
       okText="Add"
       cancelText="Cancel"
       okButtonProps={{
@@ -213,7 +213,7 @@ function CollectionEditFormModal({
   return (
     <Modal
       open={open}
-      title="Edit Trust Member"
+      title="Edit user"
       okText="Save"
       cancelText="Cancel"
       okButtonProps={{
