@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ea65fe57.css",
+    "main.js": "/static/js/main.a64d6cca.js",
+    "static/media/logo_ST.png": "/static/media/logo_ST.f5b3c959d95bed987b4d.png",
+    "static/media/banner.svg": "/static/media/banner.6b9957cff6aa75af06359963d5673950.svg",
+    "index.html": "/index.html",
+    "main.ea65fe57.css.map": "/static/css/main.ea65fe57.css.map",
+    "main.a64d6cca.js.map": "/static/js/main.a64d6cca.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ea65fe57.css",
+    "static/js/main.a64d6cca.js"
+  ]
+}
