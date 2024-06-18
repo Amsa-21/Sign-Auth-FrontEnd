@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { Typography, theme, message, Collapse, Spin, Table } from "antd";
+import API_URL from "../../config";
 
 function ApprovedList() {
   const [data, setData] = useState([]);
@@ -11,7 +12,7 @@ function ApprovedList() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://127.0.0.1:8080/data");
+        const response = await axios.get(`${API_URL}/data`);
         setData(response.data.result);
         console.log(response.data.result);
       } catch (error) {

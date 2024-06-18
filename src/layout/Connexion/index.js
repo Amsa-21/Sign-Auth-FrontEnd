@@ -13,6 +13,7 @@ import {
   Banner,
 } from "@react-login-page/page11";
 import { message } from "antd";
+import API_URL from "../../config";
 
 const css = {
   "--login-bg": "#0C356A",
@@ -38,7 +39,7 @@ function Connexion() {
 
   async function login() {
     try {
-      const response = await axios.post("http://localhost:8080/login", {
+      const response = await axios.post(`${API_URL}/login`, {
         username: username,
         password: password,
       });

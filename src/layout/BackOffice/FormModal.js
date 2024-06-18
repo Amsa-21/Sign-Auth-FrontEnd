@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
+import API_URL from "../../config";
 
 function CollectionCreateForm(onFormInstanceReady) {
   const [form] = Form.useForm();
@@ -229,15 +230,11 @@ function FormModal() {
       const formData = new FormData();
       formData.append("member", JSON.stringify(values));
 
-      const response = await axios.post(
-        "http://127.0.0.1:8080/addMember",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/addMember`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.data.success) {
         message.success("Add successful");
@@ -270,11 +267,7 @@ function FormModal() {
         "member",
         JSON.stringify({ ...editingRecord, ...values })
       );
-      const response = await axios.post(
-        "http://127.0.0.1:8080/editOne",
-        formData,
-        {}
-      );
+      const response = await axios.post(`${API_URL}/editOne`, formData, {});
 
       if (response.data.success) {
         message.success("Edit successful");
@@ -296,9 +289,7 @@ function FormModal() {
       const params = new URLSearchParams({
         id: record.id,
       }).toString();
-      const response = await axios.delete(
-        `http://127.0.0.1:8080/deleteOne?${params}`
-      );
+      const response = await axios.delete(`${API_URL}/deleteOne?${params}`);
 
       if (response.data.success) {
         message.success("Delete successful");
@@ -322,7 +313,7 @@ function FormModal() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://127.0.0.1:8080/ownMember");
+        const response = await axios.get(`${API_URL}/ownMember`);
         setData(response.data.result);
         console.log(response.data.result);
       } catch (error) {

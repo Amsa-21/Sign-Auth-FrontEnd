@@ -12,6 +12,7 @@ import {
 } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../../config";
 
 function Analysis() {
   const [uploading, setUploading] = useState(false);
@@ -37,18 +38,14 @@ function Analysis() {
       const formData = new FormData();
       formData.append("fichier", file);
 
-      const response = await axios.post(
-        "http://127.0.0.1:8080/getPDFInfo",
-        formData,
-        {
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percentCompleted);
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/getPDFInfo`, formData, {
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
+        },
+      });
       message.success("Successfully upload");
       console.log(response);
       setData(response.data);
@@ -86,7 +83,7 @@ function Analysis() {
       const formData = new FormData();
       formData.append("member", JSON.stringify(values));
       const response = await axios.post(
-        "http://127.0.0.1:8080/addMemberFromAnalysis",
+        `${API_URL}/addMemberFromAnalysis`,
         formData,
         {}
       );

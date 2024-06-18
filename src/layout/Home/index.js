@@ -5,6 +5,7 @@ import { Typography, message, Upload, Divider, Spin } from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
 import SignCard from "./SignCard";
+import API_URL from "../../config";
 
 function Home() {
   const [uploading, setUploading] = useState(false);
@@ -29,7 +30,7 @@ function Home() {
       formData.append("fichier", file);
 
       const response = await axios.post(
-        "http://127.0.0.1:8080/metadatafrompdf",
+        `${API_URL}/metadatafrompdf`,
         formData,
         {}
       );
