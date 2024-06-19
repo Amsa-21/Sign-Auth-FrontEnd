@@ -1,2 +1,2 @@
-const API_URL = "http://192.168.1.5:8080";
+const API_URL = "amsa.pythonanywhere.com";
 export default API_URL;
