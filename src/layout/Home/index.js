@@ -5,7 +5,8 @@ import { Typography, message, Upload, Divider, Spin } from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
 import SignCard from "./SignCard";
-import API_URL from "../../config";
+
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Home() {
   const [uploading, setUploading] = useState(false);

@@ -13,7 +13,8 @@ import {
   Banner,
 } from "@react-login-page/page11";
 import { message } from "antd";
-import API_URL from "../../config";
+
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 const css = {
   "--login-bg": "#0C356A",

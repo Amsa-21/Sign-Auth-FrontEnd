@@ -17,7 +17,8 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
-import API_URL from "../../config";
+
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function CollectionCreateForm(onFormInstanceReady) {
   const [form] = Form.useForm();

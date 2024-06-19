@@ -12,7 +12,8 @@ import {
 } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API_URL from "../../config";
+
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Analysis() {
   const [uploading, setUploading] = useState(false);

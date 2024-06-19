@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { Typography, theme, message, Collapse, Spin, Table } from "antd";
-import API_URL from "../../config";
+
+const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function ApprovedList() {
   const [data, setData] = useState([]);
