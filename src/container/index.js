@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Typography, Space, Dropdown, Button, Menu } from "antd";
 import routes from "../routes";
 import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import logo from "./images/logo_ST.png";
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 function HomeLayout({ children }) {
   const username = localStorage.getItem("username");
@@ -18,7 +18,7 @@ function HomeLayout({ children }) {
     navigate("/login");
   };
 
-  const item = [
+  const items = [
     {
       label: "Logout",
       key: "1",
@@ -27,7 +27,7 @@ function HomeLayout({ children }) {
     },
   ];
 
-  const items = routes
+  const item = routes
     .filter((route) => {
       if (
         localStorage.getItem("role").toLowerCase() === "admin" ||
@@ -42,6 +42,8 @@ function HomeLayout({ children }) {
       ...route,
       onClick: () => navigate(route.path),
     }));
+
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -72,7 +74,7 @@ function HomeLayout({ children }) {
         </Button>
         <Dropdown
           menu={{
-            item,
+            items,
             selectable: true,
             defaultSelectedKeys: ["1"],
           }}
@@ -91,22 +93,28 @@ function HomeLayout({ children }) {
         </Dropdown>
       </Header>
       <Layout>
-        <Layout.Sider
+        <Sider
           collapsible
-          defaultCollapsed
+          collapsed={collapsed}
+          onMouseEnter={() => {
+            setCollapsed(false);
+          }}
+          onMouseLeave={() => {
+            setCollapsed(true);
+          }}
           style={{ backgroundColor: "#0C356A" }}
         >
           <Menu
             defaultSelectedKeys={[
-              items.find((item) => item.path === window.location.pathname)
+              item.find((item) => item.path === window.location.pathname)
                 ?.key || "1",
             ]}
             mode="inline"
             theme="dark"
-            items={items}
+            items={item}
             style={{ backgroundColor: "#0C356A", fontSize: "14px" }}
           />
-        </Layout.Sider>
+        </Sider>
         <Content
           style={{
             overflow: "auto",
