@@ -1,48 +1,22 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import LoginPage from "@react-login-page/page11";
 import logo from "../../container/images/logo_ST.png";
 import banner from "./images/banner.svg";
-import {
-  Username,
-  Password,
-  Submit,
-  Logo,
-  Title,
-  Banner,
-} from "@react-login-page/page11";
-import { message } from "antd";
+import { message, Button, Form, Input } from "antd";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
-const css = {
-  "--login-bg": "#0C356A",
-  "--login-color": "#fff",
-  "--login-input": "#fff",
-  "--login-input-border": "#4d5d69",
-  "--login-input-hover": "#434a52",
-  "--login-input-focus": "rgba(0, 142, 240, 0.46)",
-  "--login-input-placeholder": "#838383",
-  "--login-btn": "var(--login-color)",
-  "--login-btn-bg": "#279EFF",
-  "--login-btn-focus": "rgba(0, 142, 240, 0.26)",
-  "--login-btn-hover": "#1b75bf",
-  "--login-btn-active": "var(--login-bg)",
-};
-
 function Connexion() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [redirectToHome, setRedirectToHome] = useState(false);
 
   document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
 
-  async function login() {
+  async function handleSubmit(values) {
     try {
       const response = await axios.post(`${API_URL}/login`, {
-        username: username,
-        password: password,
+        username: values.username,
+        password: values.password,
       });
       const data = response.data;
       if (data.success === true) {
@@ -63,24 +37,111 @@ function Connexion() {
   }
 
   return (
-    <LoginPage style={{ width: "100%", height: "100vh", ...css }}>
-      <Banner>
-        <img src={banner} alt="banner" />
-      </Banner>
-      <Logo>
-        <img src={logo} width={50} height={50} alt="logo" />
-      </Logo>
-      <Title>Sign Auth</Title>
-      <Username onChange={(e) => setUsername(e.target.value)} />
-      <Password onChange={(e) => setPassword(e.target.value)} />
-      <Submit
-        onClick={() => {
-          login();
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        height: "100vh",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "50%",
+          backgroundColor: "#0C356A",
+          height: "100vh",
         }}
       >
-        Connexion
-      </Submit>
-    </LoginPage>
+        <img src={banner} style={{ maxHeight: "400px" }} alt="Banner" />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "50%",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            padding: "25px",
+            borderRadius: "8px",
+            boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "10px",
+              alignItems: "center",
+            }}
+          >
+            <img src={logo} width={"50px"} height={"50px"} alt="Logo" />
+            <h1 style={{ fontFamily: "arial", color: "#0C356A" }}>Sign Auth</h1>
+          </div>
+          <Form
+            name="basic"
+            labelCol={{
+              span: 8,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            style={{
+              maxWidth: 700,
+            }}
+            onFinish={handleSubmit}
+            autoComplete="off"
+          >
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your username!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item
+              wrapperCol={{
+                offset: 8,
+                span: 16,
+              }}
+            >
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "#0C356A",
+                }}
+                htmlType="submit"
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+    </div>
   );
 }
 
