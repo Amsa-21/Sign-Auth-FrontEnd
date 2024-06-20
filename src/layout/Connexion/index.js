@@ -52,9 +52,29 @@ function Connexion() {
           width: "50%",
           backgroundColor: "#0C356A",
           height: "100vh",
+          paddingInline: 30,
         }}
       >
-        <img src={banner} style={{ maxHeight: "400px" }} alt="Banner" />
+        <div
+          style={{
+            display: "ruby",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h1
+            style={{
+              fontFamily: "arial",
+              fontSize: 36,
+              color: "white",
+              marginBlockEnd: 100,
+              paddingInline: 30,
+            }}
+          >
+            Welcome to your application, Sign Auth
+          </h1>
+          <img src={banner} style={{ maxHeight: "400px" }} alt="Banner" />
+        </div>
       </div>
       <div
         style={{
@@ -67,9 +87,8 @@ function Connexion() {
       >
         <div
           style={{
-            padding: "25px",
             borderRadius: "8px",
-            boxShadow: "0px 0px 4px rgba(0, 0, 0, 0.1)",
+            boxShadow: "0px 0px 7px rgba(12, 53, 106, 0.4)",
           }}
         >
           <div
@@ -78,10 +97,15 @@ function Connexion() {
               justifyContent: "center",
               gap: "10px",
               alignItems: "center",
+              paddingBottom: 15,
+              borderBlockEnd: "2px solid #0C356A",
+              padding: "25px",
             }}
           >
-            <img src={logo} width={"50px"} height={"50px"} alt="Logo" />
-            <h1 style={{ fontFamily: "arial", color: "#0C356A" }}>Sign Auth</h1>
+            <img src={logo} width={40} height={40} alt="Logo" />
+            <h1 style={{ fontFamily: "arial", fontSize: 24, color: "#0C356A" }}>
+              Login
+            </h1>
           </div>
           <Form
             name="basic"
@@ -93,6 +117,7 @@ function Connexion() {
             }}
             style={{
               maxWidth: 700,
+              padding: "25px",
             }}
             onFinish={handleSubmit}
             autoComplete="off"
