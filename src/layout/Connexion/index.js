@@ -52,7 +52,6 @@ function Connexion() {
           width: "50%",
           backgroundColor: "#0C356A",
           height: "100vh",
-          paddingInline: 30,
         }}
       >
         <div
