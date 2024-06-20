@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout, Typography, Space, Dropdown, Button } from "antd";
+import { Layout, Typography, Space, Dropdown, Button, Menu } from "antd";
+import routes from "../routes";
 import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
-import Sidenav from "./sidenav";
 import PropTypes from "prop-types";
 import logo from "./images/logo_ST.png";
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 function HomeLayout({ children }) {
   const username = localStorage.getItem("username");
@@ -18,7 +18,7 @@ function HomeLayout({ children }) {
     navigate("/login");
   };
 
-  const items = [
+  const item = [
     {
       label: "Logout",
       key: "1",
@@ -26,6 +26,22 @@ function HomeLayout({ children }) {
       onClick: handleLogout,
     },
   ];
+
+  const items = routes
+    .filter((route) => {
+      if (
+        localStorage.getItem("role").toLowerCase() === "admin" ||
+        (localStorage.getItem("role").toLowerCase() === "user" &&
+          route.role === "user")
+      ) {
+        return true;
+      }
+      return false;
+    })
+    .map((route) => ({
+      ...route,
+      onClick: () => navigate(route.path),
+    }));
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -56,7 +72,7 @@ function HomeLayout({ children }) {
         </Button>
         <Dropdown
           menu={{
-            items,
+            item,
             selectable: true,
             defaultSelectedKeys: ["1"],
           }}
@@ -75,9 +91,23 @@ function HomeLayout({ children }) {
         </Dropdown>
       </Header>
       <Layout>
-        <Sider>
-          <Sidenav />
-        </Sider>
+        <Layout.Sider
+          collapsible
+          defaultCollapsed
+          style={{ backgroundColor: "#0C356A" }}
+        >
+          <Menu
+            defaultSelectedKeys={[
+              items.find((item) => item.path === window.location.pathname)
+                ?.key || "1",
+            ]}
+            mode="inline"
+            theme="dark"
+            items={items}
+            style={{ backgroundColor: "#0C356A", fontSize: "14px" }}
+          />
+        </Layout.Sider>
+
         <Content
           style={{
             overflow: "auto",
