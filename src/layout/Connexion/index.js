@@ -97,8 +97,6 @@ function Connexion() {
               justifyContent: "center",
               gap: "10px",
               alignItems: "center",
-              paddingBottom: 15,
-              borderBlockEnd: "2px solid #0C356A",
               padding: "25px",
             }}
           >
