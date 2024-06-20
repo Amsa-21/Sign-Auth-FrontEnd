@@ -107,7 +107,6 @@ function HomeLayout({ children }) {
             style={{ backgroundColor: "#0C356A", fontSize: "14px" }}
           />
         </Layout.Sider>
-
         <Content
           style={{
             overflow: "auto",
