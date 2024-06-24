@@ -9,11 +9,12 @@ const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Connexion() {
   const [redirectToHome, setRedirectToHome] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
 
   async function handleSubmit(values) {
     try {
+      setLoading(true);
       const response = await axios.post(`${API_URL}/login`, {
         username: values.username,
         password: values.password,
@@ -31,6 +32,7 @@ function Connexion() {
       console.error("Login failed:", error);
       message.error(error.response.data.error);
     }
+    setLoading(false);
   }
   if (redirectToHome) {
     return <Navigate to="/home" replace={true} />;
@@ -86,8 +88,8 @@ function Connexion() {
       >
         <div
           style={{
-            borderRadius: "8px",
-            boxShadow: "0px 0px 7px rgba(12, 53, 106, 0.4)",
+            borderRadius: 10,
+            border: "1px solid #0C356A",
           }}
         >
           <div
@@ -96,7 +98,7 @@ function Connexion() {
               justifyContent: "center",
               gap: "10px",
               alignItems: "center",
-              padding: "25px",
+              padding: 20,
             }}
           >
             <img src={logo} width={40} height={40} alt="Logo" />
@@ -146,7 +148,7 @@ function Connexion() {
 
             <Form.Item
               wrapperCol={{
-                offset: 8,
+                offset: 6,
                 span: 16,
               }}
             >
@@ -154,8 +156,11 @@ function Connexion() {
                 type="primary"
                 style={{
                   backgroundColor: "#0C356A",
+                  width: 150,
+                  marginTop: 20,
                 }}
                 htmlType="submit"
+                loading={loading}
               >
                 Submit
               </Button>
