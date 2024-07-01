@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../container/images/logo_ST.png";
 import banner from "./images/banner.svg";
-import { message, Button, Form, Input } from "antd";
+import { message, Button, Form, Input, Typography } from "antd";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Connexion() {
   const [redirectToHome, setRedirectToHome] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
 
   async function handleSubmit(values) {
@@ -36,6 +37,10 @@ function Connexion() {
   }
   if (redirectToHome) {
     return <Navigate to="/home" replace={true} />;
+  }
+
+  function handleCreate() {
+    navigate("/subscription");
   }
 
   return (
@@ -107,7 +112,6 @@ function Connexion() {
             </h1>
           </div>
           <Form
-            name="basic"
             labelCol={{
               span: 8,
             }}
@@ -115,7 +119,6 @@ function Connexion() {
               span: 16,
             }}
             style={{
-              maxWidth: 700,
               padding: "25px",
             }}
             onFinish={handleSubmit}
@@ -145,11 +148,10 @@ function Connexion() {
             >
               <Input.Password />
             </Form.Item>
-
             <Form.Item
-              wrapperCol={{
-                offset: 6,
-                span: 16,
+              style={{
+                display: "grid",
+                justifyContent: "center",
               }}
             >
               <Button
@@ -165,6 +167,22 @@ function Connexion() {
                 Submit
               </Button>
             </Form.Item>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Typography.Link
+                underline={true}
+                style={{
+                  color: "#0C356A",
+                }}
+                onClick={handleCreate}
+              >
+                Create a new account
+              </Typography.Link>
+            </div>
           </Form>
         </div>
       </div>
