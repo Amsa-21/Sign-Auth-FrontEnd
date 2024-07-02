@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-import { Button, message, Steps, Layout, Typography, Form, Input } from "antd";
+import {
+  Button,
+  message,
+  Steps,
+  Layout,
+  Typography,
+  Form,
+  Input,
+  Spin,
+} from "antd";
 import { SolutionOutlined, CameraOutlined } from "@ant-design/icons";
 import logo from "./images/logo_ST.png";
 import VideoRecorder from "react-video-recorder-18";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Sider } = Layout;
-
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Subscription() {
@@ -14,9 +23,11 @@ function Subscription() {
 
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm();
-  const [video, setVideo] = useState("");
+  const [video, setVideo] = useState();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const next = (values) => {
     form
       .validateFields()
@@ -34,12 +45,7 @@ function Subscription() {
   };
 
   const onRecordingComplete = (videoBlob) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(videoBlob);
-    reader.onloadend = () => {
-      const base64data = reader.result;
-      setVideo(base64data);
-    };
+    setVideo(videoBlob);
   };
 
   const handleFinish = async () => {
@@ -47,15 +53,13 @@ function Subscription() {
       setLoading(true);
       const formData = new FormData();
       formData.append("user", JSON.stringify(user));
-      formData.append("video", JSON.stringify(video));
+      formData.append("file", video);
 
-      const response = await axios.post(`${API_URL}/addUser`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (response.success) {
+      const response = await axios.post(`${API_URL}/addUser`, formData, {});
+      if (response.data.success) {
         message.success("User registered successfully!");
+        console.log("loggg");
+        navigate("/login");
       }
     } catch (error) {
       console.error(error);
@@ -105,11 +109,11 @@ function Subscription() {
     {
       title: "Face Scan",
       content: (
-        <>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ width: "50vh", height: "50vh" }}>
             <VideoRecorder onRecordingComplete={onRecordingComplete} />
           </div>
-        </>
+        </div>
       ),
       icon: <CameraOutlined />,
     },
@@ -158,8 +162,7 @@ function Subscription() {
         </Sider>
         <Content
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
             backgroundColor: "white",
           }}
         >
@@ -172,24 +175,19 @@ function Subscription() {
               span: 14,
               offset: 0,
             }}
-            style={{
-              paddingInline: "10%",
-              paddingBlock: "5%",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            }}
             form={form}
             onFinish={next}
           >
             <div
               style={{
-                overflow: "auto",
+                paddingBlock: "10%",
+                alignContent: "center",
               }}
             >
+              <Spin fullscreen spinning={loading} />
               {steps[current].content}
             </div>
-            <div
+            <footer
               style={{
                 display: "flex",
                 justifyContent: "right",
@@ -200,7 +198,7 @@ function Subscription() {
                 <Button
                   style={{
                     margin: "0 10px",
-                    width: 100,
+                    width: 120,
                   }}
                   onClick={() => prev()}
                 >
@@ -210,7 +208,7 @@ function Subscription() {
               {current < steps.length - 1 && (
                 <Button
                   style={{
-                    width: 100,
+                    width: 120,
                     backgroundColor: "#072142",
                   }}
                   type="primary"
@@ -223,16 +221,15 @@ function Subscription() {
                 <Button
                   type="primary"
                   style={{
-                    width: 100,
+                    width: 120,
                     backgroundColor: "#072142",
                   }}
                   onClick={handleFinish}
-                  loading={loading}
                 >
                   Enregister
                 </Button>
               )}
-            </div>
+            </footer>
           </Form>
         </Content>
       </Layout>

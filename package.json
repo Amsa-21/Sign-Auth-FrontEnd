@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
+    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/ffmpeg": "^0.12.10",
     "@react-login-page/page11": "^1.0.4",
     "@react-login-page/page8": "^1.0.4",
     "@testing-library/jest-dom": "^5.17.0",

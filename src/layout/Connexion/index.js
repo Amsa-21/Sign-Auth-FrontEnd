@@ -17,13 +17,13 @@ function Connexion() {
     try {
       setLoading(true);
       const response = await axios.post(`${API_URL}/login`, {
-        username: values.username,
+        email: values.email,
         password: values.password,
       });
       const data = response.data;
       if (data.success === true) {
         localStorage.setItem("userToken", data.userToken);
-        localStorage.setItem("username", data.username);
+        localStorage.setItem("username", data.email);
         localStorage.setItem("role", data.role);
         setRedirectToHome(true);
       } else {
@@ -125,8 +125,8 @@ function Connexion() {
             autoComplete="off"
           >
             <Form.Item
-              label="Username"
-              name="username"
+              label="Email"
+              name="email"
               rules={[
                 {
                   required: true,
