@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Button, message } from "antd";
+import { Button, Spin, message } from "antd";
 import axios from "axios";
 import Webcam from "react-webcam";
 import HomeLayout from "../../container";
@@ -15,10 +15,11 @@ const videoConstraints = {
 function Prediction() {
   const webcamRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [res, setRes] = useState();
+  const [res, setRes] = useState("");
 
   const capture = async () => {
     try {
+      setRes("");
       setLoading(true);
       const formData = new FormData();
       formData.append("img", webcamRef.current.getScreenshot());
@@ -46,6 +47,7 @@ function Prediction() {
           gap: "25px",
         }}
       >
+        <Spin fullscreen spinning={loading} />
         <Webcam
           audio={false}
           ref={webcamRef}
@@ -56,7 +58,7 @@ function Prediction() {
         />
         {res && <h1>{res}</h1>}
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button type="primary" loading={loading} onClick={capture}>
+          <Button type="primary" onClick={capture}>
             Prendre la photo
           </Button>
         </div>
