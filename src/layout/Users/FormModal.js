@@ -6,130 +6,15 @@ import {
   Form,
   Input,
   Modal,
-  Flex,
   Table,
   Popconfirm,
   Select,
 } from "antd";
-import {
-  PlusSquareTwoTone,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
-
-function CollectionCreateForm(onFormInstanceReady) {
-  const [form] = Form.useForm();
-
-  useEffect(() => {
-    onFormInstanceReady(form);
-  }, [form, onFormInstanceReady]);
-
-  return (
-    <Form layout="vertical" form={form} name="form_in_modal">
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="Role"
-        name="role"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
-        <Select
-          placeholder="Select a role"
-          options={[
-            {
-              value: "user",
-              label: "User",
-            },
-            {
-              value: "admin",
-              label: "Admin",
-            },
-          ]}
-        />
-      </Form.Item>
-    </Form>
-  );
-}
-
-function CollectionCreateFormModal({
-  confirmLoading,
-  open,
-  onCreate,
-  onCancel,
-}) {
-  const [formInstance, setFormInstance] = useState();
-  return (
-    <Modal
-      open={open}
-      title="New user"
-      okText="Add"
-      cancelText="Cancel"
-      okButtonProps={{
-        autoFocus: true,
-      }}
-      onCancel={onCancel}
-      destroyOnClose
-      confirmLoading={confirmLoading}
-      centered={true}
-      onOk={async () => {
-        try {
-          const values = await formInstance?.validateFields();
-          formInstance?.resetFields();
-          onCreate(values);
-        } catch (error) {
-          console.error("Failed:", error);
-        }
-      }}
-    >
-      {CollectionCreateForm((instance) => {
-        setFormInstance(instance);
-      })}
-    </Modal>
-  );
-}
 
 function CollectionEditForm(onFormInstanceReady, initialValues) {
   const [form] = Form.useForm();
@@ -140,40 +25,36 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
 
   return (
     <Form layout="vertical" form={form} name="form_in_modal">
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
+      <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
+        <Input />
+      </Form.Item>
+      <Form.Item name="prenom" label="Prénom" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item
-        label="Email"
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
+        name="date"
+        label="Date de naissance"
+        rules={[{ required: true }]}
+      >
+        <Input type="date" />
+      </Form.Item>
+      <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+        <Input type="email" />
+      </Form.Item>
+      <Form.Item name="password" label="Password" rules={[{ required: true }]}>
+        <Input type="password" />
+      </Form.Item>
+      <Form.Item name="telephone" label="Téléphone">
+        <Input type="numero" />
+      </Form.Item>
+      <Form.Item
+        name="organisation"
+        label="Organisation"
+        rules={[{ required: true }]}
       >
         <Input />
       </Form.Item>
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Field cannot be empty!",
-          },
-        ]}
-      >
+      <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item
@@ -182,7 +63,6 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
         rules={[
           {
             required: true,
-            message: "Field cannot be empty!",
           },
         ]}
       >
@@ -243,43 +123,11 @@ function CollectionEditFormModal({
 }
 
 function FormModal() {
-  const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [data, setData] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const onCreate = async (values) => {
-    setConfirmLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("member", JSON.stringify(values));
-
-      const response = await axios.post(`${API_URL}/addUser`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.data.success) {
-        message.success("Add successful");
-        setData(response.data.result);
-        console.log(response.data);
-        setOpen(false);
-      } else {
-        message.error(response.data.error);
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Add failed");
-    }
-    setConfirmLoading(false);
-  };
-
-  const onCancel = () => {
-    setOpen(false);
-  };
 
   const onEditCancel = () => {
     setEditOpen(false);
@@ -298,7 +146,6 @@ function FormModal() {
       if (response.data.success) {
         message.success("Edit successful");
         setData(response.data.result);
-        console.log(response.data);
         setEditOpen(false);
       } else {
         message.error(response.data.error);
@@ -354,10 +201,19 @@ function FormModal() {
 
   const columns = [
     {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      align: "center",
+      title: "Prenom",
+      dataIndex: "prenom",
+      key: "prenom",
+    },
+    {
+      title: "Nom",
+      dataIndex: "nom",
+      key: "nom",
+    },
+    {
+      title: "Date de Naissance",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Email",
@@ -368,6 +224,21 @@ function FormModal() {
       title: "Password",
       dataIndex: "password",
       key: "password",
+    },
+    {
+      title: "Téléphone",
+      dataIndex: "telephone",
+      key: "telephone",
+    },
+    {
+      title: "Organisation",
+      dataIndex: "organisation",
+      key: "organisation",
+    },
+    {
+      title: "Poste",
+      dataIndex: "poste",
+      key: "poste",
     },
     {
       title: "Role",
@@ -410,23 +281,13 @@ function FormModal() {
 
   return (
     <>
-      <Flex style={{ marginBottom: 20 }} vertical align="end">
-        <Button icon={<PlusSquareTwoTone />} onClick={() => setOpen(true)}>
-          Add New User
-        </Button>
-      </Flex>
       <Table
         columns={columns}
         dataSource={dataWithKeys}
         size="small"
         bordered={true}
         loading={loading}
-      />
-      <CollectionCreateFormModal
-        confirmLoading={confirmLoading}
-        open={open}
-        onCreate={onCreate}
-        onCancel={onCancel}
+        style={{ overflow: "auto" }}
       />
       {editingRecord && (
         <CollectionEditFormModal
@@ -435,9 +296,14 @@ function FormModal() {
           onEdit={onEdit}
           onCancel={onEditCancel}
           initialValues={{
-            username: editingRecord.username,
+            prenom: editingRecord.prenom,
+            nom: editingRecord.nom,
+            date: editingRecord.date,
             email: editingRecord.email,
             password: editingRecord.password,
+            telephone: editingRecord.telephone,
+            organisation: editingRecord.organisation,
+            poste: editingRecord.poste,
             role: editingRecord.role,
           }}
         />
@@ -452,13 +318,6 @@ CollectionEditFormModal.propTypes = {
   onEdit: PropTypes.func,
   onCancel: PropTypes.func,
   initialValues: PropTypes.object,
-};
-
-CollectionCreateFormModal.propTypes = {
-  confirmLoading: PropTypes.bool,
-  open: PropTypes.bool,
-  onCreate: PropTypes.func,
-  onCancel: PropTypes.func,
 };
 
 export default FormModal;

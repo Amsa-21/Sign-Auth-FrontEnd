@@ -1,11 +1,14 @@
 import Home from "./layout/Home";
-import BackOffice from "./layout/BackOffice";
-import Users from "./layout/Users";
+
 import {
   AuditOutlined,
   FormOutlined,
   UserSwitchOutlined,
+  ScanOutlined,
 } from "@ant-design/icons";
+import BackOffice from "./layout/BackOffice";
+import Users from "./layout/Users";
+import Prediction from "./layout/Prediction";
 
 const routes = [
   {
@@ -30,6 +33,14 @@ const routes = [
     label: "Users",
     path: "/users",
     component: <Users />,
+    role: "admin",
+  },
+  {
+    key: "4",
+    icon: <ScanOutlined />,
+    label: "Prediction",
+    path: "/predict",
+    component: <Prediction />,
     role: "admin",
   },
 ];

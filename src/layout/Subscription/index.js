@@ -23,7 +23,7 @@ function Subscription() {
 
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm();
-  const [video, setVideo] = useState();
+  const [video, setVideo] = useState(null);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -51,19 +51,29 @@ function Subscription() {
   const handleFinish = async () => {
     try {
       setLoading(true);
+      if (video === null) {
+        throw new Error(
+          "Video recording is required before finishing the subscription."
+        );
+      }
       const formData = new FormData();
       formData.append("user", JSON.stringify(user));
       formData.append("file", video);
 
-      const response = await axios.post(`${API_URL}/addUser`, formData, {});
+      const response = await axios.post(`${API_URL}/addUser`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (response.data.success) {
         message.success("User registered successfully!");
-        console.log("loggg");
         navigate("/login");
+      } else {
+        message.error(response.data.error);
       }
     } catch (error) {
       console.error(error);
-      message.error("Add failed");
+      message.error(error.toString());
     }
     setLoading(false);
   };
@@ -73,12 +83,19 @@ function Subscription() {
       title: "Formulaire",
       content: (
         <>
-          <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="prenom" label="Prénom" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
+          <div style={{ display: "flex", gap: "30px" }}>
+            <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="prenom"
+              label="Prénom"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+          </div>
+
           <Form.Item
             name="date"
             label="Date de naissance"
@@ -86,22 +103,36 @@ function Subscription() {
           >
             <Input type="date" />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-            <Input type="email" />
-          </Form.Item>
+
+          <div style={{ display: "flex", gap: "30px" }}>
+            <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+              <Input type="email" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[{ required: true }]}
+            >
+              <Input type="password" />
+            </Form.Item>
+          </div>
+
           <Form.Item name="numero" label="Téléphone">
             <Input type="numero" />
           </Form.Item>
-          <Form.Item
-            name="organisation"
-            label="Organisation"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
+
+          <div style={{ display: "flex", gap: "30px" }}>
+            <Form.Item
+              name="organisation"
+              label="Organisation"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
+              <Input />
+            </Form.Item>
+          </div>
         </>
       ),
       icon: <SolutionOutlined />,
@@ -163,35 +194,21 @@ function Subscription() {
         <Content
           style={{
             display: "grid",
+            justifyContent: "center",
             backgroundColor: "white",
+            paddingBlock: "5%",
           }}
         >
-          <Form
-            labelCol={{
-              span: 6,
-              offset: 0,
-            }}
-            wrapperCol={{
-              span: 14,
-              offset: 0,
-            }}
-            form={form}
-            onFinish={next}
-          >
-            <div
-              style={{
-                paddingBlock: "10%",
-                alignContent: "center",
-              }}
-            >
+          <Form layout="vertical" form={form} onFinish={next}>
+            <>
               <Spin fullscreen spinning={loading} />
               {steps[current].content}
-            </div>
-            <footer
+            </>
+            <div
               style={{
                 display: "flex",
                 justifyContent: "right",
-                padding: 20,
+                marginBlockStart: "25px",
               }}
             >
               {current > 0 && (
@@ -229,7 +246,7 @@ function Subscription() {
                   Enregister
                 </Button>
               )}
-            </footer>
+            </div>
           </Form>
         </Content>
       </Layout>

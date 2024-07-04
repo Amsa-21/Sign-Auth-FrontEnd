@@ -23,7 +23,7 @@ function Connexion() {
       const data = response.data;
       if (data.success === true) {
         localStorage.setItem("userToken", data.userToken);
-        localStorage.setItem("username", data.email);
+        localStorage.setItem("username", data.username);
         localStorage.setItem("role", data.role);
         setRedirectToHome(true);
       } else {
@@ -31,7 +31,7 @@ function Connexion() {
       }
     } catch (error) {
       console.error("Login failed:", error);
-      message.error(error.response.data.error);
+      message.error(error.data.error);
     }
     setLoading(false);
   }
@@ -134,7 +134,7 @@ function Connexion() {
                 },
               ]}
             >
-              <Input />
+              <Input type="email" />
             </Form.Item>
             <Form.Item
               label="Password"
