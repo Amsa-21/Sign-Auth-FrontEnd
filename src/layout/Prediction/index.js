@@ -58,7 +58,11 @@ function Prediction() {
         />
         {res && <h1>{res}</h1>}
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button type="primary" onClick={capture}>
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#0C356A" }}
+            onClick={capture}
+          >
             Prendre la photo
           </Button>
         </div>
