@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../container/images/logo_ST.png";
 import banner from "./images/banner.svg";
@@ -8,10 +8,10 @@ import { message, Button, Form, Input, Typography } from "antd";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Connexion() {
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
 
   async function handleSubmit(values) {
     try {
@@ -25,7 +25,7 @@ function Connexion() {
         localStorage.setItem("userToken", data.userToken);
         localStorage.setItem("username", data.username);
         localStorage.setItem("role", data.role);
-        setRedirectToHome(true);
+        navigate("/home");
       } else {
         message.error("Username or password incorrect!");
       }
@@ -34,9 +34,6 @@ function Connexion() {
       message.error(error.data.error);
     }
     setLoading(false);
-  }
-  if (redirectToHome) {
-    return <Navigate to="/home" replace={true} />;
   }
 
   function handleCreate() {
@@ -95,6 +92,7 @@ function Connexion() {
           style={{
             borderRadius: 10,
             border: "1px solid #0C356A",
+            minWidth: "400px",
           }}
         >
           <div
@@ -103,7 +101,7 @@ function Connexion() {
               justifyContent: "center",
               gap: "10px",
               alignItems: "center",
-              padding: 20,
+              paddingTop: 20,
             }}
           >
             <img src={logo} width={40} height={40} alt="Logo" />
@@ -113,10 +111,10 @@ function Connexion() {
           </div>
           <Form
             labelCol={{
-              span: 8,
+              span: 6,
             }}
             wrapperCol={{
-              span: 16,
+              span: 18,
             }}
             style={{
               padding: "25px",

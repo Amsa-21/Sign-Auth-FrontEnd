@@ -44,7 +44,11 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
       <Form.Item name="password" label="Password" rules={[{ required: true }]}>
         <Input type="password" />
       </Form.Item>
-      <Form.Item name="telephone" label="Téléphone">
+      <Form.Item
+        name="telephone"
+        label="Téléphone"
+        rules={[{ required: true }]}
+      >
         <Input type="numero" />
       </Form.Item>
       <Form.Item

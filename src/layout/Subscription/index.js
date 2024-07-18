@@ -117,7 +117,11 @@ function Subscription() {
             </Form.Item>
           </div>
 
-          <Form.Item name="numero" label="Téléphone">
+          <Form.Item
+            name="numero"
+            label="Téléphone"
+            rules={[{ required: true }]}
+          >
             <Input type="numero" />
           </Form.Item>
 
@@ -165,9 +169,9 @@ function Subscription() {
           backgroundColor: "#072142",
         }}
       >
-        <img src={logo} width="40px" height="40px" alt="Sign Auth logo" />
+        <img src={logo} width="35" height="35" alt="Sign Auth logo" />
         <Typography.Title
-          level={1}
+          level={3}
           style={{ marginLeft: "15px", color: "white" }}
         >
           Sign Auth
@@ -193,13 +197,18 @@ function Subscription() {
         </Sider>
         <Content
           style={{
-            display: "grid",
+            display: "flex",
             justifyContent: "center",
             backgroundColor: "white",
             paddingBlock: "5%",
           }}
         >
-          <Form layout="vertical" form={form} onFinish={next}>
+          <Form
+            layout="vertical"
+            style={{ display: "grid" }}
+            form={form}
+            onFinish={next}
+          >
             <>
               <Spin fullscreen spinning={loading} />
               {steps[current].content}

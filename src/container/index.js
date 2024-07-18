@@ -9,6 +9,7 @@ const { Header, Content, Sider } = Layout;
 
 function HomeLayout({ children }) {
   const username = localStorage.getItem("username");
+  const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -60,19 +61,21 @@ function HomeLayout({ children }) {
           style={{
             display: "flex",
             alignItems: "center",
-            height: "50px",
+            height: "auto",
           }}
           onClick={() => navigate("/home")}
         >
-          <img src={logo} width="40px" height="40px" alt="Sign Auth logo" />
+          <img src={logo} width="35px" height="35px" alt="Sign Auth logo" />
           <Typography.Title
-            level={1}
+            level={3}
             style={{ marginLeft: "15px", color: "white" }}
           >
             Sign Auth
           </Typography.Title>
         </Button>
+
         <Dropdown
+          style={{ display: "block" }}
           menu={{
             items,
             selectable: true,
@@ -81,13 +84,26 @@ function HomeLayout({ children }) {
         >
           <Button
             type="text"
-            style={{ color: "white" }}
+            style={{ height: "auto", color: "white" }}
             onClick={(e) => e.preventDefault()}
           >
-            <Space>
-              <UserOutlined style={{ color: "white" }} />
-              {username}
-              <DownOutlined style={{ color: "white" }} />
+            <Space size={"middle"}>
+              <UserOutlined style={{ fontSize: 18, color: "white" }} />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Typography.Text style={{ color: "white" }}>
+                  {username}
+                </Typography.Text>
+                <Typography.Text italic={true} style={{ color: "white" }}>
+                  {role}
+                </Typography.Text>
+              </div>
+              <DownOutlined style={{ fontSize: 18, color: "white" }} />
             </Space>
           </Button>
         </Dropdown>

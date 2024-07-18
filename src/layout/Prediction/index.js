@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Button, Spin, message } from "antd";
+import { Button, Image, Spin, message } from "antd";
 import axios from "axios";
 import Webcam from "react-webcam";
 import HomeLayout from "../../container";
@@ -15,18 +15,20 @@ const videoConstraints = {
 function Prediction() {
   const webcamRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [res, setRes] = useState("");
+  const [res, setRes] = useState(null);
+  const [img, setImg] = useState(null);
+  const [cam, setCam] = useState(false);
 
   const capture = async () => {
     try {
-      setRes("");
       setLoading(true);
       const formData = new FormData();
-      formData.append("img", webcamRef.current.getScreenshot());
+      formData.append("image", webcamRef.current.getScreenshot());
 
       const response = await axios.post(`${API_URL}/predict`, formData, {});
       if (response.data.success) {
         setRes(response.data.person);
+        setImg(response.data.face);
       } else {
         message.error(response.data.error);
       }
@@ -36,6 +38,12 @@ function Prediction() {
     }
     setLoading(false);
   };
+
+  function toogleCam() {
+    setCam(!cam);
+    setRes(null);
+    setImg(null);
+  }
 
   return (
     <HomeLayout>
@@ -48,24 +56,47 @@ function Prediction() {
         }}
       >
         <Spin fullscreen spinning={loading} />
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-          minScreenshotWidth={180}
-          minScreenshotHeight={180}
-        />
-        {res && <h1>{res}</h1>}
-        <div style={{ display: "flex", justifyContent: "right" }}>
+        <div style={{ display: "flex", justifyContent: "left", width: 640 }}>
           <Button
             type="primary"
             style={{ backgroundColor: "#0C356A" }}
-            onClick={capture}
+            onClick={toogleCam}
           >
-            Prendre la photo
+            {cam ? "Fermer la caméra" : "Ouvrir la caméra"}
           </Button>
         </div>
+        {cam ? (
+          <>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              videoConstraints={videoConstraints}
+              minScreenshotWidth={200}
+              minScreenshotHeight={200}
+              mirrored={true}
+            />
+            <div style={{ display: "flex", justifyContent: "right" }}>
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#0C356A" }}
+                onClick={capture}
+              >
+                Prendre la photo
+              </Button>
+            </div>
+            <h1>{res}</h1>
+            {img && (
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Image
+                  src={img}
+                  style={{ width: 160, height: 160 }}
+                  alt="Captured Image"
+                />
+              </div>
+            )}
+          </>
+        ) : null}
       </div>
     </HomeLayout>
   );
