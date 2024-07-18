@@ -41,8 +41,6 @@ function Prediction() {
 
   function toogleCam() {
     setCam(!cam);
-    setRes(null);
-    setImg(null);
   }
 
   return (
@@ -85,18 +83,18 @@ function Prediction() {
                 Prendre la photo
               </Button>
             </div>
-            <h1>{res}</h1>
-            {img && (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Image
-                  src={img}
-                  style={{ width: 160, height: 160 }}
-                  alt="Captured Image"
-                />
-              </div>
-            )}
           </>
         ) : null}
+        <h1>{res}</h1>
+        {img && (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Image
+              src={img}
+              style={{ width: 160, height: 160 }}
+              alt="Captured Image"
+            />
+          </div>
+        )}
       </div>
     </HomeLayout>
   );

@@ -96,10 +96,10 @@ function HomeLayout({ children }) {
                   alignItems: "flex-start",
                 }}
               >
-                <Typography.Text style={{ color: "white" }}>
+                <Typography.Text style={{ fontSize: 16, color: "white" }}>
                   {username}
                 </Typography.Text>
-                <Typography.Text italic={true} style={{ color: "white" }}>
+                <Typography.Text italic={true} style={{ color: "#1677ff" }}>
                   {role}
                 </Typography.Text>
               </div>
