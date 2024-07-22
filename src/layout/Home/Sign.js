@@ -9,18 +9,45 @@ import {
   Button,
   Form,
   Input,
+  notification,
 } from "antd";
 import { FilePdfTwoTone } from "@ant-design/icons";
-import { Viewer } from "@react-pdf-viewer/core";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Sign() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
-  const [pdfURL, setPdfURL] = useState(null);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
+
+  const base64ToBlob = (base64, contentType) => {
+    const byteCharacters = atob(base64);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  };
+
+  const downloadPDF = (base64Data, fileName) => {
+    const blob = base64ToBlob(base64Data, "application/pdf");
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const handleFileUpload = async (values) => {
     if (uploading) return;
@@ -35,8 +62,13 @@ function Sign() {
       const response = await axios.post(`${API_URL}/signPDF`, formData, {});
       if (response.data.success) {
         message.success("Successfully signed !");
-        console.log(response);
-        setPdfURL(URL.createObjectURL(base64toBlob(response.data.pdfdata)));
+        downloadPDF(response.data.pdfdata, "signed_" + fileInfo.name);
+      } else {
+        notification.error({
+          message: "Code invalid",
+          description: "Le code secret que vous avez saisi est invalid.",
+          placement: "bottomRight",
+        });
       }
     } catch (error) {
       console.error(error);
@@ -44,18 +76,6 @@ function Sign() {
     } finally {
       setUploading(false);
     }
-  };
-
-  const base64toBlob = (data) => {
-    const bytes = atob(data);
-    let length = bytes.length;
-    let out = new Uint8Array(length);
-
-    while (length--) {
-      out[length] = bytes.charCodeAt(length);
-    }
-
-    return new Blob([out], { type: "application/pdf" });
   };
 
   const props = {
@@ -105,11 +125,21 @@ function Sign() {
             : "No date available"}
         </Typography.Text>
       )}
-      <div>
-        <Form style={{ marginTop: 30 }} onFinish={handleFileUpload}>
+
+      <Form
+        style={{ marginTop: 50 }}
+        layout="vertical"
+        onFinish={handleFileUpload}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+          }}
+        >
           <Form.Item
-            hasFeedback
-            label={"Code Secret"}
+            label={"Code Secret :"}
             name="code"
             rules={[
               {
@@ -118,25 +148,19 @@ function Sign() {
               },
             ]}
           >
-            <Input.OTP length={4} />
+            <Input.OTP length={4} mask="*" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ width: 120, backgroundColor: "#072142" }}
+            >
               Signer
             </Button>
           </Form.Item>
-        </Form>
-      </div>
-      {pdfURL && (
-        <div
-          style={{
-            border: "1px solid rgba(0, 0, 0, 0.3)",
-            height: "750px",
-          }}
-        >
-          <Viewer fileUrl={pdfURL} />
         </div>
-      )}
+      </Form>
     </>
   );
 }

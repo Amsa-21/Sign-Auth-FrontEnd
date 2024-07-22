@@ -8,7 +8,6 @@
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@react-login-page/page11": "^1.0.4",
     "@react-login-page/page8": "^1.0.4",
-    "@react-pdf-viewer/core": "^3.12.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

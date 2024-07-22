@@ -84,16 +84,16 @@ function Subscription() {
       title: "Formulaire",
       content: (
         <>
-          <div style={{ display: "flex", gap: "30px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
-              <Input />
+              <Input style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="prenom"
               label="Prénom"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
 
@@ -105,9 +105,9 @@ function Subscription() {
             <Input type="date" />
           </Form.Item>
 
-          <div style={{ display: "flex", gap: "30px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-              <Input type="email" />
+              <Input type="email" style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="password"
@@ -115,6 +115,7 @@ function Subscription() {
               rules={[{ required: true }]}
             >
               <Input.Password
+                style={{ width: 235 }}
                 visibilityToggle={{
                   visible: passwordVisible,
                   onVisibleChange: setPasswordVisible,
@@ -131,16 +132,16 @@ function Subscription() {
             <Input type="numero" />
           </Form.Item>
 
-          <div style={{ display: "flex", gap: "30px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item
               name="organisation"
               label="Organisation"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Input style={{ width: 235 }} />
             </Form.Item>
             <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
-              <Input />
+              <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
         </>
@@ -209,21 +210,14 @@ function Subscription() {
             paddingBlock: "5%",
           }}
         >
-          <Form
-            layout="vertical"
-            style={{ display: "grid" }}
-            form={form}
-            onFinish={next}
-          >
-            <>
-              <Spin fullscreen spinning={loading} />
-              {steps[current].content}
-            </>
+          <Spin fullscreen spinning={loading} />
+          <Form layout="vertical" form={form} onFinish={next}>
+            <div style={{ minWidth: 500 }}>{steps[current].content}</div>
             <div
               style={{
                 display: "flex",
                 justifyContent: "right",
-                marginBlockStart: "25px",
+                marginBlockStart: 25,
               }}
             >
               {current > 0 && (
