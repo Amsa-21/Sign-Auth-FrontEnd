@@ -26,6 +26,7 @@ function Subscription() {
   const [video, setVideo] = useState(null);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const next = (values) => {
@@ -113,7 +114,12 @@ function Subscription() {
               label="Password"
               rules={[{ required: true }]}
             >
-              <Input type="password" />
+              <Input.Password
+                visibilityToggle={{
+                  visible: passwordVisible,
+                  onVisibleChange: setPasswordVisible,
+                }}
+              />
             </Form.Item>
           </div>
 

@@ -15,6 +15,7 @@ function HomeLayout({ children }) {
   const handleLogout = () => {
     localStorage.removeItem("userToken");
     localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
     localStorage.removeItem("role");
     navigate("/login");
   };
@@ -96,12 +97,20 @@ function HomeLayout({ children }) {
                   alignItems: "flex-start",
                 }}
               >
-                <Typography.Text style={{ fontSize: 16, color: "white" }}>
-                  {username}
-                </Typography.Text>
-                <Typography.Text italic={true} style={{ color: "#1677ff" }}>
-                  {role}
-                </Typography.Text>
+                {role === "Admin" ? (
+                  <>
+                    <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                      {username}
+                    </Typography.Text>
+                    <Typography.Text italic={true} style={{ color: "#1677ff" }}>
+                      Administrateur
+                    </Typography.Text>
+                  </>
+                ) : (
+                  <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                    {username}
+                  </Typography.Text>
+                )}
               </div>
               <DownOutlined style={{ fontSize: 18, color: "white" }} />
             </Space>

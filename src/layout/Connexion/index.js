@@ -24,6 +24,7 @@ function Connexion() {
       if (data.success === true) {
         localStorage.setItem("userToken", data.userToken);
         localStorage.setItem("username", data.username);
+        localStorage.setItem("telephone", data.telephone);
         localStorage.setItem("role", data.role);
         navigate("/home");
       } else {

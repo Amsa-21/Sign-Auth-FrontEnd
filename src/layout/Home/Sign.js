@@ -1,35 +1,61 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { message, Divider, Upload, Spin, Typography } from "antd";
+import {
+  message,
+  Divider,
+  Upload,
+  Spin,
+  Typography,
+  Button,
+  Form,
+  Input,
+} from "antd";
 import { FilePdfTwoTone } from "@ant-design/icons";
+import { Viewer } from "@react-pdf-viewer/core";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Sign() {
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
+  const [pdfURL, setPdfURL] = useState(null);
+  const person =
+    localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-  const handleFileUpload = async (file) => {
+  const handleFileUpload = async (values) => {
     if (uploading) return;
     try {
       setUploading(true);
 
       const formData = new FormData();
-      formData.append("fichier", file);
+      formData.append("fichier", fileInfo);
+      formData.append("user", person);
+      formData.append("code", values.code);
 
-      const response = await axios.post(
-        `${API_URL}/metadatafrompdf`,
-        formData,
-        {}
-      );
-      message.success("Successfully upload");
-      console.log(response);
+      const response = await axios.post(`${API_URL}/signPDF`, formData, {});
+      if (response.data.success) {
+        message.success("Successfully signed !");
+        console.log(response);
+        setPdfURL(URL.createObjectURL(base64toBlob(response.data.pdfdata)));
+      }
     } catch (error) {
       console.error(error);
       message.error(error.message);
     } finally {
       setUploading(false);
     }
+  };
+
+  const base64toBlob = (data) => {
+    const bytes = atob(data);
+    let length = bytes.length;
+    let out = new Uint8Array(length);
+
+    while (length--) {
+      out[length] = bytes.charCodeAt(length);
+    }
+
+    return new Blob([out], { type: "application/pdf" });
   };
 
   const props = {
@@ -39,7 +65,6 @@ function Sign() {
     customRequest: (options) => {
       const { file } = options;
       setFileInfo(file);
-      handleFileUpload(file);
     },
     showUploadList: false,
   };
@@ -55,6 +80,7 @@ function Sign() {
 
   return (
     <>
+      <Spin spinning={uploading} fullscreen></Spin>
       <div>
         <Upload.Dragger {...props}>
           <p className="ant-upload-drag-icon">
@@ -79,7 +105,38 @@ function Sign() {
             : "No date available"}
         </Typography.Text>
       )}
-      <Spin spinning={uploading} fullscreen></Spin>
+      <div>
+        <Form style={{ marginTop: 30 }} onFinish={handleFileUpload}>
+          <Form.Item
+            hasFeedback
+            label={"Code Secret"}
+            name="code"
+            rules={[
+              {
+                required: true,
+                message: "Veuiller entrer votre code secret !",
+              },
+            ]}
+          >
+            <Input.OTP length={4} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Signer
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+      {pdfURL && (
+        <div
+          style={{
+            border: "1px solid rgba(0, 0, 0, 0.3)",
+            height: "750px",
+          }}
+        >
+          <Viewer fileUrl={pdfURL} />
+        </div>
+      )}
     </>
   );
 }
