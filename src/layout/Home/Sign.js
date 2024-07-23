@@ -4,7 +4,6 @@ import {
   message,
   Divider,
   Upload,
-  Spin,
   Typography,
   Button,
   Form,
@@ -100,7 +99,6 @@ function Sign() {
 
   return (
     <>
-      <Spin spinning={uploading} fullscreen></Spin>
       <div>
         <Upload.Dragger {...props}>
           <p className="ant-upload-drag-icon">
@@ -126,41 +124,44 @@ function Sign() {
         </Typography.Text>
       )}
 
-      <Form
-        style={{ marginTop: 50 }}
-        layout="vertical"
-        onFinish={handleFileUpload}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-          }}
+      {fileInfo && (
+        <Form
+          style={{ marginTop: 50 }}
+          layout="vertical"
+          onFinish={handleFileUpload}
         >
-          <Form.Item
-            label={"Code Secret :"}
-            name="code"
-            rules={[
-              {
-                required: true,
-                message: "Veuiller entrer votre code secret !",
-              },
-            ]}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+            }}
           >
-            <Input.OTP length={4} mask="*" />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ width: 120, backgroundColor: "#072142" }}
+            <Form.Item
+              label={"Code Secret :"}
+              name="code"
+              rules={[
+                {
+                  required: true,
+                  message: "Veuiller entrer votre code secret !",
+                },
+              ]}
             >
-              Signer
-            </Button>
-          </Form.Item>
-        </div>
-      </Form>
+              <Input.OTP length={6} mask="🔒" />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ width: 120, backgroundColor: "#072142" }}
+                loading={uploading}
+              >
+                Signer
+              </Button>
+            </Form.Item>
+          </div>
+        </Form>
+      )}
     </>
   );
 }
