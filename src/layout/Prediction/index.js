@@ -73,6 +73,7 @@ function Prediction() {
               minScreenshotWidth={200}
               minScreenshotHeight={200}
               mirrored={true}
+              style={{ borderRadius: "6px" }}
             />
             <div style={{ display: "flex", justifyContent: "right" }}>
               <Button

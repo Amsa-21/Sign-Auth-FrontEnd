@@ -14,25 +14,20 @@ function Connexion() {
   const navigate = useNavigate();
 
   async function handleSubmit(values) {
-    try {
-      setLoading(true);
-      const response = await axios.post(`${API_URL}/login`, {
-        email: values.email,
-        password: values.password,
-      });
-      const data = response.data;
-      if (data.success === true) {
-        localStorage.setItem("userToken", data.userToken);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("telephone", data.telephone);
-        localStorage.setItem("role", data.role);
-        navigate("/home");
-      } else {
-        message.error("Username or password incorrect!");
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      message.error(error.data.error);
+    setLoading(true);
+    const response = await axios.post(`${API_URL}/login`, {
+      email: values.email,
+      password: values.password,
+    });
+    const data = response.data;
+    if (data.success === true) {
+      localStorage.setItem("userToken", data.userToken);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("telephone", data.telephone);
+      localStorage.setItem("role", data.role);
+      navigate("/home");
+    } else {
+      message.error(data.error);
     }
     setLoading(false);
   }

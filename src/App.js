@@ -4,7 +4,7 @@ import Connexion from "./layout/Connexion";
 import Subscription from "./layout/Subscription";
 import routes from "./routes";
 
-function renderRoutes() {
+const renderRoutes = () => {
   return routes.map((route) => (
     <Route
       key={route.key}
@@ -18,7 +18,7 @@ function renderRoutes() {
       }
     />
   ));
-}
+};
 
 function App() {
   return (
