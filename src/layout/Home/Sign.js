@@ -56,6 +56,7 @@ function Sign() {
       const formData = new FormData();
       formData.append("fichier", fileInfo);
       formData.append("user", person);
+      // formData.append("user", "Ouleymatou DIAGNE 773940082");
       formData.append("code", values.code);
 
       const response = await axios.post(`${API_URL}/signPDF`, formData, {});

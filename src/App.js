@@ -10,7 +10,7 @@ const renderRoutes = () => {
       key={route.key}
       path={route.path}
       element={
-        Boolean(localStorage.getItem("userToken")) ? (
+        localStorage.getItem("userToken") !== null ? (
           route.component
         ) : (
           <Navigate to="/login" />
@@ -24,10 +24,10 @@ function App() {
   return (
     <div>
       <Routes>
-        {renderRoutes()}
+        <Route path="*" element={<Navigate to="/login" />} />
         <Route key="login" path="/login" element={<Connexion />} />
         <Route key="sub" path="/subscription" element={<Subscription />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        {renderRoutes()}
       </Routes>
     </div>
   );
