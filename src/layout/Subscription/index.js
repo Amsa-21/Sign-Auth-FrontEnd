@@ -30,15 +30,19 @@ function Subscription() {
   const navigate = useNavigate();
 
   const next = (values) => {
-    form
-      .validateFields()
-      .then(setUser(values))
-      .then(() => {
-        setCurrent(current + 1);
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+    if (values.password === values.password2) {
+      form
+        .validateFields()
+        .then(setUser(values))
+        .then(() => {
+          setCurrent(current + 1);
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+      message.error("Les mots de passes ne correspondent pas !");
+    }
   };
 
   const prev = () => {
@@ -60,7 +64,6 @@ function Subscription() {
       const formData = new FormData();
       formData.append("user", JSON.stringify(user));
       formData.append("file", video);
-
       const response = await axios.post(`${API_URL}/addUser`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -96,22 +99,42 @@ function Subscription() {
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
-
-          <Form.Item
-            name="date"
-            label="Date de naissance"
-            rules={[{ required: true }]}
-          >
-            <Input type="date" />
-          </Form.Item>
-
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="email" label="Email" rules={[{ required: true }]}>
               <Input type="email" style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
+              name="date"
+              label="Date de naissance"
+              rules={[{ required: true }]}
+            >
+              <Input type="date" style={{ width: 235 }} />
+            </Form.Item>
+          </div>
+          <Form.Item
+            name="numero"
+            label="Téléphone"
+            rules={[{ required: true }]}
+          >
+            <Input type="numero" />
+          </Form.Item>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Form.Item
               name="password"
-              label="Password"
+              label="Mot de passe"
+              rules={[{ required: true }]}
+            >
+              <Input.Password
+                style={{ width: 235 }}
+                visibilityToggle={{
+                  visible: passwordVisible,
+                  onVisibleChange: setPasswordVisible,
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="password2"
+              label="Confirmer le mot de passe"
               rules={[{ required: true }]}
             >
               <Input.Password
@@ -123,15 +146,6 @@ function Subscription() {
               />
             </Form.Item>
           </div>
-
-          <Form.Item
-            name="numero"
-            label="Téléphone"
-            rules={[{ required: true }]}
-          >
-            <Input type="numero" />
-          </Form.Item>
-
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item
               name="organisation"

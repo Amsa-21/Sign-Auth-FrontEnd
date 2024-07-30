@@ -124,11 +124,11 @@ function Connexion() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your username!",
+                  message: "Please input your email !",
                 },
               ]}
             >
-              <Input type="email" />
+              <Input type="email" placeholder="Enter your Email" />
             </Form.Item>
             <Form.Item
               label="Password"
@@ -136,11 +136,11 @@ function Connexion() {
               rules={[
                 {
                   required: true,
-                  message: "Please input your password!",
+                  message: "Please input your password !",
                 },
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder="Enter your Password" />
             </Form.Item>
             <Form.Item
               style={{

@@ -52,11 +52,9 @@ function Sign() {
     if (uploading) return;
     try {
       setUploading(true);
-
       const formData = new FormData();
       formData.append("fichier", fileInfo);
       formData.append("user", person);
-      // formData.append("user", "Ouleymatou DIAGNE 773940082");
       formData.append("code", values.code);
 
       const response = await axios.post(`${API_URL}/signPDF`, formData, {});
@@ -112,56 +110,52 @@ function Sign() {
         </Upload.Dragger>
       </div>
       {fileInfo && (
-        <Typography.Text code style={{ marginTop: "10px" }}>
-          {fileInfo.name}
-          <Divider type="vertical" />
-          {getFileSize(fileInfo.size)}
-          <Divider type="vertical" />
-          {fileInfo && fileInfo.lastModifiedDate
-            ? fileInfo.lastModifiedDate.toLocaleDateString() +
-              " " +
-              fileInfo.lastModifiedDate.toLocaleTimeString()
-            : "No date available"}
-        </Typography.Text>
-      )}
-
-      {fileInfo && (
-        <Form
-          style={{ marginTop: 50 }}
-          layout="vertical"
-          onFinish={handleFileUpload}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-            }}
-          >
-            <Form.Item
-              label={"Code Secret :"}
-              name="code"
-              rules={[
-                {
-                  required: true,
-                  message: "Veuiller entrer votre code secret !",
-                },
-              ]}
+        <>
+          <Typography.Text code style={{ marginTop: "10px" }}>
+            {fileInfo.name}
+            <Divider type="vertical" />
+            {getFileSize(fileInfo.size)}
+            <Divider type="vertical" />
+            {fileInfo && fileInfo.lastModifiedDate
+              ? fileInfo.lastModifiedDate.toLocaleDateString() +
+                " " +
+                fileInfo.lastModifiedDate.toLocaleTimeString()
+              : "No date available"}
+          </Typography.Text>
+          <Divider />
+          <Form layout="vertical" onFinish={handleFileUpload}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+              }}
             >
-              <Input.OTP length={6} mask="🔒" />
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ width: 120, backgroundColor: "#072142" }}
-                loading={uploading}
+              <Form.Item
+                label={"Code Secret"}
+                name="code"
+                rules={[
+                  {
+                    required: true,
+                    message: "Veuiller entrer votre code secret !",
+                  },
+                ]}
               >
-                Signer
-              </Button>
-            </Form.Item>
-          </div>
-        </Form>
+                <Input.OTP length={6} mask="🔒" />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: 120, backgroundColor: "#072142" }}
+                  loading={uploading}
+                >
+                  Signer
+                </Button>
+              </Form.Item>
+            </div>
+          </Form>
+        </>
       )}
     </>
   );
