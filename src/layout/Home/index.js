@@ -1,25 +1,32 @@
 import React from "react";
 import HomeLayout from "../../container";
-import Analysis from "./Analysis";
-import Sign from "./Sign";
+import CreateRequest from "./CreateRequest";
+import RequestList from "./RequestList";
+import MyRequestList from "./MyRequestList";
 import { Tabs } from "antd";
-import { ScanOutlined, SignatureOutlined } from "@ant-design/icons";
+import { PaperClipOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 function Home() {
   document.getElementById("title").innerHTML = "Home - Fraud Detection";
 
   const items = [
     {
-      label: "Vérification de signature",
+      label: "Liste des demandes",
       key: 1,
-      children: <Analysis />,
-      icon: <ScanOutlined />,
+      children: <RequestList />,
+      icon: <UnorderedListOutlined />,
     },
     {
-      label: "Signature de document",
+      label: "Mes demandes",
       key: 2,
-      children: <Sign />,
-      icon: <SignatureOutlined />,
+      children: <MyRequestList />,
+      icon: <UnorderedListOutlined />,
+    },
+    {
+      label: "Créer une nouvelle demande",
+      key: 3,
+      children: <CreateRequest />,
+      icon: <PaperClipOutlined />,
     },
   ];
 

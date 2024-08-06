@@ -26,7 +26,9 @@ function Subscription() {
   const [video, setVideo] = useState(null);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [finish, setFinish] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible1, setPasswordVisible1] = useState(false);
   const navigate = useNavigate();
 
   const next = (values) => {
@@ -71,7 +73,7 @@ function Subscription() {
       });
       if (response.data.success) {
         message.success("User registered successfully!");
-        navigate("/login");
+        setFinish(true);
       } else {
         message.error(response.data.error);
       }
@@ -88,14 +90,14 @@ function Subscription() {
       content: (
         <>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
-              <Input style={{ width: 235 }} />
-            </Form.Item>
             <Form.Item
               name="prenom"
               label="Prénom"
               rules={[{ required: true }]}
             >
+              <Input style={{ width: 235 }} />
+            </Form.Item>
+            <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
@@ -140,8 +142,8 @@ function Subscription() {
               <Input.Password
                 style={{ width: 235 }}
                 visibilityToggle={{
-                  visible: passwordVisible,
-                  onVisibleChange: setPasswordVisible,
+                  visible: passwordVisible1,
+                  onVisibleChange: setPasswordVisible1,
                 }}
               />
             </Form.Item>
@@ -188,91 +190,117 @@ function Subscription() {
           display: "flex",
           alignItems: "center",
           backgroundColor: "#072142",
+          paddingInline: 20,
         }}
       >
-        <img src={logo} width="35" height="35" alt="Sign Auth logo" />
-        <Typography.Title
-          level={3}
-          style={{ marginLeft: "15px", color: "white" }}
+        <Typography.Text
+          style={{ display: "flex", alignItems: "center", gap: 7 }}
         >
-          Sign Auth
-        </Typography.Title>
+          <img src={logo} width={40} alt="Sign Auth logo" />
+          <h2 style={{ color: "white", marginTop: 15 }}>Sign Auth</h2>
+        </Typography.Text>
       </Header>
-      <Layout>
-        <Sider
+      {!finish ? (
+        <Layout>
+          <Sider
+            style={{
+              display: "flex",
+              paddingBlock: 50,
+              paddingInline: 20,
+              borderRight: "1px solid rgba(12, 53, 106, 0.2)",
+              backgroundColor: "white",
+              fontSize: "14px",
+            }}
+          >
+            <Steps
+              style={{ height: "50%" }}
+              direction={"vertical"}
+              current={current}
+              items={items}
+            />
+          </Sider>
+          <Content
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              backgroundColor: "white",
+              paddingBlock: "10%",
+            }}
+          >
+            <Spin fullscreen spinning={loading} />
+            <Form layout="vertical" form={form} onFinish={next}>
+              <div style={{ minWidth: 500 }}>{steps[current].content}</div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  marginBlockStart: 25,
+                }}
+              >
+                {current > 0 && (
+                  <Button
+                    style={{
+                      margin: "0 10px",
+                      width: 120,
+                    }}
+                    onClick={() => prev()}
+                  >
+                    Retour
+                  </Button>
+                )}
+                {current < steps.length - 1 && (
+                  <Button
+                    style={{
+                      width: 120,
+                      backgroundColor: "#072142",
+                    }}
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Suivant
+                  </Button>
+                )}
+                {current === steps.length - 1 && (
+                  <Button
+                    type="primary"
+                    style={{
+                      width: 120,
+                      backgroundColor: "#072142",
+                    }}
+                    onClick={handleFinish}
+                  >
+                    Enregister
+                  </Button>
+                )}
+              </div>
+            </Form>
+          </Content>
+        </Layout>
+      ) : (
+        <Layout
           style={{
             display: "flex",
-            paddingBlock: 50,
-            paddingInline: 20,
-            borderRight: "1px solid rgba(12, 53, 106, 0.2)",
             backgroundColor: "white",
-            fontSize: "14px",
+            alignItems: "center",
+            padding: 100,
+            gap: 50,
           }}
         >
-          <Steps
-            style={{ height: "50%" }}
-            direction={"vertical"}
-            current={current}
-            items={items}
-          />
-        </Sider>
-        <Content
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: "white",
-            paddingBlock: "5%",
-          }}
-        >
-          <Spin fullscreen spinning={loading} />
-          <Form layout="vertical" form={form} onFinish={next}>
-            <div style={{ minWidth: 500 }}>{steps[current].content}</div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "right",
-                marginBlockStart: 25,
-              }}
-            >
-              {current > 0 && (
-                <Button
-                  style={{
-                    margin: "0 10px",
-                    width: 120,
-                  }}
-                  onClick={() => prev()}
-                >
-                  Retour
-                </Button>
-              )}
-              {current < steps.length - 1 && (
-                <Button
-                  style={{
-                    width: 120,
-                    backgroundColor: "#072142",
-                  }}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  Suivant
-                </Button>
-              )}
-              {current === steps.length - 1 && (
-                <Button
-                  type="primary"
-                  style={{
-                    width: 120,
-                    backgroundColor: "#072142",
-                  }}
-                  onClick={handleFinish}
-                >
-                  Enregister
-                </Button>
-              )}
-            </div>
-          </Form>
-        </Content>
-      </Layout>
+          <Typography.Text>
+            Votre compte a été crée avec succès. Le code secret de signature est
+            envoyé sur cette adresse Email: <b>{user.email}</b>.
+          </Typography.Text>
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "#072142",
+            }}
+            onClick={() => navigate("/login")}
+          >
+            Retourner à la page de connexion
+          </Button>
+        </Layout>
+      )}
     </Layout>
   );
 }

@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout, Typography, Space, Dropdown, Menu } from "antd";
+import { Layout, Typography, Dropdown, Menu } from "antd";
 import routes from "../routes";
-import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  CaretDownOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import PropTypes from "prop-types";
 import logo from "./images/logo_ST.png";
 const { Header, Content, Sider } = Layout;
 
 function HomeLayout({ children }) {
   const [open, setOpen] = useState(false);
-
   const username = localStorage.getItem("username");
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
@@ -22,10 +26,20 @@ function HomeLayout({ children }) {
     navigate("/login");
   };
 
+  const handleEditPassword = () => {
+    alert("pouf");
+  };
+
   const items = [
     {
-      label: "Logout",
+      label: "Changer de mot de passe",
       key: "1",
+      icon: <EditOutlined />,
+      onClick: handleEditPassword,
+    },
+    {
+      label: "Déconnexion",
+      key: "2",
       icon: <LogoutOutlined />,
       onClick: handleLogout,
     },
@@ -61,61 +75,66 @@ function HomeLayout({ children }) {
         }}
       >
         <Typography.Link
-          style={{ display: "flex", alignItems: "center", gap: 7 }}
+          style={{
+            display: "flex",
+            height: "64px",
+            alignItems: "center",
+            gap: 7,
+          }}
           onClick={() => navigate("/home")}
         >
           <img src={logo} width={40} alt="Sign Auth logo" />
           <h2 style={{ color: "white", marginTop: 15 }}>Sign Auth</h2>
         </Typography.Link>
-
-        <Dropdown
-          menu={{
-            items,
-            defaultSelectedKeys: ["1"],
+        <div
+          style={{
+            display: "flex",
+            height: "fit-content",
+            color: "white",
+            gap: 10,
           }}
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
         >
-          <Typography.Link
-            type="text"
-            style={{ height: "auto", color: "white" }}
+          <UserOutlined style={{ fontSize: 18, color: "white" }} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
           >
-            <Space size={"middle"}>
-              <UserOutlined
-                style={{ fontSize: open ? 20 : 18, color: "white" }}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
-                {role === "Admin" ? (
-                  <>
-                    <Typography.Text style={{ fontSize: 16, color: "white" }}>
-                      {username}
-                    </Typography.Text>
-                    <Typography.Text italic={true} style={{ color: "#1677ff" }}>
-                      Administrateur
-                    </Typography.Text>
-                  </>
-                ) : (
-                  <Typography.Text style={{ fontSize: 16, color: "white" }}>
-                    {username}
-                  </Typography.Text>
-                )}
-              </div>
-              <DownOutlined
-                rotate={open ? 180 : 0}
-                style={{
-                  fontSize: 18,
-                  color: "white",
-                }}
-              />
-            </Space>
-          </Typography.Link>
-        </Dropdown>
+            {role === "Admin" ? (
+              <>
+                <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                  Bienvenue, {username}
+                </Typography.Text>
+                <Typography.Text
+                  italic={true}
+                  style={{ fontSize: 12, color: "#1677ff" }}
+                >
+                  Administrateur
+                </Typography.Text>
+              </>
+            ) : (
+              <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                {username}
+              </Typography.Text>
+            )}
+          </div>
+          <Dropdown
+            menu={{
+              items,
+            }}
+            onOpenChange={() => setOpen(!open)}
+          >
+            <CaretDownOutlined
+              rotate={open ? 180 : 0}
+              style={{
+                fontSize: 18,
+                color: "white",
+              }}
+            />
+          </Dropdown>
+        </div>
       </Header>
       <Layout>
         <Sider
@@ -134,9 +153,13 @@ function HomeLayout({ children }) {
                 ?.key || "1",
             ]}
             mode="inline"
-            theme="dark"
             items={item}
-            style={{ backgroundColor: "#0C356A", fontSize: "14px" }}
+            theme="dark"
+            style={{
+              color: "white",
+              backgroundColor: "#0C356A",
+              fontSize: "14px",
+            }}
           />
         </Sider>
         <Content

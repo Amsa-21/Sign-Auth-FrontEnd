@@ -4,6 +4,7 @@ import { Typography, message, Upload, Divider, Spin } from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
 import SignCard from "./SignCard";
+import HomeLayout from "../../container";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -67,7 +68,7 @@ function Analysis() {
   };
 
   return (
-    <>
+    <HomeLayout>
       <div>
         <Upload.Dragger {...props}>
           <p className="ant-upload-drag-icon">
@@ -114,7 +115,7 @@ function Analysis() {
           <SignCard sign={data.signature} />
         </>
       )}
-    </>
+    </HomeLayout>
   );
 }
 
