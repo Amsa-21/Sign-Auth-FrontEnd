@@ -115,6 +115,7 @@ function RequestList() {
 
       const response = await axios.post(`${API_URL}/signPDF`, formData, {});
       if (response.data.success) {
+        setOpen(false);
         message.success("Signature réussie !");
         window.location.reload();
       } else {
