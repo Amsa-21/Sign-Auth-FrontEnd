@@ -107,45 +107,56 @@ function CreateRequest() {
   options = options.filter(
     (element) => element.tel !== localStorage.getItem("telephone")
   );
+
   return (
-    <>
+    <div>
       <Typography.Title level={2}>Ajouter un document</Typography.Title>
-      <div>
-        <Upload.Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <FilePdfTwoTone />
-          </p>
-          <p className="ant-upload-text">
-            Click or drag file to this area to upload a PDF
-          </p>
-          <p className="ant-upload-hint">Support for a single PDF upload.</p>
-        </Upload.Dragger>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
+      >
+        <div style={{ width: "50%", height: 185 }}>
+          <Upload.Dragger {...props}>
+            <p className="ant-upload-drag-icon">
+              <FilePdfTwoTone />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload a PDF
+            </p>
+            <p className="ant-upload-hint">Support for a single PDF upload.</p>
+          </Upload.Dragger>
+          {fileInfo && (
+            <Typography.Text code>
+              {fileInfo.name}
+              <Divider type="vertical" />
+              {getFileSize(fileInfo.size)}
+              <Divider type="vertical" />
+              {fileInfo && fileInfo.lastModifiedDate
+                ? fileInfo.lastModifiedDate.toLocaleDateString() +
+                  " " +
+                  fileInfo.lastModifiedDate.toLocaleTimeString()
+                : "No date available"}
+            </Typography.Text>
+          )}
+        </div>
+        {fileInfo && (
+          <div style={{ width: "50%" }}>
+            <embed
+              type="application/pdf"
+              src={URL.createObjectURL(fileInfo)}
+              width={"100%"}
+              height={370}
+            />
+          </div>
+        )}
       </div>
-      {fileInfo && (
-        <>
-          <Typography.Text code style={{ marginTop: "10px" }}>
-            {fileInfo.name}
-            <Divider type="vertical" />
-            {getFileSize(fileInfo.size)}
-            <Divider type="vertical" />
-            {fileInfo && fileInfo.lastModifiedDate
-              ? fileInfo.lastModifiedDate.toLocaleDateString() +
-                " " +
-                fileInfo.lastModifiedDate.toLocaleTimeString()
-              : "No date available"}
-          </Typography.Text>
-        </>
-      )}
       <Divider />
       <Typography.Title level={2}>Choisir les signataires</Typography.Title>
       <div>
         <Select
           mode="multiple"
-          style={{
-            width: "100%",
-          }}
           size="middle"
           placeholder="Choisir un ou plusieurs signataire(s)"
+          style={{ width: "50%", border: "1px solid rgba(7, 33, 66, 0.5)" }}
           onChange={handleChange}
           options={options}
           optionRender={(option) => <Space>{option.data.label}</Space>}
@@ -155,38 +166,40 @@ function CreateRequest() {
       <Typography.Title level={2}>
         Ajouter un objet et un commentaire
       </Typography.Title>
-      <div>
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
+      >
+        <div style={{ width: "30%" }}>
           <Input
             placeholder="Objet de la demande"
-            size="large"
+            size="middle"
             onChange={(e) => setObject(e.target.value)}
+            style={{ border: "1px solid rgba(7, 33, 66, 0.5)" }}
           />
+        </div>
+        <div style={{ width: "70%" }}>
           <Input.TextArea
             autoSize={{ minRows: 3, maxRows: 6 }}
+            size="middle"
             placeholder="Commentaire à propos de la demande"
             onChange={(e) => setComment(e.target.value)}
+            style={{ border: "1px solid rgba(7, 33, 66, 0.5)" }}
           />
-        </Space>
+        </div>
       </div>
-      <footer
-        style={{
-          backgroundColor: "#072142",
-          display: "flex",
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "-webkit-fill-available",
-          paddingInline: 20,
-          paddingBlock: 10,
-          justifyContent: "right",
-        }}
-      >
-        <Button style={{}} onClick={handleSubmit} loading={uploading}>
-          Envoyer
+      <Divider />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          style={{ backgroundColor: "#072142" }}
+          onClick={handleSubmit}
+          loading={uploading}
+        >
+          <Typography.Text strong style={{ color: "white" }}>
+            Enregistrer
+          </Typography.Text>
         </Button>
-      </footer>
-    </>
+      </div>
+    </div>
   );
 }
 

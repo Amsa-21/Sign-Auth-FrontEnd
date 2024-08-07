@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FilePdfTwoTone, PlusSquareTwoTone } from "@ant-design/icons";
+import { FilePdfTwoTone, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   List,
@@ -20,6 +20,7 @@ function Analysis() {
   const [uploadProgress, setUploadProgress] = useState(null);
   const [fileInfo, setFileInfo] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     isEmpty: true,
     result: null,
@@ -27,11 +28,6 @@ function Analysis() {
   });
 
   const handleFileUpload = async (file) => {
-    setData({
-      isEmpty: true,
-      result: null,
-      correlation: {},
-    });
     if (uploading) return;
     try {
       setUploading(true);
@@ -81,6 +77,7 @@ function Analysis() {
 
   const handleAdd = async (values) => {
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("member", JSON.stringify(values));
       const response = await axios.post(
@@ -99,6 +96,8 @@ function Analysis() {
     } catch (error) {
       console.error(error);
       message.error("Add failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,10 +151,14 @@ function Analysis() {
                     <Button
                       type="default"
                       key="console"
+                      loading={loading}
                       onClick={() => handleAdd(data.result)}
+                      style={{ backgroundColor: "#072142" }}
+                      icon={<PlusOutlined style={{ color: "white" }} />}
                     >
-                      <PlusSquareTwoTone />
-                      Add to Own Approved Trust List
+                      <Typography.Text strong style={{ color: "white" }}>
+                        Add to Own Approved Trust List
+                      </Typography.Text>
                     </Button>
                   }
                 />

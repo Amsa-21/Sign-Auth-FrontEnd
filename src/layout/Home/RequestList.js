@@ -13,8 +13,16 @@ import {
   Typography,
   notification,
 } from "antd";
-import { SignatureOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  SignatureOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+  SyncOutlined,
+  CloseCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import Webcam from "react-webcam";
+
 const videoConstraints = {
   width: 640,
   height: 480,
@@ -29,9 +37,11 @@ function RequestList() {
   const [loadingSign, setLoadingSign] = useState(false);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
   const webcamRef = useRef(null);
   const [res, setRes] = useState(null);
   const [img, setImg] = useState(null);
+  const [dataPDF, setDataPDF] = useState("");
   const [id, setID] = useState();
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
@@ -76,11 +86,35 @@ function RequestList() {
   const statusControle = (item) => {
     switch (item) {
       case 0:
-        return <Tag color="#108ee9">En cours</Tag>;
+        return (
+          <Tag
+            icon={<SyncOutlined spin />}
+            color="#108ee9"
+            style={{ width: 85 }}
+          >
+            En cours
+          </Tag>
+        );
       case 1:
-        return <Tag color="#87d068">Complete</Tag>;
+        return (
+          <Tag
+            icon={<CheckCircleOutlined />}
+            color="#87d068"
+            style={{ width: 85 }}
+          >
+            Complete
+          </Tag>
+        );
       case 2:
-        return <Tag color="#f50">Rejetée</Tag>;
+        return (
+          <Tag
+            icon={<CloseCircleOutlined />}
+            color="#f50"
+            style={{ width: 85 }}
+          >
+            Rejetée
+          </Tag>
+        );
       default:
     }
   };
@@ -153,6 +187,24 @@ function RequestList() {
     }
   };
 
+  const handleViewPFDF = async (record) => {
+    try {
+      const params = new URLSearchParams({
+        id: record.id,
+      }).toString();
+      const response = await axios.post(`${API_URL}/getPDF?${params}`);
+
+      if (response.data.success) {
+        setDataPDF(response.data.result);
+        console.log(dataPDF);
+        setOpen2(true);
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(error.message);
+    }
+  };
+
   const columns = [
     {
       title: "Date",
@@ -165,19 +217,14 @@ function RequestList() {
       key: "object",
     },
     {
-      title: "Nom du fichier",
-      dataIndex: "filename",
-      key: "filename",
+      title: "Commentaire",
+      dataIndex: "comment",
+      key: "comment",
     },
     {
       title: "Demandeur",
       dataIndex: "person",
       key: "person",
-    },
-    {
-      title: "Commentaire",
-      dataIndex: "comment",
-      key: "comment",
     },
     {
       title: "Statut",
@@ -188,10 +235,17 @@ function RequestList() {
     {
       title: "OPTIONS",
       align: "center",
+      width: 150,
       render: (_, record) => {
         if (record.status === 0) {
           return (
             <>
+              <Button
+                type="text"
+                onClick={() => handleViewPFDF(record)}
+                icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
+              />
+              <Divider type="vertical" />
               <Button
                 type="text"
                 onClick={() => handleSign(record)}
@@ -215,10 +269,28 @@ function RequestList() {
               </Popconfirm>
             </>
           );
+        } else {
+          return (
+            <Button
+              type="text"
+              onClick={() => handleViewPFDF(record)}
+              icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
+            />
+          );
         }
       },
     },
   ];
+
+  const base64toBlob = (string) => {
+    const bytes = atob(string);
+    let length = bytes.length;
+    let out = new Uint8Array(length);
+    while (length--) {
+      out[length] = bytes.charCodeAt(length);
+    }
+    return new Blob([out], { type: "application/pdf" });
+  };
 
   return (
     <>
@@ -334,6 +406,27 @@ function RequestList() {
               </>
             )}
           </>
+        )}
+      </Modal>
+      <Modal
+        open={open2}
+        title={<p>Aperçu du Document</p>}
+        footer={null}
+        onCancel={() => {
+          setOpen2(false);
+        }}
+        width={"80%"}
+      >
+        <Divider />
+        {dataPDF && (
+          <div style={{ display: "flex" }}>
+            <embed
+              type="application/pdf"
+              src={URL.createObjectURL(base64toBlob(dataPDF))}
+              width={"100%"}
+              height={700}
+            />
+          </div>
         )}
       </Modal>
       <Table
