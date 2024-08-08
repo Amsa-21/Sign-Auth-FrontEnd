@@ -26,31 +26,42 @@ function CreateRequest() {
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
   const handleSubmit = async () => {
-    if (uploading) return;
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append("fichier", fileInfo);
-      formData.append("demandeur", person);
-      formData.append("signataires", signers);
-      formData.append("objet", object);
-      formData.append("commentaire", comment);
-      const response = await axios.post(`${API_URL}/addRequest`, formData, {});
-      if (response.data.success) {
-        message.success("Demande envoyer avec succès !");
-        window.location.reload();
-      } else {
-        notification.error({
-          message: response.data.error,
-          placement: "bottomRight",
-          duration: 5,
-        });
+    if (fileInfo === null) {
+      message.warning("Aucun document n'est téléchargé !");
+    } else if (signers.length === 0) {
+      message.warning("Aucun signataire n'est choisi !");
+    } else if (object.trim() === "" || comment.trim() === "") {
+      message.warning("Les champs Objet ou Commentaire sont vides !");
+    } else {
+      try {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("fichier", fileInfo);
+        formData.append("demandeur", person);
+        formData.append("signataires", signers);
+        formData.append("objet", object);
+        formData.append("commentaire", comment);
+        const response = await axios.post(
+          `${API_URL}/addRequest`,
+          formData,
+          {}
+        );
+        if (response.data.success) {
+          message.success("Demande envoyer avec succès !");
+          window.location.reload();
+        } else {
+          notification.error({
+            message: response.data.error,
+            placement: "bottomRight",
+            duration: 5,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        message.error(error.message);
+      } finally {
+        setUploading(false);
       }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -114,7 +125,7 @@ function CreateRequest() {
       <div
         style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
       >
-        <div style={{ width: "50%", height: 185 }}>
+        <div style={{ width: "50%", height: 200 }}>
           <Upload.Dragger {...props}>
             <p className="ant-upload-drag-icon">
               <FilePdfTwoTone />
@@ -139,12 +150,14 @@ function CreateRequest() {
           )}
         </div>
         {fileInfo && (
-          <div style={{ width: "50%" }}>
+          <div
+            style={{ width: "50%", border: "1px solid rgba(7, 33, 66, 0.7)" }}
+          >
             <embed
               type="application/pdf"
               src={URL.createObjectURL(fileInfo)}
               width={"100%"}
-              height={370}
+              height={400}
             />
           </div>
         )}

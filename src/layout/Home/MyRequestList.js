@@ -98,7 +98,6 @@ function MyRequestList() {
         id: record.id,
       }).toString();
       const response = await axios.delete(`${API_URL}/deleteRequest?${params}`);
-
       if (response.data.success) {
         setData(response.data.result);
         message.success("Demande annulée avec succès");

@@ -121,20 +121,21 @@ function RequestList() {
 
   let dataWithKeys = data.map((item, index) => ({
     ...item,
-    signataires: (
-      <ul>
-        {item.signers.map((element) => (
-          <li>{element}</li>
-        ))}
-      </ul>
+    signataires: item.signers,
+    statut: item.signatures.includes(person) ? (
+      <Tag icon={<CheckCircleOutlined />} color="#87d068" style={{ width: 85 }}>
+        Complete
+      </Tag>
+    ) : (
+      statusControle(item.status)
     ),
-    statut: statusControle(item.status),
     key: item.id || index,
+    signats: item.signatures.includes(person) ? true : false,
   }));
   dataWithKeys = dataWithKeys.filter((item) => item.signers.includes(person));
 
   const handleSign = (record) => {
-    setOpen(true);
+    setOpen1(true);
     setID(record.id);
   };
 
@@ -237,7 +238,7 @@ function RequestList() {
       align: "center",
       width: 150,
       render: (_, record) => {
-        if (record.status === 0) {
+        if (record.status === 0 && record.signats === false) {
           return (
             <>
               <Button
@@ -310,6 +311,7 @@ function RequestList() {
         onCancel={() => {
           setOpen1(false);
         }}
+        destroyOnClose={true}
         width={688}
         height={520}
       >
@@ -336,18 +338,6 @@ function RequestList() {
         centered={true}
       >
         <Divider />
-        {!res && (
-          <Button
-            type="primary"
-            style={{ backgroundColor: "#072142" }}
-            onClick={() => {
-              setOpen(false);
-              setOpen1(true);
-            }}
-          >
-            Reconnaissance Faciale
-          </Button>
-        )}
         {res && (
           <>
             {res === person ? (

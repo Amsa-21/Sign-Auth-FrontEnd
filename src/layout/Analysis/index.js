@@ -3,7 +3,6 @@ import { FilePdfTwoTone } from "@ant-design/icons";
 import { Typography, message, Upload, Divider, Spin } from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
-import SignCard from "./SignCard";
 import HomeLayout from "../../container";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
@@ -98,7 +97,7 @@ function Analysis() {
         ? data.result && (
             <>
               <Divider />
-              <CertificateDetails certificates={data.result} />
+              <CertificateDetails data={data.result} />
             </>
           )
         : data.result && (
@@ -109,12 +108,6 @@ function Analysis() {
               </Typography.Text>
             </>
           )}
-      {data.signature && (
-        <>
-          <Divider />
-          <SignCard sign={data.signature} />
-        </>
-      )}
     </HomeLayout>
   );
 }
