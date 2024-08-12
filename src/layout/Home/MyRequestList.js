@@ -199,12 +199,12 @@ function MyRequestList() {
     <>
       <Modal
         open={open2}
-        title={<p>Aperçu du Document</p>}
+        title="Aperçu du Document"
         footer={null}
         onCancel={() => {
           setOpen2(false);
         }}
-        width={"80%"}
+        width={"90%"}
       >
         <Divider />
         {dataPDF && (

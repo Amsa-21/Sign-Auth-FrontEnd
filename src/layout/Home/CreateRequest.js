@@ -9,8 +9,9 @@ import {
   Space,
   Input,
   notification,
+  Modal,
 } from "antd";
-import { FilePdfTwoTone } from "@ant-design/icons";
+import { FilePdfTwoTone, EyeOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
@@ -22,6 +23,7 @@ function CreateRequest() {
   const [object, setObject] = useState("");
   const [comment, setComment] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [open, setOpen] = useState(false);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
@@ -121,22 +123,47 @@ function CreateRequest() {
 
   return (
     <div>
-      <Typography.Title level={2}>Ajouter un document</Typography.Title>
-      <div
-        style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
+      <Modal
+        open={open}
+        title="Aperçu du Document"
+        footer={null}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        width={"90%"}
       >
-        <div style={{ width: "50%", height: 200 }}>
-          <Upload.Dragger {...props}>
-            <p className="ant-upload-drag-icon">
-              <FilePdfTwoTone />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload a PDF
-            </p>
-            <p className="ant-upload-hint">Support for a single PDF upload.</p>
-          </Upload.Dragger>
+        <Divider />
+        <div style={{ display: "flex" }}>
           {fileInfo && (
-            <Typography.Text code>
+            <embed
+              type="application/pdf"
+              src={URL.createObjectURL(fileInfo)}
+              width={"100%"}
+              height={700}
+            />
+          )}
+        </div>
+      </Modal>
+      <Typography.Title level={2}>Ajouter un document</Typography.Title>
+      <div style={{ marginBottom: 10 }}>
+        <Upload.Dragger {...props}>
+          <p className="ant-upload-drag-icon">
+            <FilePdfTwoTone />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload a PDF
+          </p>
+          <p className="ant-upload-hint">Support for a single PDF upload.</p>
+        </Upload.Dragger>
+        {fileInfo && (
+          <div
+            style={{
+              display: "flex",
+              alignContent: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography.Text code style={{ width: "90%" }}>
               {fileInfo.name}
               <Divider type="vertical" />
               {getFileSize(fileInfo.size)}
@@ -147,18 +174,12 @@ function CreateRequest() {
                   fileInfo.lastModifiedDate.toLocaleTimeString()
                 : "No date available"}
             </Typography.Text>
-          )}
-        </div>
-        {fileInfo && (
-          <div
-            style={{ width: "50%", border: "1px solid rgba(7, 33, 66, 0.7)" }}
-          >
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(fileInfo)}
-              width={"100%"}
-              height={400}
-            />
+            <Typography.Link underline onClick={() => setOpen(true)}>
+              <EyeOutlined
+                style={{ color: "rgb(0, 100, 200)", marginRight: 7 }}
+              />
+              Aperçu
+            </Typography.Link>
           </div>
         )}
       </div>
@@ -207,7 +228,11 @@ function CreateRequest() {
           onClick={handleSubmit}
           loading={uploading}
         >
-          <Typography.Text strong style={{ color: "white" }}>
+          <Typography.Text
+            strong
+            style={{ color: "white" }}
+            icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
+          >
             Enregistrer
           </Typography.Text>
         </Button>

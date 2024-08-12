@@ -152,7 +152,7 @@ function HomeLayout({ children }) {
               item.find((item) => item.path === window.location.pathname)
                 ?.key || "1",
             ]}
-            mode="inline"
+            mode="vertical"
             items={item}
             theme="dark"
             style={{

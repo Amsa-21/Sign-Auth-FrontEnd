@@ -11,7 +11,7 @@ import {
 
 const routes = [
   {
-    key: 1,
+    key: "1",
     icon: <AuditOutlined />,
     label: "Accueil",
     path: "/home",
@@ -19,7 +19,7 @@ const routes = [
     role: "user",
   },
   {
-    key: 2,
+    key: "2",
     icon: <ScanOutlined />,
     label: "Contrôle",
     path: "/scan",
@@ -27,7 +27,7 @@ const routes = [
     role: "user",
   },
   {
-    key: 3,
+    key: "3",
     icon: <FormOutlined />,
     label: "BackOffice",
     path: "/backoffice",
@@ -35,7 +35,7 @@ const routes = [
     role: "admin",
   },
   {
-    key: 4,
+    key: "4",
     icon: <UserSwitchOutlined />,
     label: "Users",
     path: "/users",

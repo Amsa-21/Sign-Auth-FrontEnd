@@ -297,7 +297,7 @@ function RequestList() {
     <>
       <Modal
         open={open1}
-        title={<p>Scan du visage</p>}
+        title="Scan du visage"
         footer={
           <Button
             type="primary"
@@ -329,7 +329,7 @@ function RequestList() {
       </Modal>
       <Modal
         open={open}
-        title={<p>Signer le document</p>}
+        title="Signer le document"
         onCancel={() => {
           setRes(null);
           setOpen(false);
@@ -400,12 +400,12 @@ function RequestList() {
       </Modal>
       <Modal
         open={open2}
-        title={<p>Aperçu du Document</p>}
+        title="Aperçu du Document"
         footer={null}
         onCancel={() => {
           setOpen2(false);
         }}
-        width={"80%"}
+        width={"90%"}
       >
         <Divider />
         {dataPDF && (
