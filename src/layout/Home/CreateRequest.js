@@ -168,7 +168,7 @@ function CreateRequest() {
               <Divider type="vertical" />
               {getFileSize(fileInfo.size)}
               <Divider type="vertical" />
-              {fileInfo && fileInfo.lastModifiedDate
+              {fileInfo.lastModifiedDate
                 ? fileInfo.lastModifiedDate.toLocaleDateString() +
                   " " +
                   fileInfo.lastModifiedDate.toLocaleTimeString()
@@ -189,8 +189,13 @@ function CreateRequest() {
         <Select
           mode="multiple"
           size="middle"
+          maxCount={12}
           placeholder="Choisir un ou plusieurs signataire(s)"
-          style={{ width: "50%", border: "1px solid rgba(7, 33, 66, 0.5)" }}
+          style={{
+            width: "50%",
+            border: "1px solid rgba(7, 33, 66, 0.5)",
+            borderRadius: 7,
+          }}
           onChange={handleChange}
           options={options}
           optionRender={(option) => <Space>{option.data.label}</Space>}

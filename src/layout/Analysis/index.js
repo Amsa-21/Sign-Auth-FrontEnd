@@ -111,7 +111,7 @@ function Analysis() {
               <Divider type="vertical" />
               {getFileSize(fileInfo.size)}
               <Divider type="vertical" />
-              {fileInfo && fileInfo.lastModifiedDate
+              {fileInfo.lastModifiedDate
                 ? fileInfo.lastModifiedDate.toLocaleDateString() +
                   " " +
                   fileInfo.lastModifiedDate.toLocaleTimeString()
@@ -127,19 +127,21 @@ function Analysis() {
         )}
       </div>
       <Spin spinning={uploading} fullscreen></Spin>
-      {data && !data.isEmpty ? (
-        data.result && (
-          <>
-            <Divider />
-            <CertificateDetails data={data.result} />
-          </>
-        )
-      ) : (
+      {data && (
         <>
-          <Divider />
-          <Typography.Title level={5} style={{ color: "red" }}>
-            No Signature found in this file !
-          </Typography.Title>
+          {!data.isEmpty ? (
+            <>
+              <Divider />
+              <CertificateDetails data={data.result} />
+            </>
+          ) : (
+            <>
+              <Divider />
+              <Typography.Title level={5} style={{ color: "red" }}>
+                No Signature found in this file !
+              </Typography.Title>
+            </>
+          )}
         </>
       )}
     </HomeLayout>

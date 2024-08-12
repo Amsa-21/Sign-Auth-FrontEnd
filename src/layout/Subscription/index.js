@@ -27,8 +27,6 @@ function Subscription() {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [finish, setFinish] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [passwordVisible1, setPasswordVisible1] = useState(false);
   const navigate = useNavigate();
 
   const next = (values) => {
@@ -60,7 +58,7 @@ function Subscription() {
       setLoading(true);
       if (video === null) {
         throw new Error(
-          "Video recording is required before finishing the subscription."
+          "L'enregistrement vidéo est requis avant de finaliser la création de compte."
         );
       }
       const formData = new FormData();
@@ -72,7 +70,7 @@ function Subscription() {
         },
       });
       if (response.data.success) {
-        message.success("User registered successfully!");
+        message.success("Utilisateur enregistré avec succès !");
         setFinish(true);
       } else {
         message.error(response.data.error);
@@ -93,11 +91,15 @@ function Subscription() {
             <Form.Item
               name="prenom"
               label="Prénom"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Ce champ est requis" }]}
             >
               <Input style={{ width: 235 }} />
             </Form.Item>
-            <Form.Item name="nom" label="Nom" rules={[{ required: true }]}>
+            <Form.Item
+              name="nom"
+              label="Nom"
+              rules={[{ required: true, message: "Ce champ est requis" }]}
+            >
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
@@ -108,7 +110,7 @@ function Subscription() {
             <Form.Item
               name="date"
               label="Date de naissance"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Ce champ est requis" }]}
             >
               <Input type="date" style={{ width: 235 }} />
             </Form.Item>
@@ -124,39 +126,34 @@ function Subscription() {
             <Form.Item
               name="password"
               label="Mot de passe"
-              rules={[{ required: true }]}
+              rules={[
+                { min: 8, message: "Le mot de passe est trop court" },
+                { required: true, message: "Ce champ est requis" },
+              ]}
             >
-              <Input.Password
-                style={{ width: 235 }}
-                visibilityToggle={{
-                  visible: passwordVisible,
-                  onVisibleChange: setPasswordVisible,
-                }}
-              />
+              <Input.Password style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="password2"
               label="Confirmer le mot de passe"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Ce champ est requis" }]}
             >
-              <Input.Password
-                style={{ width: 235 }}
-                visibilityToggle={{
-                  visible: passwordVisible1,
-                  onVisibleChange: setPasswordVisible1,
-                }}
-              />
+              <Input.Password style={{ width: 235 }} />
             </Form.Item>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item
               name="organisation"
               label="Organisation"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: "Ce champ est requis" }]}
             >
               <Input style={{ width: 235 }} />
             </Form.Item>
-            <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
+            <Form.Item
+              name="poste"
+              label="Poste"
+              rules={[{ required: true, message: "Ce champ est requis" }]}
+            >
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
