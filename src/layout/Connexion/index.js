@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../../container/images/logo_ST.png";
-import banner from "./images/banner.svg";
-import { message, Button, Form, Input, Typography } from "antd";
+import background from "./images/bg.jpg";
+import bg from "./images/background.jpg";
+import {
+  message,
+  Button,
+  Form,
+  Input,
+  Typography,
+  Image,
+  ConfigProvider,
+} from "antd";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -39,145 +47,148 @@ function Connexion() {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "space-between",
-        height: "100vh",
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div
         style={{
           display: "flex",
+          width: "100%",
           justifyContent: "center",
-          alignItems: "center",
-          width: "50%",
-          backgroundColor: "#0C356A",
           height: "100vh",
+          backdropFilter: "blur(10px) brightness(70%)",
+          overflow: "auto",
         }}
       >
         <div
           style={{
-            display: "ruby",
-            justifyContent: "center",
+            display: "flex",
             alignItems: "center",
+            flexDirection: "column",
+            gap: 40,
+            marginBlock: 70,
           }}
         >
-          <h1
-            style={{
-              fontFamily: "arial",
-              fontSize: 36,
-              color: "white",
-              marginBlockEnd: 100,
-              paddingInline: 30,
-            }}
-          >
-            Welcome to your application, Sign Auth
-          </h1>
-          <img src={banner} style={{ maxHeight: "400px" }} alt="Banner" />
-        </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "50%",
-          height: "100%",
-        }}
-      >
-        <div
-          style={{
-            borderRadius: 10,
-            border: "1px solid #0C356A",
-            minWidth: "400px",
-          }}
-        >
+          <div style={{ textAlign: "center", width: 600 }}>
+            <Typography.Title style={{ fontSize: 30, color: "white" }}>
+              Accédez à votre compte pour signer et protéger vos documents en
+              toute sécurité.
+            </Typography.Title>
+          </div>
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "10px",
-              alignItems: "center",
-              paddingTop: 20,
+              borderRadius: 10,
+              height: 650,
+              width: 500,
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              boxShadow: "0 0 50px black",
             }}
           >
-            <img src={logo} width={40} height={40} alt="Logo" />
-            <h1 style={{ fontFamily: "arial", fontSize: 24, color: "#0C356A" }}>
-              Login
-            </h1>
+            <Image
+              preview={false}
+              alt="Background image"
+              src={background}
+              height={325}
+              width={500}
+              style={{ borderRadius: "10px 10px 0 0" }}
+            />
+            <ConfigProvider
+              theme={{
+                components: {
+                  Form: {
+                    labelColor: "white",
+                  },
+                  Button: {
+                    defaultBg: "#5A3827",
+                    defaultHoverBg: "#F5F1E9",
+                    defaultColor: "#F5F1E9",
+                    defaultHoverColor: "#5A3827",
+                    defaultHoverBorderColor: "#F5F1E9",
+                    defaultBorderColor: "#5A3827",
+                    defaultActiveColor: "#5A3827",
+                    defaultActiveBorderColor: "#5A3827",
+                  },
+                  Typography: {
+                    colorLink: "white",
+                    colorLinkHover: "#5A3827",
+                  },
+                },
+              }}
+            >
+              <Form
+                style={{
+                  padding: "25px",
+                  marginInline: 50,
+                }}
+                onFinish={handleSubmit}
+                autoComplete="off"
+                colon={false}
+                layout="vertical"
+              >
+                <Form.Item
+                  label="Email"
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Veuillez renseigner votre email !",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="email"
+                    size="medium"
+                    placeholder="Entrer votre email"
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Mot de passe"
+                  name="password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Veuillez renseigner votre mot de passe !",
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    size="medium"
+                    placeholder="Entrer votre mot de passe"
+                  />
+                </Form.Item>
+                <Form.Item
+                  style={{
+                    display: "grid",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    type="default"
+                    style={{
+                      width: 150,
+                      marginTop: 15,
+                    }}
+                    htmlType="submit"
+                    loading={loading}
+                  >
+                    Connexion
+                  </Button>
+                </Form.Item>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography.Link underline={true} onClick={handleCreate}>
+                    Créer un nouveau compte
+                  </Typography.Link>
+                </div>
+              </Form>
+            </ConfigProvider>
           </div>
-          <Form
-            labelCol={{
-              span: 6,
-            }}
-            wrapperCol={{
-              span: 18,
-            }}
-            style={{
-              padding: "25px",
-            }}
-            onFinish={handleSubmit}
-            autoComplete="off"
-          >
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your email !",
-                },
-              ]}
-            >
-              <Input type="email" placeholder="Enter your Email" />
-            </Form.Item>
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password !",
-                },
-              ]}
-            >
-              <Input.Password placeholder="Enter your Password" />
-            </Form.Item>
-            <Form.Item
-              style={{
-                display: "grid",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "#0C356A",
-                  width: 150,
-                  marginTop: 20,
-                }}
-                htmlType="submit"
-                loading={loading}
-              >
-                Submit
-              </Button>
-            </Form.Item>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Typography.Link
-                underline={true}
-                style={{
-                  color: "#0C356A",
-                }}
-                onClick={handleCreate}
-              >
-                Create a new account
-              </Typography.Link>
-            </div>
-          </Form>
         </div>
       </div>
     </div>

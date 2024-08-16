@@ -291,8 +291,14 @@ function FormModal() {
         size="small"
         bordered={true}
         loading={loading}
-        style={{ overflow: "auto" }}
+        style={{
+          overflow: "auto",
+          backgroundColor: "white",
+          borderRadius: 7,
+          boxShadow: "0 0 2px black",
+        }}
       />
+
       {editingRecord && (
         <CollectionEditFormModal
           confirmLoading={confirmLoading}

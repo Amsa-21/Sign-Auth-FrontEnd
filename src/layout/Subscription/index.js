@@ -3,19 +3,17 @@ import {
   Button,
   message,
   Steps,
-  Layout,
   Typography,
   Form,
   Input,
   Spin,
+  ConfigProvider,
 } from "antd";
-import { SolutionOutlined, CameraOutlined } from "@ant-design/icons";
-import logo from "./images/logo_ST.png";
+import bg from "./images/background.jpg";
 import VideoRecorder from "react-video-recorder-18";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const { Header, Content, Sider } = Layout;
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Subscription() {
@@ -26,11 +24,12 @@ function Subscription() {
   const [video, setVideo] = useState(null);
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
-  const [finish, setFinish] = useState(false);
   const navigate = useNavigate();
 
   const next = (values) => {
-    if (values.password === values.password2) {
+    if (current === 0 && values.password !== values.password2) {
+      message.warning("Les mots de passes ne correspondent pas !");
+    } else {
       form
         .validateFields()
         .then(setUser(values))
@@ -40,8 +39,6 @@ function Subscription() {
         .catch((info) => {
           console.log("Validate Failed:", info);
         });
-    } else {
-      message.error("Les mots de passes ne correspondent pas !");
     }
   };
 
@@ -54,13 +51,12 @@ function Subscription() {
   };
 
   const handleFinish = async () => {
+    if (video === null) {
+      message.warning("Veuillez enregistrer votre vidéo pour continuer.");
+      return;
+    }
     try {
       setLoading(true);
-      if (video === null) {
-        throw new Error(
-          "L'enregistrement vidéo est requis avant de finaliser la création de compte."
-        );
-      }
       const formData = new FormData();
       formData.append("user", JSON.stringify(user));
       formData.append("file", video);
@@ -70,8 +66,7 @@ function Subscription() {
         },
       });
       if (response.data.success) {
-        message.success("Utilisateur enregistré avec succès !");
-        setFinish(true);
+        setCurrent(current + 1);
       } else {
         message.error(response.data.error);
       }
@@ -159,7 +154,6 @@ function Subscription() {
           </div>
         </>
       ),
-      icon: <SolutionOutlined />,
     },
     {
       title: "Face Scan",
@@ -170,7 +164,30 @@ function Subscription() {
           </div>
         </div>
       ),
-      icon: <CameraOutlined />,
+    },
+    {
+      title: "Terminé",
+      content: (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "50%",
+            }}
+          >
+            {user.email && (
+              <Typography.Text
+                style={{ color: "white", fontSize: 16, textAlign: "center" }}
+              >
+                Votre compte a été crée avec succès. Le code secret de signature
+                est envoyé sur cette adresse Email:{" "}
+                <b>{user.email[0].toUpperCase() + user.email.slice(1)}</b>.
+              </Typography.Text>
+            )}
+          </div>
+        </div>
+      ),
     },
   ];
 
@@ -181,124 +198,145 @@ function Subscription() {
   }));
 
   return (
-    <Layout style={{ height: "100vh" }}>
-      <Header
+    <div
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div
         style={{
           display: "flex",
-          alignItems: "center",
-          backgroundColor: "#072142",
-          paddingInline: 20,
+          width: "100%",
+          justifyContent: "center",
+          height: "100vh",
+          backdropFilter: "blur(10px) brightness(70%)",
+          overflow: "auto",
         }}
       >
-        <Typography.Text
-          style={{ display: "flex", alignItems: "center", gap: 7 }}
-        >
-          <img src={logo} width={40} alt="Sign Auth logo" />
-          <h2 style={{ color: "white", marginTop: 15 }}>Sign Auth</h2>
-        </Typography.Text>
-      </Header>
-      {!finish ? (
-        <Layout>
-          <Sider
-            style={{
-              display: "flex",
-              paddingBlock: 50,
-              paddingInline: 20,
-              borderRight: "1px solid rgba(12, 53, 106, 0.2)",
-              backgroundColor: "white",
-              fontSize: "14px",
-            }}
-          >
-            <Steps
-              style={{ height: "50%" }}
-              direction={"vertical"}
-              current={current}
-              items={items}
-            />
-          </Sider>
-          <Content
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              backgroundColor: "white",
-              paddingBlock: "10%",
-            }}
-          >
-            <Spin fullscreen spinning={loading} />
-            <Form layout="vertical" form={form} onFinish={next}>
-              <div style={{ minWidth: 500 }}>{steps[current].content}</div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  marginBlockStart: 25,
-                }}
-              >
-                {current > 0 && (
-                  <Button
-                    style={{
-                      margin: "0 10px",
-                      width: 120,
-                    }}
-                    onClick={() => prev()}
-                  >
-                    Retour
-                  </Button>
-                )}
-                {current < steps.length - 1 && (
-                  <Button
-                    style={{
-                      width: 120,
-                      backgroundColor: "#072142",
-                    }}
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    Suivant
-                  </Button>
-                )}
-                {current === steps.length - 1 && (
-                  <Button
-                    type="primary"
-                    style={{
-                      width: 120,
-                      backgroundColor: "#072142",
-                    }}
-                    onClick={handleFinish}
-                  >
-                    Enregister
-                  </Button>
-                )}
-              </div>
-            </Form>
-          </Content>
-        </Layout>
-      ) : (
-        <Layout
+        <div
           style={{
             display: "flex",
-            backgroundColor: "white",
             alignItems: "center",
-            padding: 100,
-            gap: 50,
+            flexDirection: "column",
+            gap: 40,
+            marginBlock: 70,
           }}
         >
-          <Typography.Text>
-            Votre compte a été crée avec succès. Le code secret de signature est
-            envoyé sur cette adresse Email: <b>{user.email}</b>.
-          </Typography.Text>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#072142",
+          <ConfigProvider
+            theme={{
+              components: {
+                Steps: {
+                  colorText: "white",
+                  colorPrimary: "#5A3827",
+                  colorSplit: "rgba(255, 255, 255, 0.5)",
+                  colorTextQuaternary: "white",
+                },
+                Form: {
+                  labelColor: "white",
+                },
+                Button: {
+                  defaultBg: "#5A3827",
+                  defaultHoverBg: "#F5F1E9",
+                  defaultColor: "#F5F1E9",
+                  defaultHoverColor: "#5A3827",
+                  defaultHoverBorderColor: "#F5F1E9",
+                  defaultBorderColor: "#5A3827",
+                  defaultActiveColor: "#5A3827",
+                  defaultActiveBorderColor: "#5A3827",
+                },
+              },
             }}
-            onClick={() => navigate("/login")}
           >
-            Retourner à la page de connexion
-          </Button>
-        </Layout>
-      )}
-    </Layout>
+            <Steps style={{ width: 500 }} current={current} items={items} />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                padding: 40,
+                gap: 30,
+                borderRadius: 10,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                boxShadow: "0 0 50px black",
+                maxWidth: "min-content",
+              }}
+            >
+              <Spin fullscreen spinning={loading} />
+              <Form layout="vertical" form={form} onFinish={next}>
+                <div style={{ minWidth: 500 }}>{steps[current].content}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "right",
+                    marginBlockStart: 25,
+                  }}
+                >
+                  {current > 0 && current <= 1 && (
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Button: {
+                            defaultBg: "#F5F1e9 ",
+                            defaultHoverBg: "#5A3827",
+                            defaultColor: "#5A3827",
+                            defaultHoverColor: "#F5F1e9 ",
+                            defaultHoverBorderColor: "#5A3827",
+                            defaultBorderColor: "#F5F1e9 ",
+                            defaultActiveBg: "#5A3827",
+                            defaultActiveBorderColor: "#F5F1e9",
+                            defaultActiveColor: "#F5F1e9",
+                          },
+                        },
+                      }}
+                    >
+                      <Button
+                        type="default"
+                        style={{
+                          margin: "0 20px",
+                          width: 120,
+                        }}
+                        onClick={() => prev()}
+                      >
+                        Retour
+                      </Button>
+                    </ConfigProvider>
+                  )}
+                  {current < steps.length - 2 && (
+                    <Button
+                      style={{
+                        width: 120,
+                      }}
+                      type="default"
+                      htmlType="submit"
+                    >
+                      Suivant
+                    </Button>
+                  )}
+                  {current === steps.length - 2 && (
+                    <Button
+                      type="default"
+                      style={{
+                        width: 120,
+                      }}
+                      onClick={handleFinish}
+                    >
+                      Enregister
+                    </Button>
+                  )}
+                  {current === steps.length - 1 && (
+                    <Button type="default" onClick={() => navigate("/login")}>
+                      Retourner à la page de connexion
+                    </Button>
+                  )}
+                </div>
+              </Form>
+            </div>
+          </ConfigProvider>
+        </div>
+      </div>
+    </div>
   );
 }
 export default Subscription;

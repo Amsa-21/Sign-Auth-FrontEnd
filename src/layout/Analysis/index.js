@@ -25,7 +25,6 @@ function Analysis() {
         formData,
         {}
       );
-      message.success("Successfully upload");
       console.log(response);
       setData(response.data);
     } catch (error) {

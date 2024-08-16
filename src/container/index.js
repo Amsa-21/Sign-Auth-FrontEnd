@@ -12,6 +12,7 @@ import {
   Form,
   Input,
   message,
+  ConfigProvider,
 } from "antd";
 import routes from "../routes";
 import {
@@ -21,7 +22,6 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
-import logo from "./images/logo_ST.png";
 const { Header, Content, Sider } = Layout;
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
@@ -78,7 +78,7 @@ function HomeLayout({ children }) {
         setOpenModal(false);
       }
     } else {
-      message.error("Les mots de passes ne correspondent pas !");
+      message.warning("Les mots de passes ne correspondent pas !");
     }
   };
 
@@ -113,15 +113,13 @@ function HomeLayout({ children }) {
       onClick: () => navigate(route.path),
     }));
 
-  const [collapsed, setCollapsed] = useState(true);
-
   return (
     <Layout style={{ height: "100vh" }}>
       <Header
         style={{
           display: "flex",
           justifyContent: "space-between",
-          backgroundColor: "#072142",
+          backgroundColor: "#2B2B2B",
           alignItems: "center",
           paddingInline: 20,
         }}
@@ -134,7 +132,7 @@ function HomeLayout({ children }) {
             setOpenModal(false);
           }}
           destroyOnClose={true}
-          onClose={form.resetFields()}
+          onClose={() => form.resetFields()}
         >
           <Divider />
           <Form layout="vertical" form={form} onFinish={handleSubmit}>
@@ -206,8 +204,9 @@ function HomeLayout({ children }) {
           }}
           onClick={() => navigate("/home")}
         >
-          <img src={logo} width={40} alt="Sign Auth logo" />
-          <h2 style={{ color: "white", marginTop: 15 }}>Sign Auth</h2>
+          <h2 style={{ color: "white", marginTop: 15, marginLeft: 10 }}>
+            Mandarga
+          </h2>
         </Typography.Link>
         <div
           style={{
@@ -232,7 +231,7 @@ function HomeLayout({ children }) {
                 </Typography.Text>
                 <Typography.Text
                   italic={true}
-                  style={{ fontSize: 12, color: "#1677ff" }}
+                  style={{ fontSize: 12, color: "#8A8A8A" }}
                 >
                   Administrateur
                 </Typography.Text>
@@ -244,7 +243,7 @@ function HomeLayout({ children }) {
                 </Typography.Text>
                 <Typography.Text
                   italic={true}
-                  style={{ fontSize: 12, color: "#1677ff" }}
+                  style={{ fontSize: 12, color: "#8A8A8A" }}
                 >
                   Utilisateur
                 </Typography.Text>
@@ -269,36 +268,39 @@ function HomeLayout({ children }) {
       </Header>
       <Layout>
         <Sider
-          collapsed={collapsed}
-          onMouseEnter={() => {
-            setCollapsed(false);
-          }}
-          onMouseLeave={() => {
-            setCollapsed(true);
-          }}
-          style={{ backgroundColor: "#0C356A" }}
+          collapsible={true}
+          defaultCollapsed={true}
+          style={{ backgroundColor: "#8A8A8A" }}
         >
-          <Menu
-            defaultSelectedKeys={[
-              item.find((item) => item.path === window.location.pathname)
-                ?.key || "1",
-            ]}
-            mode="vertical"
-            items={item}
-            theme="dark"
-            style={{
-              color: "white",
-              backgroundColor: "#0C356A",
-              fontSize: "14px",
+          <ConfigProvider
+            theme={{
+              components: {
+                Menu: { colorPrimary: " #5A3827" },
+              },
             }}
-          />
+          >
+            <Menu
+              defaultSelectedKeys={[
+                item.find((item) => item.path === window.location.pathname)
+                  ?.key || "1",
+              ]}
+              mode="vertical"
+              items={item}
+              theme="dark"
+              style={{
+                color: "white",
+                backgroundColor: "#8A8A8A",
+                fontSize: "14px",
+              }}
+            />
+          </ConfigProvider>
         </Sider>
         <Content
           style={{
             overflow: "auto",
             paddingInline: "10%",
             paddingBlock: "5%",
-            backgroundColor: "white",
+            backgroundColor: "#F5F1E9",
           }}
         >
           {children}

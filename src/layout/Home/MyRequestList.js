@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   message,
@@ -9,6 +9,7 @@ import {
   List,
   Modal,
   Divider,
+  ConfigProvider,
 } from "antd";
 import {
   DeleteTwoTone,
@@ -17,31 +18,15 @@ import {
   CloseCircleOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
-function MyRequestList() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+function MyRequestList({ data, checkList }) {
   const [dataPDF, setDataPDF] = useState("");
   const [open2, setOpen2] = useState(false);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${API_URL}/allRequest`);
-        setData(response.data.result);
-      } catch (error) {
-        console.error("There was an error fetching the data!", error);
-        message.error(error.message);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
 
   const statusControle = (item) => {
     switch (item) {
@@ -79,6 +64,17 @@ function MyRequestList() {
     }
   };
 
+  let stat = checkList.map((item, _) => ({
+    status:
+      item === "Complete"
+        ? 1
+        : item === "En cours"
+        ? 0
+        : item === "Rejetée"
+        ? 2
+        : null,
+  }));
+
   let dataWithKeys = data.map((item, index) => ({
     ...item,
     signataires: (
@@ -90,7 +86,10 @@ function MyRequestList() {
     statut: statusControle(item.status),
     key: item.id || index,
   }));
-  dataWithKeys = dataWithKeys.filter((item) => item.person === person);
+  dataWithKeys = dataWithKeys.filter(
+    (item) =>
+      item.person === person && stat.some((s) => s.status === item.status)
+  );
 
   const handleCancel = async (record) => {
     try {
@@ -99,8 +98,7 @@ function MyRequestList() {
       }).toString();
       const response = await axios.delete(`${API_URL}/deleteRequest?${params}`);
       if (response.data.success) {
-        setData(response.data.result);
-        message.success("Demande annulée avec succès");
+        window.location.reload();
       } else {
         message.error(response.data.error);
       }
@@ -128,21 +126,48 @@ function MyRequestList() {
     }
   };
 
+  const mois = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+
   const columns = [
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      align: "center",
+      width: 150,
+      render: (_, record) => {
+        const [time, date] = record.date.split(" ");
+        const [hours, minutes] = time.split(":");
+        const [day, month] = date.split("/");
+        return `${parseInt(day)} ${mois[parseInt(month) - 1]} à ${parseInt(
+          hours
+        )}h ${parseInt(minutes)}mn`;
+      },
     },
     {
       title: "Objet",
       dataIndex: "object",
       key: "object",
+      width: "15%",
     },
     {
       title: "Commentaire",
       dataIndex: "comment",
       key: "comment",
+      width: "30%",
     },
     {
       title: "Signataire(s)",
@@ -150,13 +175,29 @@ function MyRequestList() {
       key: "signataires",
     },
     {
+      title: "Durée",
+      dataIndex: "dated",
+      key: "dated",
+      render: (_, record) => {
+        const [time, date] = record.date.split(" ");
+        const formattedDate = date.split("/").reverse().join("-") + "T" + time;
+        const givenDate = new Date(formattedDate);
+        const now = new Date();
+        const differenceInMs = now - givenDate;
+        const hours = Math.floor((differenceInMs / 1000 / 60 / 60) % 24);
+        const days = Math.floor(differenceInMs / 1000 / 60 / 60 / 24);
+        return `${days} jours, ${hours} heures`;
+      },
+    },
+    {
       title: "Statut",
       dataIndex: "statut",
       key: "statut",
       align: "center",
+      width: 100,
     },
     {
-      title: "OPTIONS",
+      title: "Action",
       align: "center",
       width: 100,
       render: (_, record) => (
@@ -218,16 +259,37 @@ function MyRequestList() {
           </div>
         )}
       </Modal>
-      <Table
-        columns={columns}
-        dataSource={dataWithKeys}
-        size="small"
-        bordered={true}
-        loading={loading}
-        style={{ overflow: "auto" }}
-      />
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              headerBg: "#2b2b2b",
+              headerColor: "white",
+              rowHoverBg: "#fff",
+            },
+          },
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={dataWithKeys}
+          size="small"
+          bordered={false}
+          style={{
+            overflow: "auto",
+            boxShadow: "0 0 2px black",
+            backgroundColor: "white",
+            borderRadius: 7,
+          }}
+        />
+      </ConfigProvider>
     </>
   );
 }
+
+MyRequestList.propTypes = {
+  data: PropTypes.array,
+  checkList: PropTypes.array,
+};
 
 export default MyRequestList;

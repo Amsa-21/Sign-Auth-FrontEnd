@@ -2,17 +2,19 @@ import Home from "./layout/Home";
 import BackOffice from "./layout/BackOffice";
 import Users from "./layout/Users";
 import Analysis from "./layout/Analysis";
+import NewRequest from "./layout/NewRequest";
 import {
   AuditOutlined,
   FormOutlined,
   UserSwitchOutlined,
   ScanOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 
 const routes = [
   {
     key: "1",
-    icon: <AuditOutlined />,
+    icon: <HomeOutlined />,
     label: "Accueil",
     path: "/home",
     component: <Home />,
@@ -20,6 +22,14 @@ const routes = [
   },
   {
     key: "2",
+    icon: <AuditOutlined />,
+    label: "Nouvelle demande",
+    path: "/newRequest",
+    component: <NewRequest />,
+    role: "user",
+  },
+  {
+    key: "3",
     icon: <ScanOutlined />,
     label: "Contrôle",
     path: "/scan",
@@ -27,7 +37,7 @@ const routes = [
     role: "user",
   },
   {
-    key: "3",
+    key: "4",
     icon: <FormOutlined />,
     label: "BackOffice",
     path: "/backoffice",
@@ -35,7 +45,7 @@ const routes = [
     role: "admin",
   },
   {
-    key: "4",
+    key: "5",
     icon: <UserSwitchOutlined />,
     label: "Users",
     path: "/users",
