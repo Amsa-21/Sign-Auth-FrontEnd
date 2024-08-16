@@ -483,6 +483,7 @@ function RequestList({ data, checkList }) {
             backgroundColor: "white",
             borderRadius: 7,
           }}
+          pagination={false}
         />
       </ConfigProvider>
     </>

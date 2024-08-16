@@ -79,33 +79,68 @@ function Home() {
             marginBottom: 40,
           }}
         >
-          <Card
-            title="Total des demandes"
-            icon={<DatabaseOutlined style={{ fontSize: 20, color: "white" }} />}
-            value={dataWithKeys.length}
-            color="#2b2b2b"
-          />
+          <div
+            style={{
+              width: "25%",
+              borderRadius: 7,
+              boxShadow: "0 0 2px black",
+              paddingInline: "3%",
+              backgroundColor: "rgb(43, 43, 43)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginTop: "20px",
+              }}
+            >
+              <h5
+                style={{
+                  fontFamily: "Segoe UI, Arial, sans-serif",
+                  fontSize: 16,
+                  color: "rgba(255, 255, 255, 0.6)",
+                  margin: 0,
+                }}
+              >
+                Total des demandes
+              </h5>
+              <DatabaseOutlined style={{ fontSize: 20, color: "white" }} />
+            </div>
+            <h1
+              style={{
+                color: "#fff",
+                margin: "10px 0",
+              }}
+            >
+              {dataWithKeys.length}
+            </h1>
+          </div>
           <Card
             title="Demandes completes"
             icon={
-              <UnorderedListOutlined style={{ fontSize: 20, color: "white" }} />
+              <UnorderedListOutlined
+                style={{ fontSize: 20, color: "rgb(0, 0, 0)" }}
+              />
             }
             value={dataWithKeys.filter((item) => item.status === 1).length}
-            color="#87d068"
           />
           <Card
             title="Demandes en attentes"
-            icon={<ReloadOutlined style={{ fontSize: 20, color: "white" }} />}
+            icon={
+              <ReloadOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
+            }
             value={dataWithKeys.filter((item) => item.status === 0).length}
-            color="#108ee9"
           />
           <Card
             title="Demandes refusées"
             icon={
-              <UnorderedListOutlined style={{ fontSize: 20, color: "white" }} />
+              <UnorderedListOutlined
+                style={{ fontSize: 20, color: "rgb(0, 0, 0)" }}
+              />
             }
             value={dataWithKeys.filter((item) => item.status === 2).length}
-            color="#ff5500"
           />
         </div>
       )}

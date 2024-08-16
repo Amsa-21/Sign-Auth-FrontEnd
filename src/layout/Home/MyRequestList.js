@@ -266,6 +266,7 @@ function MyRequestList({ data, checkList }) {
               headerBg: "#2b2b2b",
               headerColor: "white",
               rowHoverBg: "#fff",
+              colorPrimary: "#5A3827",
             },
           },
         }}
@@ -281,6 +282,7 @@ function MyRequestList({ data, checkList }) {
             backgroundColor: "white",
             borderRadius: 7,
           }}
+          pagination={false}
         />
       </ConfigProvider>
     </>

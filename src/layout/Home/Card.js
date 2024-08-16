@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function Card({ title, icon, value, color }) {
+function Card({ title, icon, value }) {
   return (
     <div
       style={{
@@ -9,7 +9,7 @@ function Card({ title, icon, value, color }) {
         borderRadius: 7,
         boxShadow: "0 0 2px black",
         paddingInline: "3%",
-        backgroundColor: color,
+        backgroundColor: "rgba(43, 43, 43, .2)",
       }}
     >
       <div
@@ -24,7 +24,7 @@ function Card({ title, icon, value, color }) {
           style={{
             fontFamily: "Segoe UI, Arial, sans-serif",
             fontSize: 16,
-            color: "rgba(255, 255, 255, 0.9)",
+            color: "rgba(0, 0, 0, 0.6)",
             margin: 0,
           }}
         >
@@ -34,7 +34,7 @@ function Card({ title, icon, value, color }) {
       </div>
       <h1
         style={{
-          color: "rgb(255, 255, 255)",
+          color: "rgb(0, 0, 0)",
           margin: "10px 0",
         }}
       >
@@ -48,7 +48,6 @@ Card.propTypes = {
   title: PropTypes.string,
   icon: PropTypes.node,
   value: PropTypes.number,
-  color: PropTypes.string,
 };
 
 export default Card;

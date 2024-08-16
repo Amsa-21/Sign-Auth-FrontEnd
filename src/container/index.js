@@ -22,7 +22,6 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
-const { Header, Content, Sider } = Layout;
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -115,7 +114,7 @@ function HomeLayout({ children }) {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <Header
+      <Layout.Header
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -265,19 +264,19 @@ function HomeLayout({ children }) {
             />
           </Dropdown>
         </div>
-      </Header>
+      </Layout.Header>
       <Layout>
-        <Sider
-          collapsible={true}
-          defaultCollapsed={true}
-          style={{ backgroundColor: "#8A8A8A" }}
+        <ConfigProvider
+          theme={{
+            components: {
+              Menu: { colorPrimary: "#5A3827" },
+              Layout: { triggerBg: "#5A3827" },
+            },
+          }}
         >
-          <ConfigProvider
-            theme={{
-              components: {
-                Menu: { colorPrimary: " #5A3827" },
-              },
-            }}
+          <Layout.Sider
+            collapsible={false}
+            style={{ backgroundColor: "#2b2b2b" }}
           >
             <Menu
               defaultSelectedKeys={[
@@ -289,13 +288,13 @@ function HomeLayout({ children }) {
               theme="dark"
               style={{
                 color: "white",
-                backgroundColor: "#8A8A8A",
+                backgroundColor: "#2b2b2b",
                 fontSize: "14px",
               }}
             />
-          </ConfigProvider>
-        </Sider>
-        <Content
+          </Layout.Sider>
+        </ConfigProvider>
+        <Layout.Content
           style={{
             overflow: "auto",
             paddingInline: "10%",
@@ -304,7 +303,7 @@ function HomeLayout({ children }) {
           }}
         >
           {children}
-        </Content>
+        </Layout.Content>
       </Layout>
     </Layout>
   );
