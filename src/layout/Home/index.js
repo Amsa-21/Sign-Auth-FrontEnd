@@ -172,8 +172,18 @@ function Home() {
               setCheckedList(defaultCheckedList);
             }}
           >
-            <Radio.Button value="recieved">Demandes reçues</Radio.Button>
-            <Radio.Button value="sent">Demandes envoyées</Radio.Button>
+            <Radio.Button
+              value="recieved"
+              style={{ width: 180, textAlign: "center" }}
+            >
+              Demandes reçues
+            </Radio.Button>
+            <Radio.Button
+              value="sent"
+              style={{ width: 180, textAlign: "center" }}
+            >
+              Demandes envoyées
+            </Radio.Button>
           </Radio.Group>
           <Popover
             placement="rightTop"
