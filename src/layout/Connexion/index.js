@@ -19,25 +19,30 @@ function Connexion() {
   document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
 
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
   const navigate = useNavigate();
 
   async function handleSubmit(values) {
-    setLoading(true);
-    const response = await axios.post(`${API_URL}/login`, {
-      email: values.email,
-      password: values.password,
-    });
-    const data = response.data;
-    if (data.success === true) {
-      localStorage.setItem("userToken", data.userToken);
-      localStorage.setItem("username", data.username);
-      localStorage.setItem("telephone", data.telephone);
-      localStorage.setItem("role", data.role);
-      navigate("/home");
-    } else {
-      message.error(data.error);
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/login`, {
+        email: values.email,
+        password: values.password,
+      });
+      const data = response.data;
+      if (data.success === true) {
+        localStorage.setItem("userToken", data.userToken);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("telephone", data.telephone);
+        localStorage.setItem("role", data.role);
+        navigate("/home");
+      } else {
+        message.error("Email ou mot de passe incorrect !");
+        form.resetFields();
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   function handleCreate() {
@@ -126,6 +131,7 @@ function Connexion() {
                 autoComplete="off"
                 colon={false}
                 layout="vertical"
+                form={form}
               >
                 <Form.Item
                   label="Email"
