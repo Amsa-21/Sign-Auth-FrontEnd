@@ -40,6 +40,8 @@ function Connexion() {
         message.error("Email ou mot de passe incorrect !");
         form.resetFields();
       }
+    } catch (error) {
+      message.error(error.message);
     } finally {
       setLoading(false);
     }
