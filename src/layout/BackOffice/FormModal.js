@@ -6,15 +6,11 @@ import {
   Form,
   Input,
   Modal,
-  Flex,
   Table,
   Popconfirm,
+  ConfigProvider,
 } from "antd";
-import {
-  PlusSquareTwoTone,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { EditFilled, DeleteTwoTone } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
 
@@ -356,7 +352,7 @@ function FormModal() {
         <>
           <Button
             type="text"
-            icon={<EditTwoTone twoToneColor="rgb(218,165,32)" />}
+            icon={<EditFilled style={{ color: "rgb(90,56,39)" }} />}
             onClick={() => handleEdit(record)}
           />
           <Divider type="vertical" />
@@ -385,18 +381,63 @@ function FormModal() {
 
   return (
     <>
-      <Flex style={{ marginBottom: 20 }} vertical align="end">
-        <Button icon={<PlusSquareTwoTone />} onClick={() => setOpen(true)}>
-          Add New Member
-        </Button>
-      </Flex>
-      <Table
-        columns={columns}
-        dataSource={dataWithKeys}
-        size="small"
-        bordered={true}
-        loading={loading}
-      />
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              headerBg: "#2b2b2b",
+              headerColor: "white",
+              rowHoverBg: "#fff",
+              colorPrimary: "#5A3827",
+            },
+            Button: {
+              defaultBg: "#5A3827",
+              defaultHoverBg: "#F5F1E9",
+              defaultColor: "#F5F1E9",
+              defaultHoverColor: "#5A3827",
+              defaultHoverBorderColor: "#5A3827",
+              defaultBorderColor: "#5A3827",
+              defaultActiveColor: "#5A3827",
+              defaultActiveBorderColor: "#5A3827",
+            },
+          },
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "flex-end",
+            marginBottom: 20,
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            }}
+          ></div>
+          <Button onClick={() => setOpen(true)}>
+            Ajouter un nouveau membre de confiance
+          </Button>
+        </div>
+
+        <Table
+          columns={columns}
+          dataSource={dataWithKeys}
+          size="small"
+          bordered={false}
+          style={{
+            overflow: "auto",
+            boxShadow: "0 0 2px black",
+            borderRadius: 7,
+          }}
+          pagination={false}
+          loading={loading}
+        />
+      </ConfigProvider>
+
       <CollectionCreateFormModal
         confirmLoading={confirmLoading}
         open={open}

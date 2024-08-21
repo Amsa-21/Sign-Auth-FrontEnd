@@ -2,8 +2,9 @@ import axios from "axios";
 import {
   FilePdfFilled,
   EyeFilled,
-  PlusOutlined,
   CloseCircleFilled,
+  CheckCircleFilled,
+  WarningFilled,
 } from "@ant-design/icons";
 import {
   Button,
@@ -196,29 +197,53 @@ function Analysis() {
             <>
               {Object.keys(data.correlation).length !== 0 ? (
                 <Result
-                  status="success"
-                  title="The certificate Issuer is known!"
+                  icon={<CheckCircleFilled style={{ color: "black" }} />}
+                  title="L'autorité de certification est reconnue !"
                   subTitle={ListComponentKnown(data.correlation)}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 6,
+                    boxShadow: "0 0 2px black",
+                  }}
                 />
               ) : (
                 <Result
-                  status="warning"
-                  title="The certificate Issuer is not known!"
+                  icon={<WarningFilled style={{ color: "black" }} />}
+                  title="L'autorité de certification n'est pas reconnu!"
                   subTitle={ListComponent(data.result)}
                   extra={
-                    <Button
-                      type="default"
-                      key="console"
-                      loading={loading}
-                      onClick={() => handleAdd(data.result)}
-                      style={{ backgroundColor: "#072142" }}
-                      icon={<PlusOutlined style={{ color: "white" }} />}
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Button: {
+                            defaultBg: "#5A3827",
+                            defaultHoverBg: "#fff",
+                            defaultColor: "#fff",
+                            defaultHoverColor: "#5A3827",
+                            defaultHoverBorderColor: "#5A3827",
+                            defaultBorderColor: "#5A3827",
+                            defaultActiveColor: "#5A3827",
+                            defaultActiveBg: "#8a8a8a",
+                            defaultActiveBorderColor: "#5A3827",
+                          },
+                        },
+                      }}
                     >
-                      <Typography.Text strong style={{ color: "white" }}>
-                        Add to Own Approved Trust List
-                      </Typography.Text>
-                    </Button>
+                      <Button
+                        type="default"
+                        key="console"
+                        loading={loading}
+                        onClick={() => handleAdd(data.result)}
+                      >
+                        Ajouter à ma propre liste de confiance approuvée
+                      </Button>
+                    </ConfigProvider>
                   }
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 6,
+                    boxShadow: "0 0 2px black",
+                  }}
                 />
               )}
             </>
@@ -227,7 +252,7 @@ function Analysis() {
             <Result
               title="Ce document ne contient pas de signatures électroniques."
               subTitle="Aprés l'analyse du document, nous n'avons trouvé aucune signature dans ce document PDF."
-              icon={<CloseCircleFilled style={{ color: "#5A3827" }} />}
+              icon={<CloseCircleFilled style={{ color: "black" }} />}
               style={{
                 backgroundColor: "white",
                 borderRadius: 6,
@@ -255,11 +280,7 @@ function ListComponentKnown(data) {
           <List.Item.Meta title={key} description={value} />
         </List.Item>
       )}
-      bordered
-      style={{
-        backgroundColor: "rgb(240,242,245)",
-        borderRadius: "10px",
-      }}
+      bordered={false}
       size="small"
     />
   );
@@ -274,11 +295,7 @@ function ListComponent(data) {
           <List.Item.Meta title={key} description={value} />
         </List.Item>
       )}
-      bordered
-      style={{
-        backgroundColor: "rgb(240,242,245)",
-        borderRadius: "10px",
-      }}
+      bordered={false}
       size="small"
     />
   );

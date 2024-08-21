@@ -83,7 +83,7 @@ function CertificateDetails({ data }) {
         bordered={false}
         expandIcon={({ isActive }) => (
           <CaretRightOutlined
-            style={{ color: "#000" }}
+            style={{ color: "black" }}
             rotate={isActive ? 90 : 0}
           />
         )}

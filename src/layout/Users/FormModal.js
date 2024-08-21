@@ -9,8 +9,9 @@ import {
   Table,
   Popconfirm,
   Select,
+  ConfigProvider,
 } from "antd";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { DeleteTwoTone, EditFilled } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
 
@@ -252,11 +253,12 @@ function FormModal() {
     {
       title: "OPTIONS",
       align: "center",
+      fixed: "right",
       render: (_, record) => (
         <>
           <Button
             type="text"
-            icon={<EditTwoTone twoToneColor="rgb(218,165,32)" />}
+            icon={<EditFilled twoToneColor="rgb(90,56,39)" />}
             onClick={() => handleEdit(record)}
           />
           <Divider type="vertical" />
@@ -284,12 +286,23 @@ function FormModal() {
   }));
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        components: {
+          Table: {
+            headerBg: "#2b2b2b",
+            headerColor: "white",
+            rowHoverBg: "#fff",
+          },
+        },
+      }}
+    >
       <Table
         columns={columns}
         dataSource={dataWithKeys}
         size="small"
-        bordered={true}
+        bordered={false}
+        pagination={false}
         loading={loading}
         style={{
           overflow: "auto",
@@ -318,7 +331,7 @@ function FormModal() {
           }}
         />
       )}
-    </>
+    </ConfigProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   message,
@@ -11,6 +11,8 @@ import {
   Divider,
   ConfigProvider,
   Spin,
+  Checkbox,
+  Popover,
 } from "antd";
 import {
   DeleteTwoTone,
@@ -18,17 +20,55 @@ import {
   SyncOutlined,
   CloseCircleOutlined,
   EyeOutlined,
+  DatabaseOutlined,
+  CloseOutlined,
+  FilterOutlined,
+  UnorderedListOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
-import PropTypes from "prop-types";
+import Card from "./Card";
+const CheckboxGroup = Checkbox.Group;
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
-function MyRequestList({ data, checkList }) {
+function MyRequestList() {
   const [dataPDF, setDataPDF] = useState("");
   const [open2, setOpen2] = useState(false);
   const [load, setLoad] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
+
+  const plainOptions = ["Complete", "En cours", "Rejetée"];
+  const defaultCheckedList = ["Complete", "En cours", "Rejetée"];
+
+  const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
+  const checkAll = plainOptions.length === checkedList.length;
+  const indeterminate =
+    checkedList.length > 0 && checkedList.length < plainOptions.length;
+  const onChange = (list) => {
+    setCheckedList(list);
+  };
+  const onCheckAllChange = (e) => {
+    setCheckedList(e.target.checked ? plainOptions : []);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${API_URL}/allRequest`);
+        setData(response.data.result);
+      } catch (error) {
+        console.error("There was an error fetching the data!", error);
+        message.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const statusControle = (item) => {
     switch (item) {
@@ -66,7 +106,7 @@ function MyRequestList({ data, checkList }) {
     }
   };
 
-  let stat = checkList.map((item, _) => ({
+  let stat = checkedList.map((item, _) => ({
     status:
       item === "Complete"
         ? 1
@@ -275,9 +315,14 @@ function MyRequestList({ data, checkList }) {
     return new Blob([out], { type: "application/pdf" });
   };
 
+  let databrute = data.map((item, _) => ({
+    ...item,
+  }));
+  databrute = databrute.filter((item) => item.person === person);
+
   return (
     <>
-      <Spin fullscreen spinning={load} />
+      <Spin fullscreen spinning={load || loading} />
       <Modal
         open={open2}
         title="Aperçu du document"
@@ -299,6 +344,136 @@ function MyRequestList({ data, checkList }) {
           </div>
         )}
       </Modal>
+
+      {databrute && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 24,
+            marginBottom: 20,
+          }}
+        >
+          <div
+            style={{
+              width: "25%",
+              borderRadius: 7,
+              boxShadow: "0 0 2px black",
+              paddingInline: 20,
+              backgroundColor: "rgb(43, 43, 43)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginTop: "20px",
+              }}
+            >
+              <h5
+                style={{
+                  fontFamily: "Segoe UI, Arial, sans-serif",
+                  fontSize: 16,
+                  color: "rgba(255, 255, 255, 0.6)",
+                  margin: 0,
+                }}
+              >
+                Total des demandes
+              </h5>
+              <DatabaseOutlined style={{ fontSize: 20, color: "white" }} />
+            </div>
+            <h1
+              style={{
+                color: "#fff",
+                margin: "10px 0",
+              }}
+            >
+              {databrute.length}
+            </h1>
+          </div>
+          <Card
+            title="Demandes completes"
+            icon={
+              <UnorderedListOutlined
+                style={{ fontSize: 20, color: "rgb(0, 0, 0)" }}
+              />
+            }
+            value={databrute.filter((item) => item.status === 1).length}
+          />
+          <Card
+            title="Demandes en cours"
+            icon={
+              <ReloadOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
+            }
+            value={databrute.filter((item) => item.status === 0).length}
+          />
+          <Card
+            title="Demandes rejetées"
+            icon={
+              <CloseOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
+            }
+            value={databrute.filter((item) => item.status === 2).length}
+          />
+        </div>
+      )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: 20,
+          alignItems: "flex-end",
+          width: "100%",
+        }}
+      >
+        <ConfigProvider
+          theme={{
+            components: {
+              Radio: { colorPrimary: "#5A3827", colorPrimaryHover: "#5A3827" },
+              Button: { colorPrimaryHover: "#5A3827" },
+              Checkbox: {
+                colorPrimary: "#5A3827",
+                colorPrimaryHover: "#5A3827",
+              },
+            },
+          }}
+        >
+          <div
+            style={{ display: "flex", justifyContent: "right", width: "100%" }}
+          >
+            <Popover
+              placement="rightTop"
+              content={
+                <div>
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={checkAll}
+                  >
+                    Tout selectionné
+                  </Checkbox>
+                  <Divider />
+                  <CheckboxGroup
+                    options={plainOptions}
+                    value={checkedList}
+                    onChange={onChange}
+                  />
+                </div>
+              }
+              title="Filtre"
+              trigger="click"
+            >
+              <Button
+                style={{ width: 40 }}
+                icon={
+                  <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
+                }
+              ></Button>
+            </Popover>
+          </div>
+        </ConfigProvider>
+      </div>
       <ConfigProvider
         theme={{
           components: {
@@ -328,10 +503,5 @@ function MyRequestList({ data, checkList }) {
     </>
   );
 }
-
-MyRequestList.propTypes = {
-  data: PropTypes.array,
-  checkList: PropTypes.array,
-};
 
 export default MyRequestList;

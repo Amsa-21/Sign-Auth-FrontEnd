@@ -186,7 +186,7 @@ function Analysis() {
                 <Result
                   title="Ce document ne contient pas de signatures électroniques."
                   subTitle="Aprés l'analyse du document, nous n'avons trouvé aucune signature dans ce document PDF."
-                  icon={<CloseCircleFilled style={{ color: "#5A3827" }} />}
+                  icon={<CloseCircleFilled style={{ color: "black" }} />}
                   style={{
                     backgroundColor: "white",
                     borderRadius: 6,
