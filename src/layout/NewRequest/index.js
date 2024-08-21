@@ -349,7 +349,6 @@ function NewRequest() {
                 style={{
                   flex: 1,
                   height: 1,
-                  borderRadius: 7,
                   backgroundColor: "rgba(0, 0, 0, 0.2)",
                 }}
               ></div>
@@ -403,23 +402,36 @@ function NewRequest() {
                     <Button
                       style={{ marginBlockStart: 8 }}
                       onClick={() => {
-                        setOpen1(false);
-                        const isDuplicate = extSigners.some(
-                          (signer) => signer.email === email
-                        );
-                        if (!isDuplicate) {
-                          setExtSigners([
-                            ...extSigners,
-                            {
-                              prenom: prenom,
-                              nom: nom,
-                              email: email,
-                            },
-                          ]);
-                        } else {
+                        if (prenom === "" || nom === "" || email === "") {
                           message.warning(
-                            "Cet email est déjà ajouté comme destinataire !"
+                            "Veuillez remplir toutes les informations !"
                           );
+                        } else if (extSigners.length === 12) {
+                          message.warning(
+                            "Le nombre de signature maximal est atteint !"
+                          );
+                        } else {
+                          const isDuplicate = extSigners.some(
+                            (signer) =>
+                              signer.email.trim().toLowerCase() ===
+                              email.trim().toLowerCase()
+                          );
+                          if (!isDuplicate) {
+                            setExtSigners([
+                              ...extSigners,
+                              {
+                                prenom: prenom,
+                                nom: nom,
+                                email: email,
+                              },
+                            ]);
+                            message.success("Utilisateur ajouté avec succès !");
+                            setOpen1(false);
+                          } else {
+                            message.warning(
+                              "Cet email est déjà ajouté comme destinataire !"
+                            );
+                          }
                         }
                       }}
                     >
@@ -473,7 +485,7 @@ function NewRequest() {
                     <Input
                       placeholder="Ajouter un ou plusieurs signataire(s) externe(s)"
                       size="middle"
-                      disabled
+                      readOnly
                       value={extSigners
                         .map(
                           (elem) => `${elem.prenom} ${elem.nom} [${elem.email}]`

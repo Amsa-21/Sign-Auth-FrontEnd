@@ -37,7 +37,7 @@ function BackOffice() {
   return (
     <HomeLayout>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div style={{ width: 700 }}>
+        <div style={{ width: 800 }}>
           <ConfigProvider
             theme={{
               components: {
@@ -49,7 +49,7 @@ function BackOffice() {
               },
             }}
           >
-            <Tabs animated={true} defaultActiveKey={1} items={items} />
+            <Tabs animated={true} centered defaultActiveKey={1} items={items} />
           </ConfigProvider>
         </div>
       </div>

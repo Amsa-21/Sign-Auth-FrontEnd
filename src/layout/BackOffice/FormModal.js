@@ -325,28 +325,28 @@ function FormModal() {
 
   const columns = [
     {
-      title: "COUNTRY / REGION CODE",
+      title: "Code pays",
       dataIndex: "codePaysRegion",
       key: "codePaysRegion",
       align: "center",
     },
     {
-      title: "COMPANY NAME",
+      title: "Entreprise",
       dataIndex: "nomEntreprise",
       key: "nomEntreprise",
     },
     {
-      title: "HEADQUARTERS LOCATION",
+      title: "Pays ou zone géographique",
       dataIndex: "emplacementSiegeSocial",
       key: "emplacementSiegeSocial",
     },
     {
-      title: "TEXT TO FIND",
+      title: "Texte à trouver",
       dataIndex: "textFind",
       key: "textFind",
     },
     {
-      title: "OPTIONS",
+      title: "Action",
       align: "center",
       render: (_, record) => (
         <>
@@ -419,7 +419,7 @@ function FormModal() {
             }}
           ></div>
           <Button onClick={() => setOpen(true)}>
-            Ajouter un nouveau membre de confiance
+            Ajouter un nouveau membre
           </Button>
         </div>
 

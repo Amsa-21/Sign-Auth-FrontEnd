@@ -351,7 +351,7 @@ function MyRequestList() {
             display: "flex",
             flexDirection: "row",
             gap: 24,
-            marginBottom: 20,
+            marginBottom: 30,
           }}
         >
           <div
@@ -421,26 +421,38 @@ function MyRequestList() {
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 20,
           alignItems: "flex-end",
           width: "100%",
+          marginBottom: 20,
         }}
       >
-        <ConfigProvider
-          theme={{
-            components: {
-              Radio: { colorPrimary: "#5A3827", colorPrimaryHover: "#5A3827" },
-              Button: { colorPrimaryHover: "#5A3827" },
-              Checkbox: {
-                colorPrimary: "#5A3827",
-                colorPrimaryHover: "#5A3827",
-              },
-            },
+        <div
+          style={{
+            flex: 1,
+            height: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+          }}
+        ></div>
+        <div
+          style={{
+            display: "flex",
+            width: 40,
           }}
         >
-          <div
-            style={{ display: "flex", justifyContent: "right", width: "100%" }}
+          <ConfigProvider
+            theme={{
+              components: {
+                Radio: {
+                  colorPrimary: "#5A3827",
+                  colorPrimaryHover: "#5A3827",
+                },
+                Button: { colorPrimaryHover: "#5A3827" },
+                Checkbox: {
+                  colorPrimary: "#5A3827",
+                  colorPrimaryHover: "#5A3827",
+                },
+              },
+            }}
           >
             <Popover
               placement="rightTop"
@@ -471,8 +483,8 @@ function MyRequestList() {
                 }
               ></Button>
             </Popover>
-          </div>
-        </ConfigProvider>
+          </ConfigProvider>
+        </div>
       </div>
       <ConfigProvider
         theme={{
