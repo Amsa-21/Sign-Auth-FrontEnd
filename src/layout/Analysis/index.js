@@ -21,6 +21,7 @@ import HomeLayout from "../../container";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Analysis() {
+  document.getElementById("title").innerHTML = "Contrôle - Fraud Detection";
   const [uploading, setUploading] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const [open, setOpen] = useState(false);

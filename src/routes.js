@@ -16,7 +16,7 @@ const routes = [
     key: "1",
     icon: <HomeOutlined />,
     label: "Accueil",
-    path: "/home",
+    path: "/",
     component: <Home />,
     role: "user",
   },

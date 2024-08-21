@@ -35,7 +35,7 @@ function Connexion() {
         localStorage.setItem("username", data.username);
         localStorage.setItem("telephone", data.telephone);
         localStorage.setItem("role", data.role);
-        navigate("/home");
+        navigate("/");
       } else {
         message.error("Email ou mot de passe incorrect !");
         form.resetFields();

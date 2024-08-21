@@ -201,7 +201,7 @@ function HomeLayout({ children }) {
             alignItems: "center",
             gap: 7,
           }}
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
         >
           <h2 style={{ color: "white", marginTop: 15, marginLeft: 10 }}>
             Mandarga

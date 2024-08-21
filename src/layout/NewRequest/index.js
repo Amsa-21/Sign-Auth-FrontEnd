@@ -120,7 +120,7 @@ function NewRequest() {
           );
           if (response.data.success) {
             message.success("Demande créée avec succès !");
-            navigate("/home");
+            navigate("/");
           } else {
             notification.error({
               message: response.data.error,

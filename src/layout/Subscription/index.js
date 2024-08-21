@@ -17,7 +17,8 @@ import { useNavigate } from "react-router-dom";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Subscription() {
-  document.getElementById("title").innerHTML = "Subscription - Fraud Detection";
+  document.getElementById("title").innerHTML =
+    "Création de compte - Fraud Detection";
 
   const [current, setCurrent] = useState(0);
   const [form] = Form.useForm();

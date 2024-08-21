@@ -27,7 +27,7 @@ const CheckboxGroup = Checkbox.Group;
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Home() {
-  document.getElementById("title").innerHTML = "Home - Fraud Detection";
+  document.getElementById("title").innerHTML = "Accueil - Fraud Detection";
   const [value, setValue] = useState("recieved");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);

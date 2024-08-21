@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { Typography, theme, message, Collapse, Spin, Table } from "antd";
+import { Typography, message, Collapse, Spin, Table } from "antd";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -15,7 +15,6 @@ function ApprovedList() {
         setLoading(true);
         const response = await axios.get(`${API_URL}/data`);
         setData(response.data.result);
-        console.log(response.data.result);
       } catch (error) {
         console.error("There was an error fetching the data!", error);
         message.error("Loading failed");
@@ -43,13 +42,6 @@ function ApprovedList() {
 
 function TrustList(c, loading) {
   const items = [];
-  const { token } = theme.useToken();
-  const panelStyle = {
-    marginBottom: 10,
-    background: token.background,
-    borderRadius: token.borderRadiusLG,
-    border: "none",
-  };
 
   Object.entries(c).map(([codePaysRegion, item]) =>
     items.push({
@@ -60,7 +52,6 @@ function TrustList(c, loading) {
         </Typography.Text>
       ),
       children: Tables(item),
-      style: panelStyle,
     })
   );
 
@@ -78,7 +69,9 @@ function TrustList(c, loading) {
         )}
         expandIconPosition="end"
         style={{
-          background: token.background,
+          background: "white",
+          boxShadow: "0 0 2px black",
+          padding: 0,
         }}
         items={items}
       />
@@ -106,7 +99,14 @@ function Tables(item) {
   }));
 
   return (
-    <Table columns={columns} dataSource={rows} size="small" bordered={false} />
+    <Table
+      columns={columns}
+      dataSource={rows}
+      size="small"
+      bordered={false}
+      pagination={false}
+      showHeader={false}
+    />
   );
 }
 

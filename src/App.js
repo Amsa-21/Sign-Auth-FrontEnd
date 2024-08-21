@@ -24,9 +24,9 @@ const renderRoutes = () => {
 function App() {
   return (
     <Routes>
-      <Route path="login" element={<Connexion />} />
-      <Route path="subscription" element={<Subscription />} />
-      <Route path="extSign/:name/:doc" element={<ExternalSign />} />
+      <Route path="/login" element={<Connexion />} />
+      <Route path="/subscription" element={<Subscription />} />
+      <Route path="/extSign/:name/:doc" element={<ExternalSign />} />
       {renderRoutes()}
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>

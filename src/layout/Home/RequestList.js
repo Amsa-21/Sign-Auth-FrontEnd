@@ -255,6 +255,13 @@ function RequestList({ data, checkList }) {
       title: "Demandeur",
       dataIndex: "person",
       key: "person",
+      render: (_, record) => {
+        return record.person
+          .split(" ")
+          .slice(0, -1)
+          .map((elem) => elem)
+          .join(" ");
+      },
     },
     {
       title: "Durée",

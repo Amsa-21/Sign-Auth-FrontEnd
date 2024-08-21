@@ -84,7 +84,19 @@ function MyRequestList({ data, checkList }) {
         dataSource={item.signers}
         renderItem={(it) =>
           it.includes("@") ? (
-            <List.Item key={it}>
+            <List.Item
+              key={it}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 10,
+              }}
+            >
+              {it
+                .split(" ")
+                .slice(0, -1)
+                .map((elem) => elem)
+                .join(" ")}
               <Tag
                 style={{
                   color: "black",
@@ -95,10 +107,15 @@ function MyRequestList({ data, checkList }) {
               >
                 EXT
               </Tag>
-              {it}
             </List.Item>
           ) : (
-            <List.Item key={it}>{it}</List.Item>
+            <List.Item key={it}>
+              {it
+                .split(" ")
+                .slice(0, -1)
+                .map((elem) => elem)
+                .join(" ")}
+            </List.Item>
           )
         }
       />

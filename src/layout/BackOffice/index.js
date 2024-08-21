@@ -1,6 +1,6 @@
 import React from "react";
 import HomeLayout from "../../container";
-import { Tabs } from "antd";
+import { ConfigProvider, Tabs } from "antd";
 import {
   UnorderedListOutlined,
   DatabaseOutlined,
@@ -36,7 +36,23 @@ function BackOffice() {
 
   return (
     <HomeLayout>
-      <Tabs animated={true} defaultActiveKey={1} items={items} />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ width: 700 }}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Tabs: {
+                  colorPrimary: "rgb(90,56,39)",
+                  itemHoverColor: "rgb(90,56,39)",
+                  itemActiveColor: "#2b2b2b",
+                },
+              },
+            }}
+          >
+            <Tabs animated={true} defaultActiveKey={1} items={items} />
+          </ConfigProvider>
+        </div>
+      </div>
     </HomeLayout>
   );
 }

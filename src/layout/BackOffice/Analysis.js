@@ -1,12 +1,18 @@
 import axios from "axios";
-import { FilePdfTwoTone, PlusOutlined } from "@ant-design/icons";
+import {
+  FilePdfFilled,
+  EyeFilled,
+  PlusOutlined,
+  CloseCircleFilled,
+} from "@ant-design/icons";
 import {
   Button,
   List,
   Typography,
   message,
   Upload,
-  Progress,
+  Modal,
+  ConfigProvider,
   Divider,
   Result,
 } from "antd";
@@ -17,7 +23,7 @@ const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Analysis() {
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(null);
+  const [open, setOpen] = useState(false);
   const [fileInfo, setFileInfo] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -31,20 +37,11 @@ function Analysis() {
     if (uploading) return;
     try {
       setUploading(true);
-
       const formData = new FormData();
       formData.append("fichier", file);
 
-      const response = await axios.post(`${API_URL}/getPDFInfo`, formData, {
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(percentCompleted);
-        },
-      });
+      const response = await axios.post(`${API_URL}/getPDFInfo`, formData, {});
       message.success("Successfully upload");
-      console.log(response);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -102,40 +99,101 @@ function Analysis() {
   };
 
   return (
-    <>
-      <Upload.Dragger {...props}>
-        <p className="ant-upload-drag-icon">
-          <FilePdfTwoTone />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload a PDF
-        </p>
-        <p className="ant-upload-hint">Support for a single PDF upload.</p>
-      </Upload.Dragger>
-      {fileInfo && (
-        <Typography.Text code>
-          {fileInfo.name}
-          <Divider type="vertical" />
-          {getFileSize(fileInfo.size)}
-          <Divider type="vertical" />
-          {fileInfo && fileInfo.lastModifiedDate
-            ? fileInfo.lastModifiedDate.toLocaleDateString() +
-              " " +
-              fileInfo.lastModifiedDate.toLocaleTimeString()
-            : "No date available"}
-        </Typography.Text>
-      )}
-      {uploadProgress && (
-        <Progress
-          showInfo={false}
-          percent={uploadProgress}
-          status={uploading ? "active" : ""}
-        />
-      )}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 30,
+      }}
+    >
+      <Modal
+        open={open}
+        title="Aperçu du Document"
+        footer={null}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        width={"90%"}
+      >
+        <Divider />
+        {fileInfo && (
+          <div style={{ display: "flex" }}>
+            <embed
+              type="application/pdf"
+              src={URL.createObjectURL(fileInfo)}
+              width={"100%"}
+              height={700}
+            />
+          </div>
+        )}
+      </Modal>
+      <ConfigProvider
+        theme={{
+          components: {
+            Upload: {
+              colorBorder: "#5A3827",
+              colorPrimaryHover: "#8a8a8a",
+              colorPrimary: "#5A3827",
+            },
+          },
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            marginBottom: 10,
+          }}
+        >
+          <Upload.Dragger
+            {...props}
+            style={{
+              backgroundColor: "rgba(100, 100, 100, 0.2",
+            }}
+          >
+            <Typography.Title level={4}>
+              Importer votre fichier PDF
+            </Typography.Title>
+            <FilePdfFilled style={{ fontSize: 25 }} />
+            <p className="ant-upload-hint">
+              Prise en charge d'un seul téléchargement de PDF.
+            </p>
+          </Upload.Dragger>
+          {fileInfo && (
+            <div
+              style={{
+                display: "flex",
+                alignContent: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography.Text code>
+                {fileInfo.name}
+                <Divider type="vertical" />
+                {getFileSize(fileInfo.size)}
+                <Divider type="vertical" />
+                {fileInfo.lastModifiedDate
+                  ? fileInfo.lastModifiedDate.toLocaleDateString() +
+                    " " +
+                    fileInfo.lastModifiedDate.toLocaleTimeString()
+                  : "No date available"}
+              </Typography.Text>
+              <Typography.Link
+                underline
+                style={{ color: "rgb(90,56,39)" }}
+                onClick={() => setOpen(true)}
+              >
+                <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
+                Aperçu
+              </Typography.Link>
+            </div>
+          )}
+        </div>
+      </ConfigProvider>
       {!data.isEmpty
         ? data.result && (
             <>
-              <Divider />
               {Object.keys(data.correlation).length !== 0 ? (
                 <Result
                   status="success"
@@ -166,14 +224,18 @@ function Analysis() {
             </>
           )
         : data.result && (
-            <>
-              <Divider />
-              <Typography.Text strong style={{ color: "red" }}>
-                No Signature found in this file!
-              </Typography.Text>
-            </>
+            <Result
+              title="Ce document ne contient pas de signatures électroniques."
+              subTitle="Aprés l'analyse du document, nous n'avons trouvé aucune signature dans ce document PDF."
+              icon={<CloseCircleFilled style={{ color: "#5A3827" }} />}
+              style={{
+                backgroundColor: "white",
+                borderRadius: 6,
+                boxShadow: "0 0 2px black",
+              }}
+            />
           )}
-    </>
+    </div>
   );
 }
 
