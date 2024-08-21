@@ -8,7 +8,7 @@ function Card({ title, icon, value }) {
         width: "25%",
         borderRadius: 7,
         boxShadow: "0 0 2px black",
-        paddingInline: "3%",
+        paddingInline: 20,
         backgroundColor: "rgba(43, 43, 43, .2)",
       }}
     >

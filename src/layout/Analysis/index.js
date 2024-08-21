@@ -1,6 +1,19 @@
 import React, { useState } from "react";
-import { FilePdfTwoTone, EyeOutlined } from "@ant-design/icons";
-import { Typography, message, Upload, Divider, Spin, Modal } from "antd";
+import {
+  FilePdfFilled,
+  EyeOutlined,
+  CloseCircleFilled,
+} from "@ant-design/icons";
+import {
+  Typography,
+  message,
+  Upload,
+  Divider,
+  Spin,
+  Modal,
+  ConfigProvider,
+  Result,
+} from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
 import HomeLayout from "../../container";
@@ -25,7 +38,6 @@ function Analysis() {
         formData,
         {}
       );
-      console.log(response);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -86,63 +98,105 @@ function Analysis() {
           </div>
         )}
       </Modal>
-      <Typography.Title level={2}>Ajouter un document</Typography.Title>
-      <div style={{ marginBottom: 10 }}>
-        <Upload.Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <FilePdfTwoTone />
-          </p>
-          <p className="ant-upload-text">
-            Click or drag file to this area to upload a PDF
-          </p>
-          <p className="ant-upload-hint">Support for a single PDF upload.</p>
-        </Upload.Dragger>
-        {fileInfo && (
-          <div
-            style={{
-              display: "flex",
-              alignContent: "center",
-              justifyContent: "space-between",
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Spin spinning={uploading} fullscreen></Spin>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 30,
+            width: 600,
+          }}
+        >
+          <ConfigProvider
+            theme={{
+              components: {
+                Upload: {
+                  colorBorder: "#5A3827",
+                  colorPrimaryHover: "#8a8a8a",
+                  colorPrimary: "#5A3827",
+                },
+              },
             }}
           >
-            <Typography.Text code style={{ width: "90%" }}>
-              {fileInfo.name}
-              <Divider type="vertical" />
-              {getFileSize(fileInfo.size)}
-              <Divider type="vertical" />
-              {fileInfo.lastModifiedDate
-                ? fileInfo.lastModifiedDate.toLocaleDateString() +
-                  " " +
-                  fileInfo.lastModifiedDate.toLocaleTimeString()
-                : "No date available"}
-            </Typography.Text>
-            <Typography.Link underline onClick={() => setOpen(true)}>
-              <EyeOutlined
-                style={{ color: "rgb(0, 100, 200)", marginRight: 7 }}
-              />
-              Aperçu
-            </Typography.Link>
-          </div>
-        )}
-      </div>
-      <Spin spinning={uploading} fullscreen></Spin>
-      {data && (
-        <>
-          {!data.isEmpty ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Upload.Dragger
+                {...props}
+                style={{ backgroundColor: "rgba(100, 100, 100, 0.2" }}
+              >
+                <Typography.Title level={4}>
+                  Importer votre fichier PDF
+                </Typography.Title>
+                <FilePdfFilled style={{ fontSize: 25 }} />
+                <p className="ant-upload-hint">
+                  Prise en charge d'un seul téléchargement de PDF.
+                </p>
+              </Upload.Dragger>
+              {fileInfo && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignContent: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography.Text code>
+                    {fileInfo.name}
+                    <Divider type="vertical" />
+                    {getFileSize(fileInfo.size)}
+                    <Divider type="vertical" />
+                    {fileInfo.lastModifiedDate
+                      ? fileInfo.lastModifiedDate.toLocaleDateString() +
+                        " " +
+                        fileInfo.lastModifiedDate.toLocaleTimeString()
+                      : "No date available"}
+                  </Typography.Text>
+                  <Typography.Link
+                    underline
+                    style={{ color: "rgb(90,56,39)" }}
+                    onClick={() => setOpen(true)}
+                  >
+                    <EyeOutlined
+                      style={{ color: "rgb(90,56,39)", marginRight: 7 }}
+                    />
+                    Aperçu
+                  </Typography.Link>
+                </div>
+              )}
+            </div>
+          </ConfigProvider>
+          {data && (
             <>
-              <Divider />
-              <CertificateDetails data={data.result} />
-            </>
-          ) : (
-            <>
-              <Divider />
-              <Typography.Title level={5} style={{ color: "red" }}>
-                No Signature found in this file !
-              </Typography.Title>
+              {!data.isEmpty ? (
+                <CertificateDetails data={data.result} />
+              ) : (
+                <Result
+                  title="Ce document ne contient pas de signatures électroniques."
+                  subTitle="Aprés l'analyse du document, nous n'avons trouvé aucune signature dans ce document PDF."
+                  icon={<CloseCircleFilled style={{ color: "#5A3827" }} />}
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 6,
+                    boxShadow: "0 0 2px black",
+                  }}
+                />
+              )}
             </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </HomeLayout>
   );
 }

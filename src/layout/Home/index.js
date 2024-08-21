@@ -18,8 +18,10 @@ import {
   DatabaseOutlined,
   ReloadOutlined,
   UnorderedListOutlined,
-  FilterFilled,
+  CloseOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
+
 const CheckboxGroup = Checkbox.Group;
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
@@ -84,7 +86,7 @@ function Home() {
               width: "25%",
               borderRadius: 7,
               boxShadow: "0 0 2px black",
-              paddingInline: "3%",
+              paddingInline: 20,
               backgroundColor: "rgb(43, 43, 43)",
             }}
           >
@@ -127,18 +129,16 @@ function Home() {
             value={dataWithKeys.filter((item) => item.status === 1).length}
           />
           <Card
-            title="Demandes en attentes"
+            title="Demandes en cours"
             icon={
               <ReloadOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
             value={dataWithKeys.filter((item) => item.status === 0).length}
           />
           <Card
-            title="Demandes refusées"
+            title="Demandes rejetées"
             icon={
-              <UnorderedListOutlined
-                style={{ fontSize: 20, color: "rgb(0, 0, 0)" }}
-              />
+              <CloseOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
             value={dataWithKeys.filter((item) => item.status === 2).length}
           />
@@ -147,9 +147,11 @@ function Home() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           flexDirection: "row",
+          justifyContent: "space-between",
           marginBlock: 20,
+          alignItems: "flex-end",
+          width: "100%",
         }}
       >
         <ConfigProvider
@@ -164,53 +166,69 @@ function Home() {
             },
           }}
         >
-          <Radio.Group
-            defaultValue={value}
-            buttonStyle="solid"
-            onChange={(e) => {
-              setValue(e.target.value);
-              setCheckedList(defaultCheckedList);
+          <div style={{ display: "flex", width: 360 }}>
+            <Radio.Group
+              defaultValue={value}
+              buttonStyle="solid"
+              onChange={(e) => {
+                setValue(e.target.value);
+                setCheckedList(defaultCheckedList);
+              }}
+              style={{ width: "100%" }}
+            >
+              <Radio.Button
+                value="recieved"
+                style={{ width: "50%", textAlign: "center" }}
+              >
+                Demandes reçues
+              </Radio.Button>
+              <Radio.Button
+                value="sent"
+                style={{ width: "50%", textAlign: "center" }}
+              >
+                Demandes envoyées
+              </Radio.Button>
+            </Radio.Group>
+          </div>
+
+          <div
+            style={{
+              flex: 1,
+              height: 1,
+              borderRadius: 7,
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
             }}
-          >
-            <Radio.Button
-              value="recieved"
-              style={{ width: 180, textAlign: "center" }}
+          ></div>
+          <div style={{ width: 40 }}>
+            <Popover
+              placement="rightTop"
+              content={
+                <div>
+                  <Checkbox
+                    indeterminate={indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={checkAll}
+                  >
+                    Tout selectionné
+                  </Checkbox>
+                  <Divider />
+                  <CheckboxGroup
+                    options={plainOptions}
+                    value={checkedList}
+                    onChange={onChange}
+                  />
+                </div>
+              }
+              title="Filtre"
+              trigger="click"
             >
-              Demandes reçues
-            </Radio.Button>
-            <Radio.Button
-              value="sent"
-              style={{ width: 180, textAlign: "center" }}
-            >
-              Demandes envoyées
-            </Radio.Button>
-          </Radio.Group>
-          <Popover
-            placement="rightTop"
-            content={
-              <div>
-                <Checkbox
-                  indeterminate={indeterminate}
-                  onChange={onCheckAllChange}
-                  checked={checkAll}
-                >
-                  Tout selectionné
-                </Checkbox>
-                <Divider />
-                <CheckboxGroup
-                  options={plainOptions}
-                  value={checkedList}
-                  onChange={onChange}
-                />
-              </div>
-            }
-            title="Filtre"
-            trigger="click"
-          >
-            <Button>
-              <FilterFilled style={{ color: "5A3827" }} />
-            </Button>
-          </Popover>
+              <Button
+                icon={
+                  <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
+                }
+              ></Button>
+            </Popover>
+          </div>
         </ConfigProvider>
       </div>
       {data && value === "recieved" ? (

@@ -13,6 +13,7 @@ import {
   Typography,
   notification,
   ConfigProvider,
+  Spin,
 } from "antd";
 import {
   SignatureOutlined,
@@ -44,6 +45,7 @@ function RequestList({ data, checkList }) {
   const [img, setImg] = useState(null);
   const [dataPDF, setDataPDF] = useState("");
   const [id, setID] = useState();
+  const [load, setLoad] = useState(false);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
@@ -186,8 +188,9 @@ function RequestList({ data, checkList }) {
     }
   };
 
-  const handleViewPFDF = async (record) => {
+  const handleViewPDF = async (record) => {
     try {
+      setLoad(true);
       const params = new URLSearchParams({
         id: record.id,
       }).toString();
@@ -195,12 +198,13 @@ function RequestList({ data, checkList }) {
 
       if (response.data.success) {
         setDataPDF(response.data.result);
-        console.log(dataPDF);
         setOpen2(true);
       }
     } catch (error) {
       console.error(error);
       message.error(error.message);
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -284,7 +288,7 @@ function RequestList({ data, checkList }) {
             <>
               <Button
                 type="text"
-                onClick={() => handleViewPFDF(record)}
+                onClick={() => handleViewPDF(record)}
                 icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
               />
               <Divider type="vertical" />
@@ -315,7 +319,7 @@ function RequestList({ data, checkList }) {
           return (
             <Button
               type="text"
-              onClick={() => handleViewPFDF(record)}
+              onClick={() => handleViewPDF(record)}
               icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
             />
           );
@@ -336,18 +340,37 @@ function RequestList({ data, checkList }) {
 
   return (
     <>
+      <Spin fullscreen spinning={load} />
       <Modal
         open={open1}
         title="Scan du visage"
         footer={
-          <Button
-            type="primary"
-            style={{ backgroundColor: "#072142" }}
-            onClick={capture}
-            loading={loading}
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  defaultBg: "#5A3827",
+                  defaultHoverBg: "#fff",
+                  defaultColor: "#fff",
+                  defaultHoverColor: "#5A3827",
+                  defaultHoverBorderColor: "#5A3827",
+                  defaultBorderColor: "#5A3827",
+                  defaultActiveColor: "#5A3827",
+                  defaultActiveBg: "#8a8a8a",
+                  defaultActiveBorderColor: "#5A3827",
+                },
+              },
+            }}
           >
-            Prendre la photo
-          </Button>
+            <Button
+              type="default"
+              style={{ width: 150 }}
+              onClick={capture}
+              loading={loading}
+            >
+              Prendre la photo
+            </Button>
+          </ConfigProvider>
         }
         onCancel={() => {
           setOpen1(false);
@@ -380,7 +403,23 @@ function RequestList({ data, checkList }) {
       >
         <Divider />
         {res && (
-          <>
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  defaultBg: "#5A3827",
+                  defaultHoverBg: "#fff",
+                  defaultColor: "#fff",
+                  defaultHoverColor: "#5A3827",
+                  defaultHoverBorderColor: "#5A3827",
+                  defaultBorderColor: "#5A3827",
+                  defaultActiveColor: "#5A3827",
+                  defaultActiveBg: "#8a8a8a",
+                  defaultActiveBorderColor: "#5A3827",
+                },
+              },
+            }}
+          >
             {res === person ? (
               <Form layout="vertical" onFinish={handleSignPDF}>
                 <div
@@ -404,9 +443,9 @@ function RequestList({ data, checkList }) {
                   </Form.Item>
                   <Form.Item>
                     <Button
-                      type="primary"
+                      type="default"
                       htmlType="submit"
-                      style={{ width: 120, backgroundColor: "#072142" }}
+                      style={{ width: 150 }}
                       loading={loadingSign}
                     >
                       Signer
@@ -426,17 +465,13 @@ function RequestList({ data, checkList }) {
                   <Typography.Text strong style={{ color: "red" }}>
                     Echec de la vérification d'identité !
                   </Typography.Text>
-                  <Button
-                    type="primary"
-                    style={{ backgroundColor: "#072142" }}
-                    onClick={() => setOpen1(true)}
-                  >
+                  <Button type="default" onClick={() => setOpen1(true)}>
                     Réessayer la vérification
                   </Button>
                 </div>
               </>
             )}
-          </>
+          </ConfigProvider>
         )}
       </Modal>
       <Modal

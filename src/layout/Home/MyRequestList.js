@@ -10,6 +10,7 @@ import {
   Modal,
   Divider,
   ConfigProvider,
+  Spin,
 } from "antd";
 import {
   DeleteTwoTone,
@@ -25,6 +26,7 @@ const API_URL = process.env.REACT_APP_API_BASE_URL;
 function MyRequestList({ data, checkList }) {
   const [dataPDF, setDataPDF] = useState("");
   const [open2, setOpen2] = useState(false);
+  const [load, setLoad] = useState(false);
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
@@ -80,7 +82,25 @@ function MyRequestList({ data, checkList }) {
     signataires: (
       <List
         dataSource={item.signers}
-        renderItem={(it) => <List.Item key={it}>{it}</List.Item>}
+        renderItem={(it) =>
+          it.includes("@") ? (
+            <List.Item key={it}>
+              <Tag
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  backgroundColor: "rgba(43,43,43, .3)",
+                  borderColor: "rgba(43,43,43, .6)",
+                }}
+              >
+                EXT
+              </Tag>
+              {it}
+            </List.Item>
+          ) : (
+            <List.Item key={it}>{it}</List.Item>
+          )
+        }
       />
     ),
     statut: statusControle(item.status),
@@ -108,8 +128,9 @@ function MyRequestList({ data, checkList }) {
     }
   };
 
-  const handleViewPFDF = async (record) => {
+  const handleViewPDF = async (record) => {
     try {
+      setLoad(true);
       const params = new URLSearchParams({
         id: record.id,
       }).toString();
@@ -117,12 +138,13 @@ function MyRequestList({ data, checkList }) {
 
       if (response.data.success) {
         setDataPDF(response.data.result);
-        console.log(dataPDF);
         setOpen2(true);
       }
     } catch (error) {
       console.error(error);
       message.error(error.message);
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -204,7 +226,7 @@ function MyRequestList({ data, checkList }) {
         <>
           <Button
             type="text"
-            onClick={() => handleViewPFDF(record)}
+            onClick={() => handleViewPDF(record)}
             icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
           />
           <Divider type="vertical" />
@@ -238,9 +260,10 @@ function MyRequestList({ data, checkList }) {
 
   return (
     <>
+      <Spin fullscreen spinning={load} />
       <Modal
         open={open2}
-        title="Aperçu du Document"
+        title="Aperçu du document"
         footer={null}
         onCancel={() => {
           setOpen2(false);

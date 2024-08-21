@@ -270,7 +270,6 @@ function HomeLayout({ children }) {
           theme={{
             components: {
               Menu: { colorPrimary: "#5A3827" },
-              Layout: { triggerBg: "#5A3827" },
             },
           }}
         >
