@@ -400,6 +400,9 @@ function FormModal() {
               defaultActiveColor: "#5A3827",
               defaultActiveBorderColor: "#5A3827",
             },
+            Spin: {
+              colorPrimary: "#5A3827",
+            },
           },
         }}
       >

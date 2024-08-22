@@ -14,7 +14,6 @@ import {
   message,
   ConfigProvider,
 } from "antd";
-import routes from "../routes";
 import {
   UserOutlined,
   LogoutOutlined,
@@ -22,7 +21,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
-
+import Sidenav from "./sidenav";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function HomeLayout({ children }) {
@@ -95,22 +94,6 @@ function HomeLayout({ children }) {
       onClick: handleLogout,
     },
   ];
-
-  const item = routes
-    .filter((route) => {
-      if (
-        localStorage.getItem("role").toLowerCase() === "admin" ||
-        (localStorage.getItem("role").toLowerCase() === "user" &&
-          route.role === "user")
-      ) {
-        return true;
-      }
-      return false;
-    })
-    .map((route) => ({
-      ...route,
-      onClick: () => navigate(route.path),
-    }));
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -213,13 +196,10 @@ function HomeLayout({ children }) {
             display: "flex",
             height: "64px",
             alignItems: "center",
-            gap: 7,
           }}
           onClick={() => navigate("/")}
         >
-          <h2 style={{ color: "white", marginTop: 15, marginLeft: 10 }}>
-            Mandarga
-          </h2>
+          <h2 style={{ color: "white", marginTop: 15 }}>Mandarga</h2>
         </Typography.Link>
         <div
           style={{
@@ -246,7 +226,7 @@ function HomeLayout({ children }) {
                   italic={true}
                   style={{ fontSize: 12, color: "#8A8A8A" }}
                 >
-                  Administrateur
+                  Super administrateur
                 </Typography.Text>
               </>
             ) : (
@@ -258,7 +238,7 @@ function HomeLayout({ children }) {
                   italic={true}
                   style={{ fontSize: 12, color: "#8A8A8A" }}
                 >
-                  Utilisateur
+                  Utilisateur interne
                 </Typography.Text>
               </>
             )}
@@ -280,39 +260,15 @@ function HomeLayout({ children }) {
         </div>
       </Layout.Header>
       <Layout>
-        <ConfigProvider
-          theme={{
-            components: {
-              Menu: { colorPrimary: "#5A3827" },
-            },
-          }}
-        >
-          <Layout.Sider
-            collapsible={false}
-            style={{ backgroundColor: "#2b2b2b" }}
-          >
-            <Menu
-              defaultSelectedKeys={[
-                item.find((item) => item.path === window.location.pathname)
-                  ?.key || "1",
-              ]}
-              mode="vertical"
-              items={item}
-              theme="dark"
-              style={{
-                color: "white",
-                backgroundColor: "#2b2b2b",
-                fontSize: "14px",
-              }}
-            />
-          </Layout.Sider>
-        </ConfigProvider>
+        <Layout.Sider>
+          <Sidenav />
+        </Layout.Sider>
         <Layout.Content
           style={{
-            overflow: "auto",
             paddingInline: "5%",
             paddingBlock: "5%",
             backgroundColor: "#F5F1E9",
+            overflow: "auto",
           }}
         >
           {children}

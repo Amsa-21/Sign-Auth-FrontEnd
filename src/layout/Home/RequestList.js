@@ -117,7 +117,7 @@ function RequestList() {
           <Tag
             icon={<SyncOutlined spin />}
             color="#108ee9"
-            style={{ width: 85 }}
+            style={{ width: 90 }}
           >
             En cours
           </Tag>
@@ -127,7 +127,7 @@ function RequestList() {
           <Tag
             icon={<CheckCircleOutlined />}
             color="#87d068"
-            style={{ width: 85 }}
+            style={{ width: 90 }}
           >
             Complete
           </Tag>
@@ -137,7 +137,7 @@ function RequestList() {
           <Tag
             icon={<CloseCircleOutlined />}
             color="#f50"
-            style={{ width: 85 }}
+            style={{ width: 90 }}
           >
             Rejetée
           </Tag>
@@ -341,7 +341,7 @@ function RequestList() {
               <Button
                 type="text"
                 onClick={() => handleViewPDF(record)}
-                icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
+                icon={<EyeOutlined style={{ color: "rgb(90,56,39)" }} />}
               />
               <Divider type="vertical" />
               <Button
@@ -372,7 +372,7 @@ function RequestList() {
             <Button
               type="text"
               onClick={() => handleViewPDF(record)}
-              icon={<EyeOutlined style={{ color: "rgb(0, 100, 200)" }} />}
+              icon={<EyeOutlined style={{ color: "rgb(90,56,39)" }} />}
             />
           );
         }

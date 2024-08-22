@@ -320,7 +320,7 @@ function NewRequest() {
                 width: "100%",
               }}
             >
-              <div style={{ width: 300 }}>
+              <div style={{ width: 320 }}>
                 <Radio.Group
                   defaultValue={value}
                   buttonStyle="solid"
@@ -344,7 +344,6 @@ function NewRequest() {
                   </Radio.Button>
                 </Radio.Group>
               </div>
-
               <div
                 style={{
                   flex: 1,
@@ -421,7 +420,7 @@ function NewRequest() {
                               ...extSigners,
                               {
                                 prenom: prenom,
-                                nom: nom,
+                                nom: nom.toUpperCase(),
                                 email: email,
                               },
                             ]);

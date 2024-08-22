@@ -14,7 +14,7 @@ const renderRoutes = () => {
         localStorage.getItem("userToken") !== null ? (
           route.component
         ) : (
-          <Navigate to="/login" />
+          <Connexion />
         )
       }
     />

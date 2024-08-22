@@ -18,7 +18,7 @@ import {
   UserOutlined,
   CaretDownOutlined,
   UserAddOutlined,
-  EyeOutlined,
+  EyeFilled,
   SignatureOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
@@ -325,9 +325,7 @@ function ExternalSign() {
                 style={{ color: "rgb(90,56,39)" }}
                 onClick={handleViewPDF}
               >
-                <EyeOutlined
-                  style={{ color: "rgb(90,56,39)", marginRight: 7 }}
-                />
+                <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
                 Aperçu
               </Typography.Link>
             </div>
@@ -428,9 +426,7 @@ function ExternalSign() {
                 style={{ color: "rgb(90,56,39)" }}
                 onClick={handleViewPDF}
               >
-                <EyeOutlined
-                  style={{ color: "rgb(90,56,39)", marginRight: 7 }}
-                />
+                <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
                 Aperçu
               </Typography.Link>
             </div>
