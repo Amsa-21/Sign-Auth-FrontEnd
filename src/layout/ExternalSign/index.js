@@ -34,6 +34,8 @@ const videoConstraints = {
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function ExternalSign() {
+  document.getElementById("title").innerHTML = "Signature externe - Mandarga";
+
   const navigate = useNavigate();
   const webcamRef = useRef(null);
   const { name } = useParams();

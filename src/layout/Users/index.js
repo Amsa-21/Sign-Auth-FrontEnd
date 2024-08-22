@@ -3,7 +3,7 @@ import HomeLayout from "../../container";
 import FormModal from "./FormModal";
 
 function Users() {
-  document.getElementById("title").innerHTML = "Users - Fraud Detection";
+  document.getElementById("title").innerHTML = "Utilisateurs - Mandarga";
 
   return (
     <HomeLayout>

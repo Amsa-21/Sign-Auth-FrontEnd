@@ -47,7 +47,7 @@ const routes = [
   {
     key: "5",
     icon: <UserSwitchOutlined />,
-    label: "Users",
+    label: "Utilisateurs",
     path: "/users",
     component: <Users />,
     role: "admin",

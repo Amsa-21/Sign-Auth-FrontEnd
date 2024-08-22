@@ -5,7 +5,7 @@ import MyRequestList from "./MyRequestList";
 import { ConfigProvider, Tabs } from "antd";
 
 function Home() {
-  document.getElementById("title").innerHTML = "Accueil - Fraud Detection";
+  document.getElementById("title").innerHTML = "Accueil - Mandarga";
 
   const items = [
     {

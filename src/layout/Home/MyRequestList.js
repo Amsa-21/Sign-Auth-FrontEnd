@@ -257,6 +257,7 @@ function MyRequestList() {
       title: "Durée",
       dataIndex: "dated",
       key: "dated",
+      width: 150,
       render: (_, record) => {
         const [time, date] = record.date.split(" ");
         const formattedDate = date.split("/").reverse().join("-") + "T" + time;
@@ -278,7 +279,7 @@ function MyRequestList() {
     {
       title: "Action",
       align: "center",
-      width: 100,
+      width: 150,
       render: (_, record) => (
         <>
           <Button

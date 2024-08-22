@@ -11,6 +11,8 @@ import ApprovedList from "./ApprovedList";
 import Analysis from "./Analysis";
 
 function BackOffice() {
+  document.getElementById("title").innerHTML = "BackOffice - Mandarga";
+
   const items = [
     {
       label: "Own Approved Trust List Member",
@@ -31,8 +33,6 @@ function BackOffice() {
       icon: <DatabaseOutlined />,
     },
   ];
-
-  document.getElementById("title").innerHTML = "Back Office - Fraud Detection";
 
   return (
     <HomeLayout>

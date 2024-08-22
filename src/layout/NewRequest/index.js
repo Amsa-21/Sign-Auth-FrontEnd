@@ -21,8 +21,8 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function NewRequest() {
-  document.getElementById("title").innerHTML =
-    "Nouvelle demande - Fraud Detection";
+  document.getElementById("title").innerHTML = "Nouvelle demande - Mandarga";
+
   const [fileInfo, setFileInfo] = useState(null);
   const [data, setData] = useState([]);
   const [signers, setSigners] = useState([]);

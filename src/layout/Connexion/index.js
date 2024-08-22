@@ -16,7 +16,7 @@ import {
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Connexion() {
-  document.getElementById("title").innerHTML = "Connexion - Fraud Detection";
+  document.getElementById("title").innerHTML = "Connexion - Mandarga";
 
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();

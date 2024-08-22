@@ -311,6 +311,7 @@ function RequestList() {
       title: "Durée",
       dataIndex: "dated",
       key: "dated",
+      width: 150,
       render: (_, record) => {
         const [time, date] = record.date.split(" ");
         const formattedDate = date.split("/").reverse().join("-") + "T" + time;

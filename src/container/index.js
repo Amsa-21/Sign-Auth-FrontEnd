@@ -183,13 +183,27 @@ function HomeLayout({ children }) {
                   marginTop: 20,
                 }}
               >
-                <Button
-                  style={{ backgroundColor: "#072142", color: "white" }}
-                  loading={loading}
-                  htmlType="submit"
+                <ConfigProvider
+                  theme={{
+                    components: {
+                      Button: {
+                        defaultBg: "#5A3827",
+                        defaultHoverBg: "#fff",
+                        defaultColor: "#fff",
+                        defaultHoverColor: "#5A3827",
+                        defaultHoverBorderColor: "#5A3827",
+                        defaultBorderColor: "#5A3827",
+                        defaultActiveColor: "#5A3827",
+                        defaultActiveBg: "#8a8a8a",
+                        defaultActiveBorderColor: "#5A3827",
+                      },
+                    },
+                  }}
                 >
-                  Enregistrer les modifications
-                </Button>
+                  <Button loading={loading} htmlType="submit">
+                    Enregistrer les modifications
+                  </Button>
+                </ConfigProvider>
               </div>
             </Form.Item>
           </Form>
