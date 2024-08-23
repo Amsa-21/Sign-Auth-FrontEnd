@@ -5,7 +5,6 @@ import {
   Layout,
   Typography,
   Dropdown,
-  Menu,
   Divider,
   Modal,
   Button,
@@ -22,6 +21,7 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import Sidenav from "./sidenav";
+
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function HomeLayout({ children }) {

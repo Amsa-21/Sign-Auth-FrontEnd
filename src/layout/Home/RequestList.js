@@ -273,7 +273,7 @@ function RequestList() {
       dataIndex: "date",
       key: "date",
       align: "center",
-      width: 150,
+      width: 155,
       render: (_, record) => {
         const [time, date] = record.date.split(" ");
         const [hours, minutes] = time.split(":");

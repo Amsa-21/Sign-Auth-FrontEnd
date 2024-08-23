@@ -33,7 +33,7 @@ function Home() {
           },
         }}
       >
-        <Tabs defaultActiveKey="1" centered items={items} size="large" />
+        <Tabs defaultActiveKey="1" items={items} size="large" />
       </ConfigProvider>
     </HomeLayout>
   );

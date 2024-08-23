@@ -312,7 +312,6 @@ function FormModal() {
         setLoading(true);
         const response = await axios.get(`${API_URL}/ownMember`);
         setData(response.data.result);
-        console.log(response.data.result);
       } catch (error) {
         console.error("There was an error fetching the data!", error);
         message.error(error.message);

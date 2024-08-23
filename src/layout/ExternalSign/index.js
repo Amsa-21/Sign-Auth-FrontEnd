@@ -18,12 +18,12 @@ import {
   UserOutlined,
   CaretDownOutlined,
   UserAddOutlined,
-  EyeFilled,
   SignatureOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
+import "../../container/sidenav/index.css";
 
 const videoConstraints = {
   width: 640,
@@ -44,30 +44,32 @@ function ExternalSign() {
   const [open, setOpen] = useState(false);
   const [dataPDF, setDataPDF] = useState("");
   const [load, setLoad] = useState(false);
-  const [openview, setOpenview] = useState(false);
   const [loading, setLoading] = useState(false);
   const [opencap, setOpencap] = useState(false);
   const [finish, setFinish] = useState(false);
 
-  const handleViewPDF = async () => {
-    try {
-      setLoad(true);
-      const params = new URLSearchParams({
-        filename: doc,
-      }).toString();
-      const response = await axios.post(`${API_URL}/getExtPDF?${params}`);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoad(true);
+        const params = new URLSearchParams({
+          filename: doc,
+        }).toString();
+        const response = await axios.post(`${API_URL}/getExtPDF?${params}`);
 
-      if (response.data.success) {
-        setDataPDF(response.data.result);
-        setOpenview(true);
+        if (response.data.success) {
+          setDataPDF(response.data.result);
+        }
+      } catch (error) {
+        console.error(error);
+        message.error(error.message);
+      } finally {
+        setLoad(false);
       }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
-    } finally {
-      setLoad(false);
-    }
-  };
+    };
+
+    fetchData();
+  }, [doc]);
 
   const capture = async () => {
     try {
@@ -76,9 +78,10 @@ function ExternalSign() {
     } catch (error) {
       console.error(error);
       message.error(error.toString());
+    } finally {
+      setLoading(false);
+      setOpencap(false);
     }
-    setLoading(false);
-    setOpencap(false);
   };
 
   const handleSignPDF = async (img) => {
@@ -170,9 +173,15 @@ function ExternalSign() {
           paddingInline: 20,
         }}
       >
-        <h2 style={{ color: "white", marginTop: 15, marginLeft: 10 }}>
-          Mandarga
-        </h2>
+        <Typography.Text
+          style={{
+            display: "flex",
+            height: "64px",
+            alignItems: "center",
+          }}
+        >
+          <h2 style={{ color: "white", marginTop: 15 }}>Mandarga</h2>
+        </Typography.Text>
         <div
           style={{
             display: "flex",
@@ -218,27 +227,6 @@ function ExternalSign() {
         </div>
       </Layout.Header>
       <Spin fullscreen spinning={load} />
-      <Modal
-        open={openview}
-        title="Aperçu du Document"
-        footer={null}
-        onCancel={() => {
-          setOpenview(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        {dataPDF && (
-          <div style={{ display: "flex" }}>
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(base64toBlob(dataPDF))}
-              width={"100%"}
-              height={700}
-            />
-          </div>
-        )}
-      </Modal>
       <Modal
         open={opencap}
         title="Capture du visage"
@@ -292,144 +280,115 @@ function ExternalSign() {
       <Layout.Content
         style={{
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           overflow: "auto",
           backgroundColor: "#F5F1E9",
         }}
       >
         {!finish ? (
-          <div
-            style={{
-              display: "flex",
-              backgroundColor: "white",
-              flexDirection: "column",
-              borderRadius: 7,
-              padding: 20,
-              boxShadow: "0 0 2px black",
-              width: 700,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <Typography.Text strong style={{ width: "90%" }}>
-                {doc}
-              </Typography.Text>
-              <Typography.Link
-                underline
-                style={{ color: "rgb(90,56,39)" }}
-                onClick={handleViewPDF}
-              >
-                <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
-                Aperçu
-              </Typography.Link>
+          <div style={{ display: "flex", padding: 20 }}>
+            <div style={{ display: "flex", width: 400, marginRight: 20 }}>
+              <Typography.Text strong>{doc}</Typography.Text>
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: 50,
-                gap: 50,
-              }}
-            >
-              <ConfigProvider
-                theme={{
-                  components: {
-                    Button: {
-                      defaultBg: "#5A3827",
-                      defaultHoverBg: "#fff",
-                      defaultColor: "#fff",
-                      defaultHoverColor: "#5A3827",
-                      defaultHoverBorderColor: "#5A3827",
-                      defaultBorderColor: "#5A3827",
-                      defaultActiveColor: "#5A3827",
-                      defaultActiveBg: "#8a8a8a",
-                      defaultActiveBorderColor: "#5A3827",
-                    },
-                  },
+            {dataPDF && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  borderRadius: 7,
+                  width: 820,
                 }}
               >
-                <Button
-                  type="default"
-                  icon={<SignatureOutlined />}
-                  onClick={() => setOpencap(true)}
-                  style={{ width: 150, height: 40, fontSize: 16 }}
+                <embed
+                  type="application/pdf"
+                  src={URL.createObjectURL(base64toBlob(dataPDF))}
+                  width="100%"
+                  height="100%"
+                  style={{ borderRadius: 7, boxShadow: "0 0 2px black" }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 50,
+                    marginTop: 20,
+                  }}
                 >
-                  Signer
-                </Button>
-              </ConfigProvider>
-              <ConfigProvider
-                theme={{
-                  components: {
-                    Button: {
-                      defaultBg: "#fff",
-                      defaultHoverBg: "#5A3827",
-                      defaultColor: "#5A3827",
-                      defaultHoverColor: "#fff",
-                      defaultHoverBorderColor: "#5A3827",
-                      defaultBorderColor: "#5A3827",
-                      defaultActiveColor: "#fff",
-                      defaultActiveBg: "#8a8a8a",
-                      defaultActiveBorderColor: "#fff",
-                    },
-                  },
-                }}
-              >
-                <Popconfirm
-                  placement="topLeft"
-                  title="Voulez-vous vraiment rejeter cette demande ?"
-                  description="Rejeter le demande"
-                  okText="Oui"
-                  cancelText="Non"
-                  onConfirm={() => handleRefuse()}
-                >
-                  <Button
-                    type="default"
-                    icon={<CloseOutlined />}
-                    style={{ width: 150, height: 40, fontSize: 16 }}
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Button: {
+                          defaultBg: "#5A3827",
+                          defaultHoverBg: "#fff",
+                          defaultColor: "#fff",
+                          defaultHoverColor: "#5A3827",
+                          defaultHoverBorderColor: "#5A3827",
+                          defaultBorderColor: "#5A3827",
+                          defaultActiveColor: "#5A3827",
+                          defaultActiveBg: "#8a8a8a",
+                          defaultActiveBorderColor: "#5A3827",
+                        },
+                      },
+                    }}
                   >
-                    Rejeter
-                  </Button>
-                </Popconfirm>
-              </ConfigProvider>
-            </div>
+                    <Button
+                      type="default"
+                      icon={<SignatureOutlined />}
+                      onClick={() => setOpencap(true)}
+                      style={{ width: 150, height: 40, fontSize: 16 }}
+                    >
+                      Signer
+                    </Button>
+                  </ConfigProvider>
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Button: {
+                          defaultBg: "#fff",
+                          defaultHoverBg: "#5A3827",
+                          defaultColor: "#5A3827",
+                          defaultHoverColor: "#fff",
+                          defaultHoverBorderColor: "#5A3827",
+                          defaultBorderColor: "#5A3827",
+                          defaultActiveColor: "#fff",
+                          defaultActiveBg: "#8a8a8a",
+                          defaultActiveBorderColor: "#fff",
+                        },
+                      },
+                    }}
+                  >
+                    <Popconfirm
+                      placement="topLeft"
+                      title="Voulez-vous vraiment rejeter cette demande ?"
+                      description="Rejeter le demande"
+                      okText="Oui"
+                      cancelText="Non"
+                      onConfirm={() => handleRefuse()}
+                    >
+                      <Button
+                        type="default"
+                        icon={<CloseOutlined />}
+                        style={{ width: 150, height: 40, fontSize: 16 }}
+                      >
+                        Rejeter
+                      </Button>
+                    </Popconfirm>
+                  </ConfigProvider>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div
             style={{
               display: "flex",
               backgroundColor: "white",
-              flexDirection: "column",
+              alignSelf: "center",
               borderRadius: 7,
               padding: 20,
               boxShadow: "0 0 2px black",
               width: 700,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <Typography.Text strong style={{ width: "90%" }}>
-                {doc}
-              </Typography.Text>
-              <Typography.Link
-                underline
-                style={{ color: "rgb(90,56,39)" }}
-                onClick={handleViewPDF}
-              >
-                <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
-                Aperçu
-              </Typography.Link>
-            </div>
             <div
               style={{
                 display: "flex",
