@@ -20,6 +20,7 @@ import {
   UserAddOutlined,
   SignatureOutlined,
   CloseOutlined,
+  CheckCircleFilled,
 } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
@@ -281,14 +282,17 @@ function ExternalSign() {
         style={{
           display: "flex",
           overflow: "auto",
+          justifyContent: "center",
           backgroundColor: "#F5F1E9",
         }}
       >
         {!finish ? (
-          <div style={{ display: "flex", padding: 20 }}>
-            <div style={{ display: "flex", width: 400, marginRight: 20 }}>
-              <Typography.Text strong>{doc}</Typography.Text>
-            </div>
+          <div
+            style={{
+              display: "flex",
+              padding: 20,
+            }}
+          >
             {dataPDF && (
               <div
                 style={{
@@ -298,6 +302,9 @@ function ExternalSign() {
                   width: 820,
                 }}
               >
+                <Typography.Text style={{ marginBottom: 20 }} strong>
+                  {doc}
+                </Typography.Text>
                 <embed
                   type="application/pdf"
                   src={URL.createObjectURL(base64toBlob(dataPDF))}
@@ -378,26 +385,20 @@ function ExternalSign() {
             )}
           </div>
         ) : (
-          <div
-            style={{
-              display: "flex",
-              backgroundColor: "white",
-              alignSelf: "center",
-              borderRadius: 7,
-              padding: 20,
-              boxShadow: "0 0 2px black",
-              width: 700,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center" }}>
             <div
               style={{
                 display: "flex",
-                justifyContent: "center",
+                backgroundColor: "white",
+                borderRadius: 7,
                 padding: 20,
+                justifyContent: "center",
+                boxShadow: "0 0 2px black",
+                width: 700,
               }}
             >
               <Result
-                status="success"
+                icon={<CheckCircleFilled style={{ color: "black" }} />}
                 title="Action réussie"
                 subTitle={`L'opération sur ${doc} a été effectuée avec succès.`}
                 extra={[

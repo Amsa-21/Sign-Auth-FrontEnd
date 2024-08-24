@@ -1,15 +1,25 @@
-import React from "react";
-import "./index.css";
+import React, { useEffect, useState } from "react";
 import routes from "../../routes";
 import { Link, useLocation } from "react-router-dom";
+import "./index.css";
 
 function Sidenav() {
   const location = useLocation();
+  const [routesDisplayed, setRoutesDisplayed] = useState([]);
+  const role = localStorage.getItem("role");
+
+  useEffect(() => {
+    if (role.toLowerCase() === "user") {
+      setRoutesDisplayed(routes.filter((route) => route.role === "user"));
+    } else {
+      setRoutesDisplayed(routes);
+    }
+  }, [role]);
 
   return (
     <div className="navigation">
       <ul>
-        {routes.map((item, index) => (
+        {routesDisplayed.map((item, index) => (
           <li
             key={index}
             className={`list-sidenav ${

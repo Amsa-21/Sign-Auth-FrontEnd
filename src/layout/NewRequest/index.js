@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from "antd";
 import HomeLayout from "../../container";
-import { FilePdfFilled, EyeOutlined } from "@ant-design/icons";
+import { FilePdfFilled, EyeFilled } from "@ant-design/icons";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
@@ -68,7 +68,7 @@ function NewRequest() {
           );
           if (response.data.success) {
             message.success("Demande créée avec succès !");
-            navigate("/home");
+            navigate("/");
           } else {
             notification.error({
               message: response.data.error,
@@ -303,7 +303,7 @@ function NewRequest() {
                     style={{ color: "rgb(90,56,39)" }}
                     onClick={() => setOpen(true)}
                   >
-                    <EyeOutlined
+                    <EyeFilled
                       style={{ color: "rgb(90,56,39)", marginRight: 7 }}
                     />
                     Aperçu

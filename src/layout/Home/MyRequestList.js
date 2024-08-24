@@ -15,11 +15,11 @@ import {
   Popover,
 } from "antd";
 import {
-  DeleteTwoTone,
+  DeleteFilled,
   CheckCircleOutlined,
   SyncOutlined,
   CloseCircleOutlined,
-  EyeOutlined,
+  EyeFilled,
   DatabaseOutlined,
   CloseOutlined,
   FilterOutlined,
@@ -141,9 +141,9 @@ function MyRequestList() {
                 style={{
                   color: "black",
                   fontWeight: "bold",
-                  backgroundColor: "rgba(43,43,43, .3)",
-                  borderColor: "rgba(43,43,43, .6)",
+                  boxShadow: "0 0 2px black",
                 }}
+                bordered={false}
               >
                 EXT
               </Tag>
@@ -285,7 +285,7 @@ function MyRequestList() {
           <Button
             type="text"
             onClick={() => handleViewPDF(record)}
-            icon={<EyeOutlined style={{ color: "rgb(90,56,39)" }} />}
+            icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
           />
           <Divider type="vertical" />
           <Popconfirm
@@ -298,7 +298,7 @@ function MyRequestList() {
           >
             <Button
               type="text"
-              icon={<DeleteTwoTone twoToneColor="rgb(256,0,0)" />}
+              icon={<DeleteFilled style={{ color: "red" }} />}
             />
           </Popconfirm>
         </>
@@ -431,7 +431,7 @@ function MyRequestList() {
           style={{
             flex: 1,
             height: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
           }}
         ></div>
         <div
@@ -447,7 +447,10 @@ function MyRequestList() {
                   colorPrimary: "#5A3827",
                   colorPrimaryHover: "#5A3827",
                 },
-                Button: { colorPrimaryHover: "#5A3827" },
+                Button: {
+                  colorPrimaryHover: "#5A3827",
+                  borderRadius: "6px 6px 6px 0",
+                },
                 Checkbox: {
                   colorPrimary: "#5A3827",
                   colorPrimaryHover: "#5A3827",

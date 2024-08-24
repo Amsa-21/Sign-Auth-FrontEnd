@@ -18,16 +18,17 @@ import {
   Checkbox,
 } from "antd";
 import {
-  SignatureOutlined,
+  SignatureFilled,
   CloseOutlined,
   CheckCircleOutlined,
   FilterOutlined,
   SyncOutlined,
   CloseCircleOutlined,
-  EyeOutlined,
+  EyeFilled,
   DatabaseOutlined,
   ReloadOutlined,
   UnorderedListOutlined,
+  CloseCircleFilled,
 } from "@ant-design/icons";
 import Card from "./Card";
 import Webcam from "react-webcam";
@@ -341,15 +342,13 @@ function RequestList() {
               <Button
                 type="text"
                 onClick={() => handleViewPDF(record)}
-                icon={<EyeOutlined style={{ color: "rgb(90,56,39)" }} />}
+                icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
               />
               <Divider type="vertical" />
               <Button
                 type="text"
                 onClick={() => handleSign(record)}
-                icon={
-                  <SignatureOutlined style={{ color: "rgb(50, 200, 100)" }} />
-                }
+                icon={<SignatureFilled style={{ color: "#87d068" }} />}
               />
               <Divider type="vertical" />
               <Popconfirm
@@ -362,7 +361,7 @@ function RequestList() {
               >
                 <Button
                   type="text"
-                  icon={<CloseOutlined style={{ color: "rgb(256, 0, 0)" }} />}
+                  icon={<CloseCircleFilled style={{ color: "#ff5500" }} />}
                 />
               </Popconfirm>
             </>
@@ -372,7 +371,7 @@ function RequestList() {
             <Button
               type="text"
               onClick={() => handleViewPDF(record)}
-              icon={<EyeOutlined style={{ color: "rgb(90,56,39)" }} />}
+              icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
             />
           );
         }
@@ -633,7 +632,7 @@ function RequestList() {
           style={{
             flex: 1,
             height: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
           }}
         ></div>
         <div style={{ display: "flex", width: 40 }}>
@@ -644,7 +643,10 @@ function RequestList() {
                   colorPrimary: "#5A3827",
                   colorPrimaryHover: "#5A3827",
                 },
-                Button: { colorPrimaryHover: "#5A3827" },
+                Button: {
+                  colorPrimaryHover: "#5A3827",
+                  borderRadius: "6px 6px 6px 0",
+                },
                 Checkbox: {
                   colorPrimary: "#5A3827",
                   colorPrimaryHover: "#5A3827",
