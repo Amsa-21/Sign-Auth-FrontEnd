@@ -1,0 +1,35 @@
+.tab {
+  overflow: hidden;
+  box-shadow: 0 0 2px black;
+  margin-bottom: 30px;
+  border-radius: 7px;
+  width: 360px;
+}
+
+.tab button {
+  background-color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: 0.3s;
+  font-size: 14px;
+  width: 180px;
+}
+
+.tab button:hover {
+  background-color: #f5f1e9;
+}
+
+.tab button.active {
+  background-color: #5A3827;
+  color: white;
+}
+
+.tabcontent {
+  display: none;
+}
+.tabcontent.active {
+  display: block;
+}

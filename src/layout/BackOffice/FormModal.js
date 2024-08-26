@@ -391,7 +391,7 @@ function FormModal() {
             },
             Button: {
               defaultBg: "#5A3827",
-              defaultHoverBg: "#F5F1E9",
+              defaultHoverBg: "#fff",
               defaultColor: "#F5F1E9",
               defaultHoverColor: "#5A3827",
               defaultHoverBorderColor: "#5A3827",

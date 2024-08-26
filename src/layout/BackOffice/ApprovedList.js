@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { Typography, message, Collapse, Spin, Table } from "antd";
+import {
+  Typography,
+  message,
+  Collapse,
+  Spin,
+  Table,
+  ConfigProvider,
+} from "antd";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -99,14 +106,25 @@ function Tables(item) {
   }));
 
   return (
-    <Table
-      columns={columns}
-      dataSource={rows}
-      size="small"
-      bordered={false}
-      pagination={false}
-      showHeader={false}
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Table: {
+            headerBg: "#2b2b2b",
+            headerColor: "white",
+            rowHoverBg: "#fff",
+          },
+        },
+      }}
+    >
+      <Table
+        dataSource={rows}
+        columns={columns}
+        pagination={false}
+        size="small"
+        showHeader={false}
+      />
+    </ConfigProvider>
   );
 }
 

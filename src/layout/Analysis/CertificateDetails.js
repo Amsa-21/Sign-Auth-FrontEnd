@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 import { CaretRightOutlined } from "@ant-design/icons";
-import { Collapse, Typography, Table, Image, Divider } from "antd";
+import {
+  Collapse,
+  Typography,
+  Table,
+  Image,
+  Divider,
+  ConfigProvider,
+} from "antd";
 
 function TablesCerts(datas) {
   const columns = [
@@ -22,16 +29,28 @@ function TablesCerts(datas) {
   }));
 
   return (
-    <Table
-      dataSource={dataSource}
-      columns={columns}
-      pagination={false}
-      size="small"
-      style={{
-        backgroundColor: "white",
+    <ConfigProvider
+      theme={{
+        components: {
+          Table: {
+            headerBg: "#2b2b2b",
+            headerColor: "white",
+            rowHoverBg: "#fff",
+          },
+        },
       }}
-      showHeader={false}
-    />
+    >
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+        size="small"
+        style={{
+          backgroundColor: "white",
+        }}
+        showHeader={false}
+      />
+    </ConfigProvider>
   );
 }
 

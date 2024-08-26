@@ -705,7 +705,6 @@ function RequestList() {
           style={{
             overflow: "auto",
             boxShadow: "0 0 2px black",
-            backgroundColor: "white",
             borderRadius: 7,
           }}
           pagination={false}

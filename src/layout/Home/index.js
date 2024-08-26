@@ -2,7 +2,7 @@ import React from "react";
 import HomeLayout from "../../container";
 import RequestList from "./RequestList";
 import MyRequestList from "./MyRequestList";
-import { ConfigProvider, Tabs } from "antd";
+import Tabs from "./Tabs";
 
 function Home() {
   document.getElementById("title").innerHTML = "Accueil - Mandarga";
@@ -10,31 +10,19 @@ function Home() {
   const items = [
     {
       key: "1",
-      label: "Demandes reçues",
-      children: <RequestList />,
+      name: "Demandes reçues",
+      content: <RequestList />,
     },
     {
       key: "2",
-      label: "Demandes envoyées",
-      children: <MyRequestList />,
+      name: "Demandes envoyées",
+      content: <MyRequestList />,
     },
   ];
 
   return (
     <HomeLayout>
-      <ConfigProvider
-        theme={{
-          components: {
-            Tabs: {
-              colorPrimary: "#5a3827",
-              itemActiveColor: "#2b2b2b",
-              itemHoverColor: "#5a3827",
-            },
-          },
-        }}
-      >
-        <Tabs defaultActiveKey="1" items={items} size="large" />
-      </ConfigProvider>
+      <Tabs defaultActiveKey="1" items={items} />
     </HomeLayout>
   );
 }
