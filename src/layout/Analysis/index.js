@@ -1,22 +1,18 @@
 import React, { useState } from "react";
-import {
-  FilePdfFilled,
-  EyeOutlined,
-  CloseCircleFilled,
-} from "@ant-design/icons";
+import { FilePdfFilled, EyeFilled, CloseCircleFilled } from "@ant-design/icons";
 import {
   Typography,
   message,
   Upload,
   Divider,
   Spin,
-  Modal,
   ConfigProvider,
   Result,
 } from "antd";
 import axios from "axios";
 import CertificateDetails from "./CertificateDetails";
 import HomeLayout from "../../container";
+import ModalPDF from "../component/ModalPDF";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -39,6 +35,7 @@ function Analysis() {
         formData,
         {}
       );
+      console.log(response.data);
       setData(response.data);
     } catch (error) {
       console.error(error);
@@ -78,27 +75,31 @@ function Analysis() {
 
   return (
     <HomeLayout>
-      <Modal
+      <ModalPDF
         open={open}
-        title="Aperçu du Document"
-        footer={null}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        {fileInfo && (
-          <div style={{ display: "flex" }}>
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(fileInfo)}
-              width={"100%"}
-              height={700}
-            />
-          </div>
-        )}
-      </Modal>
+        onClose={() => setOpen(false)}
+        content={
+          fileInfo && (
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <embed
+                type="application/pdf"
+                src={URL.createObjectURL(fileInfo)}
+                width="100%"
+                height="900px"
+                style={{
+                  borderRadius: "7px",
+                  boxShadow: "0 0 2px black",
+                }}
+              />
+            </div>
+          )
+        }
+      />
+
       <div
         style={{
           display: "flex",
@@ -111,7 +112,7 @@ function Analysis() {
             display: "flex",
             flexDirection: "column",
             gap: 30,
-            width: 600,
+            width: 800,
           }}
         >
           <ConfigProvider
@@ -169,7 +170,7 @@ function Analysis() {
                     style={{ color: "rgb(90,56,39)" }}
                     onClick={() => setOpen(true)}
                   >
-                    <EyeOutlined
+                    <EyeFilled
                       style={{ color: "rgb(90,56,39)", marginRight: 7 }}
                     />
                     Aperçu

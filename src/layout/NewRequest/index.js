@@ -17,6 +17,7 @@ import {
 import HomeLayout from "../../container";
 import { FilePdfFilled, EyeFilled } from "@ant-design/icons";
 import axios from "axios";
+import ModalPDF from "../component/ModalPDF";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -194,27 +195,31 @@ function NewRequest() {
 
   return (
     <HomeLayout>
-      <Modal
+      <ModalPDF
         open={open}
-        title="Aperçu du document"
-        footer={null}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        <div style={{ display: "flex" }}>
-          {fileInfo && (
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(fileInfo)}
-              width={"100%"}
-              height={700}
-            />
-          )}
-        </div>
-      </Modal>
+        onClose={() => setOpen(false)}
+        content={
+          fileInfo && (
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <embed
+                type="application/pdf"
+                src={URL.createObjectURL(fileInfo)}
+                width="100%"
+                height="900px"
+                style={{
+                  borderRadius: "7px",
+                  boxShadow: "0 0 2px black",
+                }}
+              />
+            </div>
+          )
+        }
+      />
+
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ width: 600 }}>
           <ConfigProvider

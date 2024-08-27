@@ -30,8 +30,9 @@ import {
   UnorderedListOutlined,
   CloseCircleFilled,
 } from "@ant-design/icons";
-import Card from "./Card";
+import Card from "../component/Card";
 import Webcam from "react-webcam";
+import ModalPDF from "../component/ModalPDF";
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -66,9 +67,11 @@ function RequestList() {
   const checkAll = plainOptions.length === checkedList.length;
   const indeterminate =
     checkedList.length > 0 && checkedList.length < plainOptions.length;
+
   const onChange = (list) => {
     setCheckedList(list);
   };
+
   const onCheckAllChange = (e) => {
     setCheckedList(e.target.checked ? plainOptions : []);
   };
@@ -525,27 +528,30 @@ function RequestList() {
           </ConfigProvider>
         )}
       </Modal>
-      <Modal
+      <ModalPDF
         open={open2}
-        title="Aperçu du Document"
-        footer={null}
-        onCancel={() => {
-          setOpen2(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        {dataPDF && (
-          <div style={{ display: "flex" }}>
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(base64toBlob(dataPDF))}
-              width={"100%"}
-              height={700}
-            />
-          </div>
-        )}
-      </Modal>
+        onClose={() => setOpen2(false)}
+        content={
+          dataPDF && (
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <embed
+                type="application/pdf"
+                src={URL.createObjectURL(base64toBlob(dataPDF))}
+                width="100%"
+                height="900px"
+                style={{
+                  borderRadius: "7px",
+                  boxShadow: "0 0 2px black",
+                }}
+              />
+            </div>
+          )
+        }
+      />
 
       {databrute && (
         <div

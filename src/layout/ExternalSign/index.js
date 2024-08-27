@@ -24,7 +24,7 @@ import {
 } from "@ant-design/icons";
 import { useParams, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
-import "../../container/sidenav/index.css";
+import "../../container/Sidenav/index.css";
 
 const videoConstraints = {
   width: 640,

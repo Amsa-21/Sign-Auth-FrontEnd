@@ -20,7 +20,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
-import Sidenav from "./sidenav";
+import Sidenav from "./Sidenav";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 

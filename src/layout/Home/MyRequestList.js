@@ -7,7 +7,6 @@ import {
   Popconfirm,
   Tag,
   List,
-  Modal,
   Divider,
   ConfigProvider,
   Spin,
@@ -26,14 +25,16 @@ import {
   UnorderedListOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import Card from "./Card";
+import Card from "../component/Card";
+import ModalPDF from "../component/ModalPDF";
+
 const CheckboxGroup = Checkbox.Group;
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function MyRequestList() {
   const [dataPDF, setDataPDF] = useState("");
-  const [open2, setOpen2] = useState(false);
+  const [open, setOpen] = useState(false);
   const [load, setLoad] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -195,7 +196,7 @@ function MyRequestList() {
 
       if (response.data.success) {
         setDataPDF(response.data.result);
-        setOpen2(true);
+        setOpen(true);
       }
     } catch (error) {
       console.error(error);
@@ -324,27 +325,30 @@ function MyRequestList() {
   return (
     <>
       <Spin fullscreen spinning={load || loading} />
-      <Modal
-        open={open2}
-        title="Aperçu du document"
-        footer={null}
-        onCancel={() => {
-          setOpen2(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        {dataPDF && (
-          <div style={{ display: "flex" }}>
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(base64toBlob(dataPDF))}
-              width={"100%"}
-              height={700}
-            />
-          </div>
-        )}
-      </Modal>
+      <ModalPDF
+        open={open}
+        onClose={() => setOpen(false)}
+        content={
+          dataPDF && (
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <embed
+                type="application/pdf"
+                src={URL.createObjectURL(base64toBlob(dataPDF))}
+                width="100%"
+                height="900px"
+                style={{
+                  borderRadius: "7px",
+                  boxShadow: "0 0 2px black",
+                }}
+              />
+            </div>
+          )
+        }
+      />
 
       {databrute && (
         <div

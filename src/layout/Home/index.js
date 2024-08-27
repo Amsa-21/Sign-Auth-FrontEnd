@@ -2,7 +2,7 @@ import React from "react";
 import HomeLayout from "../../container";
 import RequestList from "./RequestList";
 import MyRequestList from "./MyRequestList";
-import Tabs from "./Tabs";
+import Tabs from "../component/Tabs";
 
 function Home() {
   document.getElementById("title").innerHTML = "Accueil - Mandarga";

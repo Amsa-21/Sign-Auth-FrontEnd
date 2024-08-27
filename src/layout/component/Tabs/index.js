@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import "./index.css";
+import "./style.css";
 
 function Tabs({ defaultActiveKey, items }) {
   function open(evt, id) {

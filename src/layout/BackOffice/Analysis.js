@@ -12,13 +12,13 @@ import {
   Typography,
   message,
   Upload,
-  Modal,
   ConfigProvider,
   Divider,
   Result,
 } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ModalPDF from "../component/ModalPDF";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -107,27 +107,30 @@ function Analysis() {
         gap: 30,
       }}
     >
-      <Modal
+      <ModalPDF
         open={open}
-        title="Aperçu du Document"
-        footer={null}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        width={"90%"}
-      >
-        <Divider />
-        {fileInfo && (
-          <div style={{ display: "flex" }}>
-            <embed
-              type="application/pdf"
-              src={URL.createObjectURL(fileInfo)}
-              width={"100%"}
-              height={700}
-            />
-          </div>
-        )}
-      </Modal>
+        onClose={() => setOpen(false)}
+        content={
+          fileInfo && (
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
+              <embed
+                type="application/pdf"
+                src={URL.createObjectURL(fileInfo)}
+                width="100%"
+                height="900px"
+                style={{
+                  borderRadius: "7px",
+                  boxShadow: "0 0 2px black",
+                }}
+              />
+            </div>
+          )
+        }
+      />
       <ConfigProvider
         theme={{
           components: {
