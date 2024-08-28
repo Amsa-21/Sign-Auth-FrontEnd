@@ -9,7 +9,7 @@ function Card({ title, icon, value, color }) {
         borderRadius: 7,
         boxShadow: `0 0 2px black`,
         paddingInline: 20,
-        backgroundColor: "rgba(43, 43, 43, .1)",
+        backgroundColor: "white",
       }}
     >
       <div

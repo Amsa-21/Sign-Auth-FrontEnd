@@ -266,7 +266,7 @@ function HomeLayout({ children }) {
         <Layout.Content
           style={{
             paddingInline: "5%",
-            paddingBlock: "5%",
+            paddingBlock: "70px",
             backgroundColor: "#F5F1E9",
             overflow: "auto",
           }}
