@@ -2,7 +2,7 @@
   overflow: hidden;
   box-shadow: 0 0 2px black;
   margin-bottom: 30px;
-  border-radius: 7px;
+  border-radius: 6px;
   width: 360px;
 }
 
@@ -12,7 +12,7 @@
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 7px;
   transition: 0.3s;
   font-size: 14px;
   width: 180px;
@@ -23,8 +23,9 @@
 }
 
 .tab button.active {
-  background-color: #5A3827;
-  color: white;
+  background-color: #2b2b2b;
+  color: #fff;
+  font-weight: bold;
 }
 
 .tabcontent {

@@ -1,37 +1,17 @@
-import "./style.css";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import "./style.css";
 
 function ModalPDF({ content, open, onClose }) {
-  useEffect(() => {
-    const modal = document.getElementById("myModal");
-    const span = document.getElementsByClassName("close")[0];
-
-    if (modal && span) {
-      if (open) {
-        modal.style.display = "block";
-      } else {
-        modal.style.display = "none";
-      }
-
-      span.addEventListener("click", function () {
-        modal.style.display = "none";
-        onClose();
-      });
-
-      window.addEventListener("click", function (event) {
-        if (event.target === modal) {
-          modal.style.display = "none";
-          onClose();
-        }
-      });
-    }
-  }, [open, onClose]);
-
   return (
-    <div id="myModal" className="modal">
+    <div
+      className="modal"
+      style={{ display: open ? "block" : "none" }}
+      onClick={onClose}
+    >
       <div className="modal-content">
-        <span className="close">&times;</span>
+        <span className="close" onClick={onClose}>
+          &times;
+        </span>
         {content}
       </div>
     </div>

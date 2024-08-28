@@ -1,20 +1,13 @@
 import PropTypes from "prop-types";
+import React, { useState } from "react";
 import "./style.css";
 
 function Tabs({ defaultActiveKey, items }) {
-  function open(evt, id) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(id).style.display = "block";
-    evt.currentTarget.className += " active";
-  }
+  const [activeKey, setActiveKey] = useState(defaultActiveKey);
+
+  const handleClick = (key) => {
+    setActiveKey(key);
+  };
 
   return (
     <>
@@ -22,10 +15,8 @@ function Tabs({ defaultActiveKey, items }) {
         {items.map((item) => (
           <button
             key={item.key}
-            className={`tablinks ${
-              item.key === defaultActiveKey ? "active" : ""
-            }`}
-            onClick={(event) => open(event, item.name)}
+            className={`tablinks ${item.key === activeKey ? "active" : ""}`}
+            onClick={() => handleClick(item.key)}
           >
             {item.name}
           </button>
@@ -36,9 +27,8 @@ function Tabs({ defaultActiveKey, items }) {
         <div
           key={item.key}
           id={item.name}
-          className={`tabcontent ${
-            item.key === defaultActiveKey ? "active" : ""
-          }`}
+          className={`tabcontent ${item.key === activeKey ? "active" : ""}`}
+          style={{ display: item.key === activeKey ? "block" : "none" }}
         >
           {item.content}
         </div>
@@ -49,7 +39,13 @@ function Tabs({ defaultActiveKey, items }) {
 
 Tabs.propTypes = {
   defaultActiveKey: PropTypes.string.isRequired,
-  items: PropTypes.array.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      content: PropTypes.node.isRequired,
+    })
+  ).isRequired,
 };
 
 export default Tabs;

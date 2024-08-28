@@ -10,7 +10,7 @@ import {
   Popconfirm,
   ConfigProvider,
 } from "antd";
-import { EditFilled, DeleteTwoTone } from "@ant-design/icons";
+import { EditFilled, DeleteFilled } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import axios from "axios";
 
@@ -365,7 +365,7 @@ function FormModal() {
           >
             <Button
               type="text"
-              icon={<DeleteTwoTone twoToneColor="rgb(256,0,0)" />}
+              icon={<DeleteFilled style={{ color: "rgb(256,0,0)" }} />}
             />
           </Popconfirm>
         </>
@@ -398,6 +398,7 @@ function FormModal() {
               defaultBorderColor: "#5A3827",
               defaultActiveColor: "#5A3827",
               defaultActiveBorderColor: "#5A3827",
+              borderRadius: "6px 6px 6px 0px ",
             },
             Spin: {
               colorPrimary: "#5A3827",

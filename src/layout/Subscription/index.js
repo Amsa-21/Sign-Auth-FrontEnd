@@ -73,7 +73,7 @@ function Subscription() {
       if (response.data.success) {
         setCurrent(current + 1);
       } else {
-        message.error(response.data.error);
+        message.warning("Veuillez enregistrer une bonne vidéo pour continuer.");
       }
     } catch (error) {
       console.error(error);
@@ -163,9 +163,21 @@ function Subscription() {
     {
       title: "Face Scan",
       content: (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <div style={{ width: "50vh", height: "50vh" }}>
             <VideoRecorder onRecordingComplete={onRecordingComplete} />
+          </div>
+          <div style={{ marginBlock: "10px" }}>
+            <Typography.Text style={{ color: "yellow" }}>
+              * Enregistrez une vidéo de 10 secondes en pivotant votre visage
+              afin de capturer le maximum d'informations.
+            </Typography.Text>
           </div>
         </div>
       ),

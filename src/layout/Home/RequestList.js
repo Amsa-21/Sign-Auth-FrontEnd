@@ -608,6 +608,7 @@ function RequestList() {
               />
             }
             value={databrute.filter((item) => item.status === 1).length}
+            color="#87d068"
           />
           <Card
             title="Demandes en cours"
@@ -615,6 +616,7 @@ function RequestList() {
               <ReloadOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
             value={databrute.filter((item) => item.status === 0).length}
+            color="#108ee9"
           />
           <Card
             title="Demandes rejetées"
@@ -622,6 +624,7 @@ function RequestList() {
               <CloseOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
             value={databrute.filter((item) => item.status === 2).length}
+            color="#ff5500"
           />
         </div>
       )}

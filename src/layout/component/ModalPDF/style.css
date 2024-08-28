@@ -2,7 +2,7 @@
   display: none;
   position: fixed;
   z-index: 10;
-  padding-top: 30px;
+  padding-block: 30px;
   left: 0;
   top: 0;
   width: 100%;
@@ -18,7 +18,7 @@
 }
 
 .close {
-  color: #fff;
+  color: #ff5500;
   float: right;
   font-size: 28px;
   font-weight: bold;
@@ -30,7 +30,7 @@
 
 .close:hover,
 .close:focus {
-  color: #e0e0e0;
+  color: #cf4500;
   text-decoration: none;
   cursor: pointer;
 }
