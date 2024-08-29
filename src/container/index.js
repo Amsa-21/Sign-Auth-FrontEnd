@@ -5,7 +5,6 @@ import {
   Layout,
   Typography,
   Dropdown,
-  Divider,
   Modal,
   Button,
   Form,
@@ -108,7 +107,7 @@ function HomeLayout({ children }) {
       >
         <Modal
           open={openModal}
-          title="Changer de mot de passe"
+          centered
           footer={null}
           onCancel={() => {
             setOpenModal(false);
@@ -116,7 +115,6 @@ function HomeLayout({ children }) {
           destroyOnClose={true}
           onClose={() => form.resetFields()}
         >
-          <Divider />
           <Form layout="vertical" form={form} onFinish={handleSubmit}>
             <Form.Item
               label="Ancien mot de passe"
@@ -183,7 +181,11 @@ function HomeLayout({ children }) {
                     },
                   }}
                 >
-                  <Button loading={loading} htmlType="submit">
+                  <Button
+                    loading={loading}
+                    style={{ height: 40 }}
+                    htmlType="submit"
+                  >
                     Enregistrer les modifications
                   </Button>
                 </ConfigProvider>

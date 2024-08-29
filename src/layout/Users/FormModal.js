@@ -90,39 +90,61 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
 }
 
 function CollectionEditFormModal({
-  confirmLoading,
   open,
   onEdit,
   onCancel,
   initialValues,
+  confirmLoading,
 }) {
   const [formInstance, setFormInstance] = useState();
+  
+  const handleSubmit = async () => {
+    try {
+      const values = await formInstance?.validateFields();
+      formInstance?.resetFields();
+      onEdit(values);
+      
+    } catch (error) {
+      console.error("Failed:", error);
+    } 
+  };
+
   return (
-    <Modal
-      open={open}
-      okText="Enregistrer"
-      cancelText="Annuler"
-      okButtonProps={{
-        autoFocus: true,
-      }}
-      onCancel={onCancel}
-      destroyOnClose
-      confirmLoading={confirmLoading}
-      centered={true}
-      onOk={async () => {
-        try {
-          const values = await formInstance?.validateFields();
-          formInstance?.resetFields();
-          onEdit(values);
-        } catch (error) {
-          console.error("Failed:", error);
-        }
+    <ConfigProvider
+      theme={{
+        components: {
+          Button: {
+            defaultBg: "#5A3827",
+            defaultHoverBg: "#fff",
+            defaultColor: "#fff",
+            defaultHoverColor: "#5A3827",
+            defaultHoverBorderColor: "#5A3827",
+            defaultBorderColor: "#5A3827",
+            defaultActiveColor: "#5A3827",
+            defaultActiveBg: "#8a8a8a",
+            defaultActiveBorderColor: "#5A3827",
+          },
+        },
       }}
     >
-      {CollectionEditForm((instance) => {
-        setFormInstance(instance);
-      }, initialValues)}
-    </Modal>
+      <Modal
+        open={open}
+        onClose={onCancel}
+        destroyOnClose
+        centered
+        footer={
+          <Button 
+            style={{ height: 40, width: 125 }} 
+            loading={confirmLoading} 
+            onClick={handleSubmit}>Enregistrer
+          </Button>
+        }
+      >
+        {CollectionEditForm((instance) => {
+            setFormInstance(instance);
+          }, initialValues)}
+      </Modal>
+    </ConfigProvider>
   );
 }
 

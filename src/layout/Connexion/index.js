@@ -119,7 +119,7 @@ function Connexion() {
                   },
                   Typography: {
                     colorLink: "white",
-                    colorLinkHover: "#5A3827",
+                    colorLinkHover: "gray",
                   },
                 },
               }}
