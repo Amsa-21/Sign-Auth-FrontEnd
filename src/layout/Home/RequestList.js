@@ -53,6 +53,7 @@ function RequestList() {
   const webcamRef = useRef(null);
   const [res, setRes] = useState(null);
   const [img, setImg] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [dataPDF, setDataPDF] = useState("");
   const [id, setID] = useState();
   const [load, setLoad] = useState(false);
@@ -60,8 +61,8 @@ function RequestList() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-  const plainOptions = ["Complete", "En cours", "Rejetée"];
-  const defaultCheckedList = ["Complete", "En cours", "Rejetée"];
+  const plainOptions = ["Complete", "En cours", "Rejetée"]
+  const defaultCheckedList = plainOptions;
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
   const checkAll = plainOptions.length === checkedList.length;
@@ -97,13 +98,13 @@ function RequestList() {
       setLoading(true);
       const formData = new FormData();
       formData.append("image", webcamRef.current.getScreenshot());
+      formData.append("person", person);
 
       const response = await axios.post(`${API_URL}/predict`, formData, {});
       if (response.data.success) {
+        setSuccess(response.data.success)
         setRes(response.data.person);
         setImg(response.data.face);
-      } else {
-        message.error(response.data.error);
       }
     } catch (error) {
       console.error(error);
@@ -418,7 +419,7 @@ function RequestList() {
           >
             <Button
               type="default"
-              style={{ width: 150 }}
+              style={{ height: 40 }}
               onClick={capture}
               loading={loading}
             >
@@ -442,7 +443,7 @@ function RequestList() {
           minScreenshotWidth={200}
           minScreenshotHeight={200}
           mirrored={true}
-          style={{ borderRadius: "6px" }}
+          style={{ borderRadius: 7 }}
         />
       </Modal>
       <Modal
@@ -456,77 +457,75 @@ function RequestList() {
         centered={true}
       >
         <Divider />
-        {res && (
-          <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  defaultBg: "#5A3827",
-                  defaultHoverBg: "#fff",
-                  defaultColor: "#fff",
-                  defaultHoverColor: "#5A3827",
-                  defaultHoverBorderColor: "#5A3827",
-                  defaultBorderColor: "#5A3827",
-                  defaultActiveColor: "#5A3827",
-                  defaultActiveBg: "#8a8a8a",
-                  defaultActiveBorderColor: "#5A3827",
-                },
+        <ConfigProvider
+          theme={{
+            components: {
+              Button: {
+                defaultBg: "#5A3827",
+                defaultHoverBg: "#fff",
+                defaultColor: "#fff",
+                defaultHoverColor: "#5A3827",
+                defaultHoverBorderColor: "#5A3827",
+                defaultBorderColor: "#5A3827",
+                defaultActiveColor: "#5A3827",
+                defaultActiveBg: "#8a8a8a",
+                defaultActiveBorderColor: "#5A3827",
               },
-            }}
-          >
-            {res === person ? (
-              <Form layout="vertical" onFinish={handleSignPDF}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "space-between",
-                  }}
+            },
+          }}
+        >
+          {success ? (
+            <Form layout="vertical" onFinish={handleSignPDF}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Form.Item
+                  label={"Code Secret"}
+                  name="code"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Veuiller entrer votre code secret !",
+                    },
+                  ]}
                 >
-                  <Form.Item
-                    label={"Code Secret"}
-                    name="code"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Veuiller entrer votre code secret !",
-                      },
-                    ]}
+                  <Input.OTP length={6} mask="🔒" />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    type="default"
+                    htmlType="submit"
+                    style={{ width: 150 }}
+                    loading={loadingSign}
                   >
-                    <Input.OTP length={6} mask="🔒" />
-                  </Form.Item>
-                  <Form.Item>
-                    <Button
-                      type="default"
-                      htmlType="submit"
-                      style={{ width: 150 }}
-                      loading={loadingSign}
-                    >
-                      Signer
-                    </Button>
-                  </Form.Item>
-                </div>
-              </Form>
-            ) : (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography.Text strong style={{ color: "red" }}>
-                    Echec de la vérification d'identité !
-                  </Typography.Text>
-                  <Button type="default" onClick={() => setOpen1(true)}>
-                    Réessayer la vérification
+                    Signer
                   </Button>
-                </div>
-              </>
-            )}
-          </ConfigProvider>
-        )}
+                </Form.Item>
+              </div>
+            </Form>
+          ) : (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography.Text strong style={{ color: "red" }}>
+                  Echec de la vérification d'identité !
+                </Typography.Text>
+                <Button type="default" onClick={() => setOpen1(true)}>
+                  Réessayer
+                </Button>
+              </div>
+            </>
+          )}
+        </ConfigProvider>
       </Modal>
       <ModalPDF
         open={open2}

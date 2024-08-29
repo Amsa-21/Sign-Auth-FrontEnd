@@ -42,7 +42,7 @@ function MyRequestList() {
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
   const plainOptions = ["Complete", "En cours", "Rejetée"];
-  const defaultCheckedList = ["Complete", "En cours", "Rejetée"];
+  const defaultCheckedList = plainOptions;
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
   const checkAll = plainOptions.length === checkedList.length;

@@ -228,7 +228,7 @@ function HomeLayout({ children }) {
                   italic={true}
                   style={{ fontSize: 12, color: "#8A8A8A" }}
                 >
-                  Super admin
+                  Administrateur
                 </Typography.Text>
               </>
             ) : (

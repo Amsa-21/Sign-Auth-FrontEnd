@@ -19,7 +19,7 @@ function ModalPDF({ content, open, onClose }) {
 }
 
 ModalPDF.propTypes = {
-  content: PropTypes.node.isRequired,
+  content: PropTypes.node,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
