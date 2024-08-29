@@ -51,7 +51,6 @@ function RequestList() {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const webcamRef = useRef(null);
-  const [res, setRes] = useState(null);
   const [img, setImg] = useState(null);
   const [success, setSuccess] = useState(null);
   const [dataPDF, setDataPDF] = useState("");
@@ -103,7 +102,6 @@ function RequestList() {
       const response = await axios.post(`${API_URL}/predict`, formData, {});
       if (response.data.success) {
         setSuccess(response.data.success)
-        setRes(response.data.person);
         setImg(response.data.face);
       }
     } catch (error) {
@@ -450,7 +448,7 @@ function RequestList() {
         open={open}
         title="Signer le document"
         onCancel={() => {
-          setRes(null);
+          setSuccess(null);
           setOpen(false);
         }}
         footer={null}
