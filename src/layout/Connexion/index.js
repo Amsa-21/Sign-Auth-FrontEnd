@@ -30,22 +30,30 @@ function Connexion() {
         password: values.password,
       });
       const data = response.data;
-      if (data.success === true) {
-        localStorage.setItem("userToken", data.userToken);
+      if (data.success) {
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("refreshToken", data.refresh_token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("telephone", data.telephone);
         localStorage.setItem("role", data.role);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
         navigate("/");
       } else {
         message.error("Email ou mot de passe incorrect !");
         form.resetFields();
       }
     } catch (error) {
-      message.error(error.message);
+      if (error.response && error.response.status === 401) {
+        message.error("Erreur d'authentification. Veuillez vérifier vos identifiants.");
+      } else {
+        message.error("Une erreur est survenue. Veuillez réessayer plus tard.");
+      }
+      form.resetFields();
     } finally {
       setLoading(false);
     }
   }
+  
 
   function handleCreate() {
     navigate("/subscription");

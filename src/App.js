@@ -11,7 +11,7 @@ const renderRoutes = () => {
       key={route.key}
       path={route.path}
       element={
-        localStorage.getItem("userToken") !== null ? (
+        localStorage.getItem("accessToken") !== null ? (
           route.component
         ) : (
           <Connexion />

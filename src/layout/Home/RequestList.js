@@ -476,7 +476,7 @@ function RequestList() {
           }}
         >
           {success ? (
-            <Form layout="vertical" onFinish={handleSignPDF}>
+            <Form layout="vertical" onFinish={handleSignPDF} >
               <div
                 style={{
                   display: "flex",
@@ -500,7 +500,7 @@ function RequestList() {
                   <Button
                     type="default"
                     htmlType="submit"
-                    style={{ width: 150 }}
+                    style={{ width: 150, marginLeft: 20 }}
                     loading={loadingSign}
                   >
                     Signer
@@ -520,7 +520,13 @@ function RequestList() {
                 <Typography.Text strong style={{ color: "red" }}>
                   Echec de la vérification d'identité !
                 </Typography.Text>
-                <Button type="default" onClick={() => {setOpen(false); setOpen1(true)}}>
+                <Button
+                  type="default"
+                  onClick={() => {
+                    setOpen(false);
+                    setOpen1(true);
+                  }}
+                >
                   Réessayer
                 </Button>
               </div>

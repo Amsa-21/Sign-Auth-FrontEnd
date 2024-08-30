@@ -32,13 +32,53 @@ function HomeLayout({ children }) {
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
-    navigate("/login");
+  const handleLogout = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+  
+    try {
+      await axios.post(`${API_URL}/logout`, {}, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("telephone");
+      localStorage.removeItem("role");
+      navigate("/login");
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const response = await axios.post(`${API_URL}/refresh`, {
+            refreshToken,
+          });
+          const { access_token: newAccessToken } = response.data;
+          localStorage.setItem("accessToken", newAccessToken);
+          await axios.post(`${API_URL}/logout`, {}, {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("username");
+          localStorage.removeItem("telephone");
+          localStorage.removeItem("role");
+          navigate("/login");
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          navigate("/login");
+        }
+      } else {
+        console.error("Erreur lors de la déconnexion :", error);
+        message.error("Une erreur s'est produite lors de la déconnexion.");
+      }
+    }
   };
+  
 
   const handleEditPassword = () => {
     setOpenModal(true);
