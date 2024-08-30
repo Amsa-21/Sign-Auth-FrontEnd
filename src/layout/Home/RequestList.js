@@ -16,6 +16,7 @@ import {
   Spin,
   Popover,
   Checkbox,
+  Skeleton,
 } from "antd";
 import {
   SignatureFilled,
@@ -397,6 +398,7 @@ function RequestList() {
       <Modal
         open={open1}
         title="Scan du visage"
+        centered
         footer={
           <ConfigProvider
             theme={{
@@ -433,7 +435,7 @@ function RequestList() {
         height={520}
       >
         <Divider />
-        <Webcam
+        {loading ? <Skeleton active paragraph={{ rows: 14 }} /> : <Webcam
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
@@ -442,7 +444,8 @@ function RequestList() {
           minScreenshotHeight={200}
           mirrored={true}
           style={{ borderRadius: 7 }}
-        />
+            />
+          }
       </Modal>
       <Modal
         open={open}
@@ -517,7 +520,7 @@ function RequestList() {
                 <Typography.Text strong style={{ color: "red" }}>
                   Echec de la vérification d'identité !
                 </Typography.Text>
-                <Button type="default" onClick={() => setOpen1(true)}>
+                <Button type="default" onClick={() => {setOpen(false); setOpen1(true)}}>
                   Réessayer
                 </Button>
               </div>
