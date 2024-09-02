@@ -25,25 +25,59 @@ function Analysis() {
 
   const handleFileUpload = async (file) => {
     if (uploading) return;
+  
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("fichier", file);
+  
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append("fichier", file);
-
       const response = await axios.post(
         `${API_URL}/metadatafrompdf`,
         formData,
-        {}
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log(response.data);
       setData(response.data);
     } catch (error) {
-      console.error(error);
-      message.error(error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+  
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.post(
+            `${API_URL}/metadatafrompdf`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+          console.log(retryResponse.data);
+          setData(retryResponse.data);
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors du téléchargement du fichier :", error);
+        message.error(error.message);
+      }
     } finally {
       setUploading(false);
     }
-  };
+  };  
 
   const props = {
     name: "file",

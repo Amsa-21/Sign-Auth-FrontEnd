@@ -18,19 +18,50 @@ function ApprovedList() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+  
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/data`);
+        const response = await axios.get(`${API_URL}/data`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setData(response.data.result);
       } catch (error) {
-        console.error("There was an error fetching the data!", error);
-        message.error("Loading failed");
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshToken = localStorage.getItem("refreshToken");
+            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            });
+  
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+            const retryResponse = await axios.get(`${API_URL}/data`, {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            });
+  
+            setData(retryResponse.data.result);
+          } catch (refreshError) {
+            console.error("Erreur lors du rafraîchissement du token :", refreshError);
+            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          }
+        } else {
+          console.error("Erreur lors de la récupération des données :", error);
+          message.error("Loading failed");
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-
+  
     fetchData();
-  }, []);
+  }, []);  
 
   const groupByCodePaysRegion = () => {
     const groupedData = {};

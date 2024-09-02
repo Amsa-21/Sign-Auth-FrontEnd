@@ -36,41 +36,44 @@ function HomeLayout({ children }) {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
   
+    const clearLocalStorage = () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("username");
+      localStorage.removeItem("telephone");
+      localStorage.removeItem("role");
+    };
+  
     try {
       await axios.post(`${API_URL}/logout`, {}, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("telephone");
-      localStorage.removeItem("role");
+      clearLocalStorage();
       navigate("/login");
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const response = await axios.post(`${API_URL}/refresh`, {
-            refreshToken,
-          });
-          const { access_token: newAccessToken } = response.data;
+          const refreshToken = localStorage.getItem("refreshToken");
+const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  headers: {
+    Authorization: `Bearer ${refreshToken}`,
+  },
+});
+          const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
+  
           await axios.post(`${API_URL}/logout`, {}, {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
             },
           });
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("username");
-          localStorage.removeItem("telephone");
-          localStorage.removeItem("role");
+          clearLocalStorage();
           navigate("/login");
         } catch (refreshError) {
           console.error("Erreur lors du rafraîchissement du token :", refreshError);
           message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
-          navigate("/login");
         }
       } else {
         console.error("Erreur lors de la déconnexion :", error);
@@ -85,40 +88,70 @@ function HomeLayout({ children }) {
   };
 
   const handleSubmit = async (values) => {
-    if (values.password === values.confirmpassword) {
-      try {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append("datas", JSON.stringify(values));
-        formData.append("tel", localStorage.getItem("telephone"));
-
-        const response = await axios.post(
-          `${API_URL}/changePassword`,
-          formData,
-          {
+    if (values.password !== values.confirmpassword) {
+      message.warning("Les mots de passe ne correspondent pas !");
+      return;
+    }
+  
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("datas", JSON.stringify(values));
+    formData.append("tel", localStorage.getItem("telephone"));
+  
+    const accessToken = localStorage.getItem("accessToken");
+  
+    try {
+      const response = await axios.post(`${API_URL}/changePassword`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      if (response.data.success) {
+        message.success("Mot de passe mis à jour !");
+      } else {
+        message.error("Mot de passe actuel incorrect !");
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  headers: {
+    Authorization: `Bearer ${refreshToken}`,
+  },
+});
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          
+          const retryResponse = await axios.post(`${API_URL}/changePassword`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${newAccessToken}`,
             },
+          });
+  
+          if (retryResponse.data.success) {
+            message.success("Mot de passe mis à jour !");
+          } else {
+            message.error("Mot de passe actuel incorrect !");
           }
-        );
-        if (response.data.success) {
-          message.success("Mot de passe mis à jour !");
-        } else {
-          message.error("Mot de passe actuel incorrect !");
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
         }
-      } catch (error) {
-        console.error(error);
-        message.error(error.toString());
-      } finally {
-        form.resetFields();
-        setLoading(false);
-        setOpenModal(false);
+      } else {
+        console.error("Erreur lors de la mise à jour du mot de passe :", error);
+        message.error("Une erreur s'est produite lors de la mise à jour du mot de passe.");
       }
-    } else {
-      message.warning("Les mots de passes ne correspondent pas !");
+    } finally {
+      form.resetFields();
+      setLoading(false);
+      setOpenModal(false);
     }
-  };
-
+  };  
+  
   const items = [
     {
       label: "Changer de mot de passe",

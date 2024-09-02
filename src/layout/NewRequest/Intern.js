@@ -32,49 +32,96 @@ function Intern() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-  const handleSubmit = async () => {
-    if (fileInfo === null) {
-      message.warning("Aucun document n'est téléchargé !");
-      return;
-    } else if (signers.length === 0) {
-      message.warning("Aucun signataire n'est choisi !");
-      return;
-    } else if (object.trim() === "" || comment.trim() === "") {
-      message.warning("Veuillez renseigner l'objet et le commentaire !");
-      return;
-    } else {
-      try {
-        setUploading(true);
-        const formData = new FormData();
-        formData.append("fichier", fileInfo);
-        formData.append("demandeur", person);
-        formData.append("signataires", signers);
-        formData.append("objet", object);
-        formData.append("commentaire", comment);
-        const response = await axios.post(
-          `${API_URL}/addRequest`,
-          formData,
-          {}
-        );
-        if (response.data.success) {
-          message.success("Demande créée avec succès !");
-          navigate("/");
-        } else {
-          notification.error({
-            message: response.data.error,
-            placement: "bottomRight",
-            duration: 5,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        message.error(error.message);
-      } finally {
-        setUploading(false);
-      }
-    }
-  };
+    const handleSubmit = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+    
+      if (fileInfo === null) {
+        message.warning("Aucun document n'est téléchargé !");
+        return;
+      } else if (signers.length === 0) {
+        message.warning("Aucun signataire n'est choisi !");
+        return;
+      } else if (object.trim() === "" || comment.trim() === "") {
+        message.warning("Veuillez renseigner l'objet et le commentaire !");
+        return;
+      } else {
+          const formData = new FormData();
+          formData.append("fichier", fileInfo);
+          formData.append("demandeur", person);
+          formData.append("signataires", JSON.stringify(signers));
+          formData.append("objet", object);
+          formData.append("commentaire", comment);
+        try {
+          setUploading(true);
+          
+    
+          const response = await axios.post(
+            `${API_URL}/addRequest`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+    
+          if (response.data.success) {
+            message.success("Demande créée avec succès !");
+            navigate("/");
+          } else {
+            notification.error({
+              message: response.data.error,
+              placement: "bottomRight",
+              duration: 5,
+            });
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            try {
+              const refreshToken = localStorage.getItem("refreshToken");
+              const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              });
+    
+              const newAccessToken = refreshResponse.data.access_token;
+              localStorage.setItem("accessToken", newAccessToken);
 
+              const retryResponse = await axios.post(
+                `${API_URL}/addRequest`,
+                formData,
+                {
+                  headers: {
+                    Authorization: `Bearer ${newAccessToken}`,
+                  },
+                }
+              );
+    
+              if (retryResponse.data.success) {
+                message.success("Demande créée avec succès !");
+                navigate("/");
+              } else {
+                notification.error({
+                  message: retryResponse.data.error,
+                  placement: "bottomRight",
+                  duration: 5,
+                });
+              }
+            } catch (refreshError) {
+              console.error("Erreur lors du rafraîchissement du token :", refreshError);
+              message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            }
+          } else {
+            console.error(error);
+            message.error(error.message);
+          }
+        } finally {
+          setUploading(false);
+        }
+      }
+    };
+    
   const props = {
     name: "file",
     multiple: false,
@@ -104,16 +151,47 @@ function Intern() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      
       try {
-        const response = await axios.get(`${API_URL}/allUsers`);
+        const response = await axios.get(`${API_URL}/allUsers`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setData(response.data.result);
       } catch (error) {
-        console.error("There was an error fetching the data!", error);
-        message.error(error.message);
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshToken = localStorage.getItem("refreshToken");
+            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            });
+  
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+            
+            const retryResponse = await axios.get(`${API_URL}/allUsers`, {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            });
+            setData(retryResponse.data.result);
+          } catch (refreshError) {
+            console.error("Erreur lors du rafraîchissement du token :", refreshError);
+            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          }
+        } else {
+          console.error("Erreur lors de la récupération des données :", error);
+          message.error(error.message);
+        }
       }
     };
+  
     fetchData();
-  }, []);
+  }, []);  
 
   const handleChange = (value) => {
     setSigners(value);

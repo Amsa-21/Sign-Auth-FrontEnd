@@ -58,18 +58,49 @@ function MyRequestList() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+  
       try {
-        const response = await axios.get(`${API_URL}/allRequest`);
+        const response = await axios.get(`${API_URL}/allRequest`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setData(response.data.result);
       } catch (error) {
-        console.error("There was an error fetching the data!", error);
-        message.error(error.message);
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshToken = localStorage.getItem("refreshToken");
+const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  headers: {
+    Authorization: `Bearer ${refreshToken}`,
+  },
+});
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+
+            const retryResponse = await axios.get(`${API_URL}/allRequest`, {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            });
+            setData(retryResponse.data.result);
+          } catch (refreshError) {
+            console.error("Erreur lors du rafraîchissement du token :", refreshError);
+            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          }
+        } else {
+          console.error("Erreur lors de la récupération des données :", error);
+          message.error("Une erreur s'est produite lors de la récupération des données.");
+        }
       } finally {
         setLoading(false);
       }
     };
+  
     fetchData();
   }, []);
+  
 
   const statusControle = (item) => {
     switch (item) {
@@ -170,41 +201,112 @@ function MyRequestList() {
   );
 
   const handleCancel = async (record) => {
-    try {
-      const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
-      const response = await axios.delete(`${API_URL}/deleteRequest?${params}`);
-      if (response.data.success) {
-        window.location.reload();
-      } else {
-        message.error(response.data.error);
-      }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
-    }
-  };
+    const accessToken = localStorage.getItem("accessToken");
+    const params = new URLSearchParams({
+      id: record.id,
+    }).toString();
+  try {
+    
 
-  const handleViewPDF = async (record) => {
-    try {
-      setLoad(true);
-      const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
-      const response = await axios.post(`${API_URL}/getPDF?${params}`);
+    const response = await axios.delete(`${API_URL}/deleteRequest?${params}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-      if (response.data.success) {
-        setDataPDF(response.data.result);
-        setOpen(true);
-      }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
-    } finally {
-      setLoad(false);
+    if (response.data.success) {
+      window.location.reload();
+    } else {
+      message.error(response.data.error);
     }
-  };
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  headers: {
+    Authorization: `Bearer ${refreshToken}`,
+  },
+});const newAccessToken = refreshResponse.data.access_token;
+        localStorage.setItem("accessToken", newAccessToken);
+        const retryResponse = await axios.delete(`${API_URL}/deleteRequest?${params}`, {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
+
+        if (retryResponse.data.success) {
+          window.location.reload();
+        } else {
+          message.error(retryResponse.data.error);
+        }
+      } catch (refreshError) {
+        console.error("Erreur lors du rafraîchissement du token :", refreshError);
+        message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+      }
+    } else {
+      console.error("Erreur lors de l'annulation :", error);
+      message.error("Une erreur s'est produite lors de l'annulation.");
+    }
+  }
+};
+
+const handleViewPDF = async (record) => {
+  setLoad(true);
+  const accessToken = localStorage.getItem("accessToken");
+const params = new URLSearchParams({
+      id: record.id,
+    }).toString();
+  try {
+    
+
+    const response = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.data.success) {
+      setDataPDF(response.data.result);
+      setOpen(true);
+    } else {
+      message.error(response.data.error);
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  headers: {
+    Authorization: `Bearer ${refreshToken}`,
+  },
+});const newAccessToken = refreshResponse.data.access_token;
+        localStorage.setItem("accessToken", newAccessToken);
+
+        const retryResponse = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
+
+        if (retryResponse.data.success) {
+          setDataPDF(retryResponse.data.result);
+          setOpen(true);
+        } else {
+          message.error(retryResponse.data.error);
+        }
+      } catch (refreshError) {
+        console.error("Erreur lors du rafraîchissement du token :", refreshError);
+        message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+      }
+    } else {
+      console.error("Erreur lors de la récupération du PDF :", error);
+      message.error("Une erreur s'est produite lors de la récupération du PDF.");
+    }
+  } finally {
+    setLoad(false);
+  }
+};
 
   const mois = [
     "Janvier",

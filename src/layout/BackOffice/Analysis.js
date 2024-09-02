@@ -34,19 +34,121 @@ function Analysis() {
     correlation: {},
   });
 
+  const handleAdd = async (values) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("member", JSON.stringify(values));
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${API_URL}/addMemberFromAnalysis`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        message.success("Add successful");
+        console.log(response.data);
+        navigate(0);
+      } else {
+        message.error(response.data.error);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+        try {
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.post(
+            `${API_URL}/addMemberFromAnalysis`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+  
+          if (retryResponse.data.success) {
+            message.success("Add successful");
+            console.log(retryResponse.data);
+            navigate(0);
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors de l'ajout :", error);
+        message.error("Add failed");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const handleFileUpload = async (file) => {
     if (uploading) return;
+  
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("fichier", file);
     try {
       setUploading(true);
-      const formData = new FormData();
-      formData.append("fichier", file);
-
-      const response = await axios.post(`${API_URL}/getPDFInfo`, formData, {});
-      message.success("Successfully upload");
+      const response = await axios.post(
+        `${API_URL}/getPDFInfo`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      message.success("Successfully uploaded");
       setData(response.data);
     } catch (error) {
-      console.error(error);
-      message.error(error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+  
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.post(
+            `${API_URL}/getPDFInfo`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+  
+          message.success("Successfully uploaded");
+          setData(retryResponse.data);
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors du téléchargement du fichier :", error);
+        message.error(error.message);
+      }
     } finally {
       setUploading(false);
     }
@@ -71,32 +173,6 @@ function Analysis() {
       file_size = parseFloat(file_size / 1024).toFixed(2) + " KB";
     }
     return file_size;
-  };
-
-  const handleAdd = async (values) => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append("member", JSON.stringify(values));
-      const response = await axios.post(
-        `${API_URL}/addMemberFromAnalysis`,
-        formData,
-        {}
-      );
-
-      if (response.data.success) {
-        message.success("Add successful");
-        console.log(response.data);
-        navigate(0);
-      } else {
-        message.error(response.data.error);
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Add failed");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (

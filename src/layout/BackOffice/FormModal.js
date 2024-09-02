@@ -221,18 +221,65 @@ function FormModal() {
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+  
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_URL}/ownMember`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setData(response.data.result);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshToken = localStorage.getItem("refreshToken");
+            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            });
+  
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+            const retryResponse = await axios.get(`${API_URL}/ownMember`, {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            });
+            setData(retryResponse.data.result);
+          } catch (refreshError) {
+            console.error("Erreur lors du rafraîchissement du token :", refreshError);
+            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          }
+        } else {
+          console.error("Erreur lors de la récupération des données :", error);
+          message.error(error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
   const onCreate = async (values) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("member", JSON.stringify(values));
     setConfirmLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("member", JSON.stringify(values));
-
       const response = await axios.post(`${API_URL}/addMember`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
         },
       });
-
+  
       if (response.data.success) {
         message.success("Add successful");
         setData(response.data.result);
@@ -242,30 +289,61 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      console.error(error);
-      message.error("Add failed");
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+  
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.post(`${API_URL}/addMember`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+  
+          if (retryResponse.data.success) {
+            message.success("Add successful");
+            setData(retryResponse.data.result);
+            console.log(retryResponse.data);
+            setOpen(false);
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors de l'ajout :", error);
+        message.error("Add failed");
+      }
+    } finally {
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
   };
-
-  const onCancel = () => {
-    setOpen(false);
-  };
-
-  const onEditCancel = () => {
-    setEditOpen(false);
-  };
-
+  
   const onEdit = async (values) => {
+    const accessToken = localStorage.getItem("accessToken");
     setConfirmLoading(true);
-    try {
-      const formData = new FormData();
+    const formData = new FormData();
       formData.append(
         "member",
         JSON.stringify({ ...editingRecord, ...values })
       );
-      const response = await axios.post(`${API_URL}/editOne`, formData, {});
-
+    try {
+      const response = await axios.post(`${API_URL}/editOne`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
       if (response.data.success) {
         message.success("Edit successful");
         setData(response.data.result);
@@ -275,19 +353,57 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      console.error(error);
-      message.error(error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+  
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.post(`${API_URL}/editOne`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+  
+          if (retryResponse.data.success) {
+            message.success("Edit successful");
+            setData(retryResponse.data.result);
+            console.log(retryResponse.data);
+            setEditOpen(false);
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors de l'édition :", error);
+        message.error(error.message);
+      }
+    } finally {
+      setConfirmLoading(false);
     }
-    setConfirmLoading(false);
   };
 
   const handleDelete = async (record) => {
-    try {
-      const params = new URLSearchParams({
+    const accessToken = localStorage.getItem("accessToken");
+    const params = new URLSearchParams({
         id: record.id,
       }).toString();
-      const response = await axios.delete(`${API_URL}/deleteOne?${params}`);
-
+    try {  
+      const response = await axios.delete(`${API_URL}/deleteOne?${params}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
       if (response.data.success) {
         message.success("Delete successful");
         setData(response.data.result);
@@ -296,31 +412,53 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      console.error(error);
-      message.error(error.message);
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          });
+  
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.delete(`${API_URL}/deleteOne?${params}`, {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+  
+          if (retryResponse.data.success) {
+            message.success("Delete successful");
+            setData(retryResponse.data.result);
+            console.log(retryResponse.data);
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error("Erreur lors du rafraîchissement du token :", refreshError);
+          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+        }
+      } else {
+        console.error("Erreur lors de la suppression :", error);
+        message.error(error.message);
+      }
     }
+  };  
+
+  const onCancel = () => {
+    setOpen(false);
+  };
+
+  const onEditCancel = () => {
+    setEditOpen(false);
   };
 
   const handleEdit = (record) => {
     setEditingRecord(record);
     setEditOpen(true);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${API_URL}/ownMember`);
-        setData(response.data.result);
-      } catch (error) {
-        console.error("There was an error fetching the data!", error);
-        message.error(error.message);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
 
   const columns = [
     {
