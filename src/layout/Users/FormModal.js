@@ -35,8 +35,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
       <Form.Item
         name="date"
         label="Date de naissance"
-        rules={[{ required: true }]}
-      >
+        rules={[{ required: true }]}>
         <Input type="date" />
       </Form.Item>
       <Form.Item name="email" label="Email" rules={[{ required: true }]}>
@@ -48,15 +47,13 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
       <Form.Item
         name="telephone"
         label="Téléphone"
-        rules={[{ required: true }]}
-      >
+        rules={[{ required: true }]}>
         <Input type="numero" />
       </Form.Item>
       <Form.Item
         name="organisation"
         label="Organisation"
-        rules={[{ required: true }]}
-      >
+        rules={[{ required: true }]}>
         <Input />
       </Form.Item>
       <Form.Item name="poste" label="Poste" rules={[{ required: true }]}>
@@ -69,8 +66,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
           {
             required: true,
           },
-        ]}
-      >
+        ]}>
         <Select
           placeholder="Sélectionner un rôle"
           options={[
@@ -97,16 +93,15 @@ function CollectionEditFormModal({
   confirmLoading,
 }) {
   const [formInstance, setFormInstance] = useState();
-  
+
   const handleSubmit = async () => {
     try {
       const values = await formInstance?.validateFields();
       formInstance?.resetFields();
       onEdit(values);
-      
     } catch (error) {
       console.error("Failed:", error);
-    } 
+    }
   };
 
   return (
@@ -125,24 +120,23 @@ function CollectionEditFormModal({
             defaultActiveBorderColor: "#5A3827",
           },
         },
-      }}
-    >
+      }}>
       <Modal
         open={open}
         onClose={onCancel}
         destroyOnClose
         centered
         footer={
-          <Button 
-            style={{ height: 40, width: 125 }} 
-            loading={confirmLoading} 
-            onClick={handleSubmit}>Enregistrer
+          <Button
+            style={{ height: 40, width: 125 }}
+            loading={confirmLoading}
+            onClick={handleSubmit}>
+            Enregistrer
           </Button>
-        }
-      >
+        }>
         {CollectionEditForm((instance) => {
-            setFormInstance(instance);
-          }, initialValues)}
+          setFormInstance(instance);
+        }, initialValues)}
       </Modal>
     </ConfigProvider>
   );
@@ -154,7 +148,7 @@ function FormModal() {
   const [data, setData] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -170,12 +164,16 @@ function FormModal() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-              headers: {
-                Authorization: `Bearer ${refreshToken}`,
-              },
-            });
-  
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
+
             const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.get(`${API_URL}/allUsers`, {
@@ -185,8 +183,13 @@ function FormModal() {
             });
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
@@ -198,19 +201,19 @@ function FormModal() {
     };
     fetchData();
   }, []);
-  
+
   const handleDelete = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
     const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
+      id: record.id,
+    }).toString();
     try {
       const response = await axios.delete(`${API_URL}/deleteUser?${params}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         message.success("Suppression effectuée avec succès");
         setData(response.data.result);
@@ -222,20 +225,27 @@ function FormModal() {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.delete(`${API_URL}/deleteUser?${params}`, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.delete(
+            `${API_URL}/deleteUser?${params}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             message.success("Suppression effectuée avec succès");
             setData(retryResponse.data.result);
@@ -244,15 +254,20 @@ function FormModal() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la suppression :", error);
         message.error(error.message);
       }
     }
-  };  
+  };
 
   const onEdit = async (values) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -260,16 +275,12 @@ function FormModal() {
     const formData = new FormData();
     formData.append("member", JSON.stringify({ ...editingRecord, ...values }));
     try {
-      const response = await axios.post(
-        `${API_URL}/editUser`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-  
+      const response = await axios.post(`${API_URL}/editUser`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
       if (response.data.success) {
         message.success("Modification effectuée avec succès");
         setData(response.data.result);
@@ -281,12 +292,16 @@ function FormModal() {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
 
@@ -299,7 +314,7 @@ function FormModal() {
               },
             }
           );
-  
+
           if (retryResponse.data.success) {
             message.success("Modification effectuée avec succès");
             setData(retryResponse.data.result);
@@ -308,8 +323,13 @@ function FormModal() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la modification :", error);
@@ -392,8 +412,7 @@ function FormModal() {
             title="Voulez-vous vraiment supprimer cet utilisateur ?"
             okText="Oui"
             cancelText="Non"
-            onConfirm={() => handleDelete(record)}
-          >
+            onConfirm={() => handleDelete(record)}>
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "rgb(256,0,0)" }} />}
@@ -422,8 +441,7 @@ function FormModal() {
             colorPrimary: "#5A3827",
           },
         },
-      }}
-    >
+      }}>
       <Table
         columns={columns}
         dataSource={dataWithKeys}

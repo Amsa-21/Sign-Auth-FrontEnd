@@ -19,7 +19,7 @@ function ApprovedList() {
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
-  
+
       try {
         setLoading(true);
         const response = await axios.get(`${API_URL}/data`, {
@@ -32,12 +32,16 @@ function ApprovedList() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-              headers: {
-                Authorization: `Bearer ${refreshToken}`,
-              },
-            });
-  
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
+
             const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.get(`${API_URL}/data`, {
@@ -45,11 +49,16 @@ function ApprovedList() {
                 Authorization: `Bearer ${newAccessToken}`,
               },
             });
-  
+
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
@@ -59,9 +68,9 @@ function ApprovedList() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, []);  
+  }, []);
 
   const groupByCodePaysRegion = () => {
     const groupedData = {};
@@ -146,8 +155,7 @@ function Tables(item) {
             rowHoverBg: "#fff",
           },
         },
-      }}
-    >
+      }}>
       <Table
         dataSource={rows}
         columns={columns}

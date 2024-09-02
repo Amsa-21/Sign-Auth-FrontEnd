@@ -36,7 +36,9 @@ function Connexion() {
         localStorage.setItem("username", data.username);
         localStorage.setItem("telephone", data.telephone);
         localStorage.setItem("role", data.role);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${data.access_token}`;
         navigate("/");
       } else {
         message.error("Email ou mot de passe incorrect !");
@@ -44,7 +46,9 @@ function Connexion() {
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        message.error("Erreur d'authentification. Veuillez vérifier vos identifiants.");
+        message.error(
+          "Erreur d'authentification. Veuillez vérifier vos identifiants."
+        );
       } else {
         message.error("Une erreur est survenue. Veuillez réessayer plus tard.");
       }
@@ -53,7 +57,6 @@ function Connexion() {
       setLoading(false);
     }
   }
-  
 
   function handleCreate() {
     navigate("/subscription");
@@ -65,8 +68,7 @@ function Connexion() {
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
-    >
+      }}>
       <div
         style={{
           display: "flex",
@@ -75,8 +77,7 @@ function Connexion() {
           height: "100vh",
           backdropFilter: "blur(10px) brightness(70%)",
           overflow: "auto",
-        }}
-      >
+        }}>
         <div
           style={{
             display: "flex",
@@ -84,8 +85,7 @@ function Connexion() {
             flexDirection: "column",
             gap: 40,
             marginBlock: 70,
-          }}
-        >
+          }}>
           <div style={{ textAlign: "center", width: 600 }}>
             <Typography.Title style={{ fontSize: 30, color: "white" }}>
               Accédez à votre compte pour signer et protéger vos documents en
@@ -99,8 +99,7 @@ function Connexion() {
               width: 500,
               backgroundColor: "rgba(0, 0, 0, 0.7)",
               boxShadow: "0 0 50px black",
-            }}
-          >
+            }}>
             <Image
               preview={false}
               alt="Background image"
@@ -130,8 +129,7 @@ function Connexion() {
                     colorLinkHover: "gray",
                   },
                 },
-              }}
-            >
+              }}>
               <Form
                 style={{
                   padding: "25px",
@@ -141,8 +139,7 @@ function Connexion() {
                 autoComplete="off"
                 colon={false}
                 layout="vertical"
-                form={form}
-              >
+                form={form}>
                 <Form.Item
                   label="Email"
                   name="email"
@@ -151,8 +148,7 @@ function Connexion() {
                       required: true,
                       message: "Veuillez renseigner votre email !",
                     },
-                  ]}
-                >
+                  ]}>
                   <Input
                     type="email"
                     size="medium"
@@ -167,8 +163,7 @@ function Connexion() {
                       required: true,
                       message: "Veuillez renseigner votre mot de passe !",
                     },
-                  ]}
-                >
+                  ]}>
                   <Input.Password
                     size="medium"
                     placeholder="Entrer votre mot de passe"
@@ -178,8 +173,7 @@ function Connexion() {
                   style={{
                     display: "grid",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Button
                     type="default"
                     style={{
@@ -187,8 +181,7 @@ function Connexion() {
                       marginTop: 15,
                     }}
                     htmlType="submit"
-                    loading={loading}
-                  >
+                    loading={loading}>
                     Se connecter
                   </Button>
                 </Form.Item>
@@ -196,8 +189,7 @@ function Connexion() {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Typography.Link underline={true} onClick={handleCreate}>
                     Créer un nouveau compte
                   </Typography.Link>

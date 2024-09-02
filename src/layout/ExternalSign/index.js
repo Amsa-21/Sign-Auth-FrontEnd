@@ -53,36 +53,47 @@ function ExternalSign() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoad(true)
+        setLoad(true);
         const params = new URLSearchParams({
           filename: doc,
         }).toString();
-        const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`,
-          },
-        });
+        const refreshResponse = await axios.post(
+          `${API_URL}/refresh`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
+        );
         const newAccessToken = refreshResponse.data.access_token;
         localStorage.setItem("accessToken", newAccessToken);
-        const retryResponse = await axios.post(`${API_URL}/getExtPDF?${params}`, {}, {
-          headers: {
-            Authorization: `Bearer ${newAccessToken}`,
-          },
-        });
+        const retryResponse = await axios.post(
+          `${API_URL}/getExtPDF?${params}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          }
+        );
         if (retryResponse.data.success) {
           setDataPDF(retryResponse.data.result);
         } else {
           message.error(retryResponse.data.error);
         }
       } catch (refreshError) {
-        console.error("Erreur lors du rafraîchissement du token :", refreshError);
+        console.error(
+          "Erreur lors du rafraîchissement du token :",
+          refreshError
+        );
       } finally {
         setLoad(false);
       }
     };
     fetchData();
   }, [doc, refreshToken]);
-  
+
   const capture = async () => {
     try {
       setLoading(true);
@@ -96,19 +107,23 @@ function ExternalSign() {
       setOpencap(false);
     }
   };
-  
+
   const handleSignPDF = async (img) => {
     try {
-      setLoad(true); 
+      setLoad(true);
       const formData = new FormData();
       formData.append("user", name);
       formData.append("filename", doc);
       formData.append("image", img);
-      const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      });
+      const refreshResponse = await axios.post(
+        `${API_URL}/refresh`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        }
+      );
       const newAccessToken = refreshResponse.data.access_token;
       localStorage.setItem("accessToken", newAccessToken);
       const retryResponse = await axios.post(
@@ -133,12 +148,14 @@ function ExternalSign() {
       }
     } catch (refreshError) {
       console.error("Erreur lors du rafraîchissement du token :", refreshError);
-      message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+      message.error(
+        "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+      );
     } finally {
       setLoad(false);
     }
   };
-  
+
   const handleRefuse = async () => {
     const params = new URLSearchParams({
       filename: doc,
@@ -146,11 +163,15 @@ function ExternalSign() {
     try {
       setLoad(true);
       const refreshToken = localStorage.getItem("refreshToken");
-      const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      });
+      const refreshResponse = await axios.post(
+        `${API_URL}/refresh`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        }
+      );
       const newAccessToken = refreshResponse.data.access_token;
       localStorage.setItem("accessToken", newAccessToken);
       const retryResponse = await axios.post(
@@ -169,7 +190,9 @@ function ExternalSign() {
       }
     } catch (refreshError) {
       console.error("Erreur lors du rafraîchissement du token :", refreshError);
-      message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+      message.error(
+        "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+      );
     } finally {
       setLoad(false);
     }
@@ -213,15 +236,13 @@ function ExternalSign() {
           alignItems: "center",
           justifyContent: "space-between",
           paddingInline: 20,
-        }}
-      >
+        }}>
         <Typography.Text
           style={{
             display: "flex",
             height: "64px",
             alignItems: "center",
-          }}
-        >
+          }}>
           <h2 style={{ color: "white", marginTop: 15 }}>Mandarga</h2>
         </Typography.Text>
         <div
@@ -230,24 +251,21 @@ function ExternalSign() {
             height: "fit-content",
             color: "white",
             gap: 10,
-          }}
-        >
+          }}>
           <UserOutlined style={{ fontSize: 18, color: "white" }} />
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-            }}
-          >
+            }}>
             <>
               <Typography.Text style={{ fontSize: 16, color: "white" }}>
                 Bienvenue, {nom}
               </Typography.Text>
               <Typography.Text
                 italic={true}
-                style={{ fontSize: 12, color: "#8A8A8A" }}
-              >
+                style={{ fontSize: 12, color: "#8A8A8A" }}>
                 Utilisateur externe
               </Typography.Text>
             </>
@@ -256,8 +274,7 @@ function ExternalSign() {
             menu={{
               items,
             }}
-            onOpenChange={() => setOpen(!open)}
-          >
+            onOpenChange={() => setOpen(!open)}>
             <CaretDownOutlined
               rotate={open ? 180 : 0}
               style={{
@@ -288,14 +305,12 @@ function ExternalSign() {
                   defaultActiveBorderColor: "#5A3827",
                 },
               },
-            }}
-          >
+            }}>
             <Button
               type="default"
               onClick={capture}
               loading={loading}
-              style={{ width: 150, fontSize: 14 }}
-            >
+              style={{ width: 150, fontSize: 14 }}>
               Prendre la photo
             </Button>
           </ConfigProvider>
@@ -305,8 +320,7 @@ function ExternalSign() {
         }}
         destroyOnClose={true}
         width={688}
-        height={520}
-      >
+        height={520}>
         <Divider />
         <Webcam
           audio={false}
@@ -325,15 +339,13 @@ function ExternalSign() {
           overflow: "auto",
           justifyContent: "center",
           backgroundColor: "#F5F1E9",
-        }}
-      >
+        }}>
         {!finish ? (
           <div
             style={{
               display: "flex",
               padding: 20,
-            }}
-          >
+            }}>
             {dataPDF && (
               <div
                 style={{
@@ -341,8 +353,7 @@ function ExternalSign() {
                   flexDirection: "column",
                   borderRadius: 7,
                   width: 820,
-                }}
-              >
+                }}>
                 <Typography.Text style={{ marginBottom: 20 }} strong>
                   {doc}
                 </Typography.Text>
@@ -359,8 +370,7 @@ function ExternalSign() {
                     justifyContent: "center",
                     gap: 50,
                     marginTop: 20,
-                  }}
-                >
+                  }}>
                   <ConfigProvider
                     theme={{
                       components: {
@@ -376,14 +386,12 @@ function ExternalSign() {
                           defaultActiveBorderColor: "#5A3827",
                         },
                       },
-                    }}
-                  >
+                    }}>
                     <Button
                       type="default"
                       icon={<SignatureOutlined />}
                       onClick={() => setOpencap(true)}
-                      style={{ width: 150, height: 40, fontSize: 16 }}
-                    >
+                      style={{ width: 150, height: 40, fontSize: 16 }}>
                       Signer
                     </Button>
                   </ConfigProvider>
@@ -402,21 +410,18 @@ function ExternalSign() {
                           defaultActiveBorderColor: "#fff",
                         },
                       },
-                    }}
-                  >
+                    }}>
                     <Popconfirm
                       placement="topLeft"
                       title="Voulez-vous vraiment rejeter cette demande ?"
                       description="Rejeter le demande"
                       okText="Oui"
                       cancelText="Non"
-                      onConfirm={() => handleRefuse()}
-                    >
+                      onConfirm={() => handleRefuse()}>
                       <Button
                         type="default"
                         icon={<CloseOutlined />}
-                        style={{ width: 150, height: 40, fontSize: 16 }}
-                      >
+                        style={{ width: 150, height: 40, fontSize: 16 }}>
                         Rejeter
                       </Button>
                     </Popconfirm>
@@ -436,8 +441,7 @@ function ExternalSign() {
                 justifyContent: "center",
                 boxShadow: "0 0 2px black",
                 width: 700,
-              }}
-            >
+              }}>
               <Result
                 icon={<CheckCircleFilled style={{ color: "black" }} />}
                 title="Action réussie"
@@ -458,12 +462,10 @@ function ExternalSign() {
                           defaultActiveBorderColor: "#5A3827",
                         },
                       },
-                    }}
-                  >
+                    }}>
                     <Button
                       type="default"
-                      onClick={() => navigate("/subscription")}
-                    >
+                      onClick={() => navigate("/subscription")}>
                       Créer un compte
                     </Button>
                   </ConfigProvider>,

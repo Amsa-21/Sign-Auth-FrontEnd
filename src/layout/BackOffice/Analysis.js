@@ -49,7 +49,7 @@ function Analysis() {
           },
         }
       );
-  
+
       if (response.data.success) {
         message.success("Add successful");
         console.log(response.data);
@@ -60,11 +60,15 @@ function Analysis() {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+        const refreshResponse = await axios.post(
+          `${API_URL}/refresh`,
+          {},
+          {
             headers: {
               Authorization: `Bearer ${refreshToken}`,
             },
-          });
+          }
+        );
         try {
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
@@ -77,7 +81,7 @@ function Analysis() {
               },
             }
           );
-  
+
           if (retryResponse.data.success) {
             message.success("Add successful");
             console.log(retryResponse.data);
@@ -86,8 +90,13 @@ function Analysis() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de l'ajout :", error);
@@ -97,36 +106,36 @@ function Analysis() {
       setLoading(false);
     }
   };
-  
+
   const handleFileUpload = async (file) => {
     if (uploading) return;
-  
+
     const accessToken = localStorage.getItem("accessToken");
     const formData = new FormData();
     formData.append("fichier", file);
     try {
       setUploading(true);
-      const response = await axios.post(
-        `${API_URL}/getPDFInfo`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/getPDFInfo`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       message.success("Successfully uploaded");
       setData(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
@@ -138,12 +147,17 @@ function Analysis() {
               },
             }
           );
-  
+
           message.success("Successfully uploaded");
           setData(retryResponse.data);
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors du téléchargement du fichier :", error);
@@ -181,8 +195,7 @@ function Analysis() {
         display: "flex",
         flexDirection: "column",
         gap: 30,
-      }}
-    >
+      }}>
       <ModalPDF
         open={open}
         onClose={() => setOpen(false)}
@@ -191,8 +204,7 @@ function Analysis() {
             <div
               style={{
                 display: "flex",
-              }}
-            >
+              }}>
               <embed
                 type="application/pdf"
                 src={URL.createObjectURL(fileInfo)}
@@ -216,22 +228,19 @@ function Analysis() {
               colorPrimary: "#5A3827",
             },
           },
-        }}
-      >
+        }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             marginBottom: 10,
-          }}
-        >
+          }}>
           <Upload.Dragger
             {...props}
             style={{
               backgroundColor: "rgba(100, 100, 100, 0.2",
-            }}
-          >
+            }}>
             <Typography.Title level={4}>
               Importer votre fichier PDF
             </Typography.Title>
@@ -246,8 +255,7 @@ function Analysis() {
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Typography.Text code>
                 {fileInfo.name}
                 <Divider type="vertical" />
@@ -262,8 +270,7 @@ function Analysis() {
               <Typography.Link
                 underline
                 style={{ color: "rgb(90,56,39)" }}
-                onClick={() => setOpen(true)}
-              >
+                onClick={() => setOpen(true)}>
                 <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
                 Aperçu
               </Typography.Link>
@@ -306,14 +313,12 @@ function Analysis() {
                             defaultActiveBorderColor: "#5A3827",
                           },
                         },
-                      }}
-                    >
+                      }}>
                       <Button
                         type="default"
                         key="console"
                         loading={loading}
-                        onClick={() => handleAdd(data.result)}
-                      >
+                        onClick={() => handleAdd(data.result)}>
                         Ajouter à ma propre liste de confiance approuvée
                       </Button>
                     </ConfigProvider>

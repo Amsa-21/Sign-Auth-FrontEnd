@@ -35,7 +35,7 @@ function HomeLayout({ children }) {
   const handleLogout = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-  
+
     const clearLocalStorage = () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
@@ -43,37 +43,54 @@ function HomeLayout({ children }) {
       localStorage.removeItem("telephone");
       localStorage.removeItem("role");
     };
-  
+
     try {
-      await axios.post(`${API_URL}/logout`, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      await axios.post(
+        `${API_URL}/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       clearLocalStorage();
       navigate("/login");
     } catch (error) {
       if (error.response && error.response.status === 401 && refreshToken) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-  
-          await axios.post(`${API_URL}/logout`, {}, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
+
+          await axios.post(
+            `${API_URL}/logout`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
           clearLocalStorage();
           navigate("/login");
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la déconnexion :", error);
@@ -81,7 +98,6 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       }
     }
   };
-  
 
   const handleEditPassword = () => {
     setOpenModal(true);
@@ -92,14 +108,14 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       message.warning("Les mots de passe ne correspondent pas !");
       return;
     }
-  
+
     setLoading(true);
     const formData = new FormData();
     formData.append("datas", JSON.stringify(values));
     formData.append("tel", localStorage.getItem("telephone"));
-  
+
     const accessToken = localStorage.getItem("accessToken");
-  
+
     try {
       const response = await axios.post(`${API_URL}/changePassword`, formData, {
         headers: {
@@ -107,7 +123,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         message.success("Mot de passe mis à jour !");
       } else {
@@ -117,41 +133,56 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          
-          const retryResponse = await axios.post(`${API_URL}/changePassword`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+
+          const retryResponse = await axios.post(
+            `${API_URL}/changePassword`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             message.success("Mot de passe mis à jour !");
           } else {
             message.error("Mot de passe actuel incorrect !");
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la mise à jour du mot de passe :", error);
-        message.error("Une erreur s'est produite lors de la mise à jour du mot de passe.");
+        message.error(
+          "Une erreur s'est produite lors de la mise à jour du mot de passe."
+        );
       }
     } finally {
       form.resetFields();
       setLoading(false);
       setOpenModal(false);
     }
-  };  
-  
+  };
+
   const items = [
     {
       label: "Changer de mot de passe",
@@ -176,8 +207,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           backgroundColor: "#2B2B2B",
           alignItems: "center",
           paddingInline: 20,
-        }}
-      >
+        }}>
         <Modal
           open={openModal}
           centered
@@ -186,8 +216,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             setOpenModal(false);
           }}
           destroyOnClose={true}
-          onClose={() => form.resetFields()}
-        >
+          onClose={() => form.resetFields()}>
           <Form layout="vertical" form={form} onFinish={handleSubmit}>
             <Form.Item
               label="Ancien mot de passe"
@@ -197,8 +226,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   required: true,
                   message: "Veuillez saisir votre mot de passe",
                 },
-              ]}
-            >
+              ]}>
               <Input.Password placeholder="Entrer le mot de passe actuel" />
             </Form.Item>
             <Form.Item
@@ -213,8 +241,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   required: true,
                   message: "Veuillez saisir le nouveau mot de passe",
                 },
-              ]}
-            >
+              ]}>
               <Input.Password placeholder="Entrez le nouveau mot de passe" />
             </Form.Item>
             <Form.Item
@@ -225,8 +252,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   required: true,
                   message: "Veuillez confirmer le nouveau mot de passe",
                 },
-              ]}
-            >
+              ]}>
               <Input.Password placeholder="Confirmer le nouveau mot de passe" />
             </Form.Item>
             <Form.Item>
@@ -235,8 +261,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   display: "flex",
                   justifyContent: "right",
                   marginTop: 20,
-                }}
-              >
+                }}>
                 <ConfigProvider
                   theme={{
                     components: {
@@ -252,13 +277,11 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                         defaultActiveBorderColor: "#5A3827",
                       },
                     },
-                  }}
-                >
+                  }}>
                   <Button
                     loading={loading}
                     style={{ height: 40 }}
-                    htmlType="submit"
-                  >
+                    htmlType="submit">
                     Enregistrer les modifications
                   </Button>
                 </ConfigProvider>
@@ -272,8 +295,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             height: "64px",
             alignItems: "center",
           }}
-          onClick={() => navigate("/")}
-        >
+          onClick={() => navigate("/")}>
           <h2 style={{ color: "white", marginTop: 15 }}>Mandarga</h2>
         </Typography.Link>
         <div
@@ -282,16 +304,14 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             height: "fit-content",
             color: "white",
             gap: 10,
-          }}
-        >
+          }}>
           <UserOutlined style={{ fontSize: 18, color: "white" }} />
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-            }}
-          >
+            }}>
             {role === "Admin" ? (
               <>
                 <Typography.Text style={{ fontSize: 16, color: "white" }}>
@@ -299,8 +319,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 </Typography.Text>
                 <Typography.Text
                   italic={true}
-                  style={{ fontSize: 12, color: "#8A8A8A" }}
-                >
+                  style={{ fontSize: 12, color: "#8A8A8A" }}>
                   Administrateur
                 </Typography.Text>
               </>
@@ -311,8 +330,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 </Typography.Text>
                 <Typography.Text
                   italic={true}
-                  style={{ fontSize: 12, color: "#8A8A8A" }}
-                >
+                  style={{ fontSize: 12, color: "#8A8A8A" }}>
                   Utilisateur interne
                 </Typography.Text>
               </>
@@ -322,8 +340,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             menu={{
               items,
             }}
-            onOpenChange={() => setOpen(!open)}
-          >
+            onOpenChange={() => setOpen(!open)}>
             <CaretDownOutlined
               rotate={open ? 180 : 0}
               style={{
@@ -344,8 +361,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             paddingBlock: "70px",
             backgroundColor: "#F5F1E9",
             overflow: "auto",
-          }}
-        >
+          }}>
           {children}
         </Layout.Content>
       </Layout>

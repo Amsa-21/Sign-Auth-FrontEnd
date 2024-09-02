@@ -61,7 +61,7 @@ function RequestList() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-  const plainOptions = ["Complete", "En cours", "Rejetée"]
+  const plainOptions = ["Complete", "En cours", "Rejetée"];
   const defaultCheckedList = plainOptions;
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
@@ -81,7 +81,7 @@ function RequestList() {
     const fetchData = async () => {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-  
+
       try {
         const response = await axios.get(`${API_URL}/allRequest`, {
           headers: {
@@ -93,11 +93,16 @@ function RequestList() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});const newAccessToken = refreshResponse.data.access_token;
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
+            const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
 
             const retryResponse = await axios.get(`${API_URL}/allRequest`, {
@@ -107,37 +112,41 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             });
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
-          message.error("Une erreur s'est produite lors de la récupération des données.");
+          message.error(
+            "Une erreur s'est produite lors de la récupération des données."
+          );
         }
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   const capture = async () => {
     setLoading(true);
     const accessToken = localStorage.getItem("accessToken");
     const formData = new FormData();
-      formData.append("image", webcamRef.current.getScreenshot());
-      formData.append("person", person);
+    formData.append("image", webcamRef.current.getScreenshot());
+    formData.append("person", person);
     try {
-      
-  
       const response = await axios.post(`${API_URL}/predict`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         setSuccess(response.data.success);
         setImg(response.data.face);
@@ -146,26 +155,40 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});const newAccessToken = refreshResponse.data.access_token;
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+          const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-  
-          const retryResponse = await axios.post(`${API_URL}/predict`, formData, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+
+          const retryResponse = await axios.post(
+            `${API_URL}/predict`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             setSuccess(retryResponse.data.success);
             setImg(retryResponse.data.face);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la capture :", error);
@@ -182,17 +205,17 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
     setLoadingSign(true);
     const accessToken = localStorage.getItem("accessToken");
     const formData = new FormData();
-      formData.append("user", person);
-      formData.append("code", values.code);
-      formData.append("image", img);
-      formData.append("id", id);
+    formData.append("user", person);
+    formData.append("code", values.code);
+    formData.append("image", img);
+    formData.append("id", id);
     try {
       const response = await axios.post(`${API_URL}/signPDF`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         setOpen(false);
         window.location.reload();
@@ -208,18 +231,27 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});const newAccessToken = refreshResponse.data.access_token;
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+          const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.post(`${API_URL}/signPDF`, formData, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.post(
+            `${API_URL}/signPDF`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             setOpen(false);
             window.location.reload();
@@ -232,8 +264,13 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             setOpen(false);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error(error);
@@ -246,16 +283,19 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
   const handleRefuse = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
     const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
+      id: record.id,
+    }).toString();
     try {
-      
-      const response = await axios.post(`${API_URL}/refuseRequest?${params}`, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-  
+      const response = await axios.post(
+        `${API_URL}/refuseRequest?${params}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
       if (response.data.success) {
         window.location.reload();
       } else {
@@ -265,28 +305,41 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
 
-          const retryResponse = await axios.post(`${API_URL}/refuseRequest?${params}`, {}, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.post(
+            `${API_URL}/refuseRequest?${params}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             window.location.reload();
           } else {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error(error);
@@ -294,20 +347,24 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       }
     }
   };
-  
+
   const handleViewPDF = async (record) => {
     setLoad(true);
     const accessToken = localStorage.getItem("accessToken");
     const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
+      id: record.id,
+    }).toString();
     try {
-      const response = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-  
+      const response = await axios.post(
+        `${API_URL}/getPDF?${params}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
       if (response.data.success) {
         setDataPDF(response.data.result);
         setOpen2(true);
@@ -316,27 +373,40 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
 
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.post(
+            `${API_URL}/getPDF?${params}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             setDataPDF(retryResponse.data.result);
             setOpen2(true);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error(error);
@@ -354,8 +424,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<SyncOutlined spin />}
             color="#108ee9"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             En cours
           </Tag>
         );
@@ -364,8 +433,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<CheckCircleOutlined />}
             color="#87d068"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             Complete
           </Tag>
         );
@@ -374,8 +442,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<CloseCircleOutlined />}
             color="#f50"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             Rejetée
           </Tag>
         );
@@ -527,8 +594,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 description="Rejeter le demande"
                 okText="Oui"
                 cancelText="Non"
-                onConfirm={() => handleRefuse(record)}
-              >
+                onConfirm={() => handleRefuse(record)}>
                 <Button
                   type="text"
                   icon={<CloseCircleFilled style={{ color: "#ff5500" }} />}
@@ -582,14 +648,12 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   defaultActiveBorderColor: "#5A3827",
                 },
               },
-            }}
-          >
+            }}>
             <Button
               type="default"
               style={{ height: 40 }}
               onClick={capture}
-              loading={loading}
-            >
+              loading={loading}>
               Prendre la photo
             </Button>
           </ConfigProvider>
@@ -599,20 +663,22 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
         }}
         destroyOnClose={true}
         width={688}
-        height={520}
-      >
+        height={520}>
         <Divider />
-        {loading ? <Skeleton active paragraph={{ rows: 14 }} /> : <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-          minScreenshotWidth={200}
-          minScreenshotHeight={200}
-          mirrored={true}
-          style={{ borderRadius: 7 }}
-            />
-          }
+        {loading ? (
+          <Skeleton active paragraph={{ rows: 14 }} />
+        ) : (
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            minScreenshotWidth={200}
+            minScreenshotHeight={200}
+            mirrored={true}
+            style={{ borderRadius: 7 }}
+          />
+        )}
       </Modal>
       <Modal
         open={open}
@@ -622,8 +688,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           setOpen(false);
         }}
         footer={null}
-        centered={true}
-      >
+        centered={true}>
         <Divider />
         <ConfigProvider
           theme={{
@@ -640,17 +705,15 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 defaultActiveBorderColor: "#5A3827",
               },
             },
-          }}
-        >
+          }}>
           {success ? (
-            <Form layout="vertical" onFinish={handleSignPDF} >
+            <Form layout="vertical" onFinish={handleSignPDF}>
               <div
                 style={{
                   display: "flex",
                   alignItems: "flex-end",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Form.Item
                   label={"Code Secret"}
                   name="code"
@@ -659,8 +722,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                       required: true,
                       message: "Veuiller entrer votre code secret !",
                     },
-                  ]}
-                >
+                  ]}>
                   <Input.OTP length={6} mask="🔒" />
                 </Form.Item>
                 <Form.Item>
@@ -668,8 +730,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                     type="default"
                     htmlType="submit"
                     style={{ width: 150, marginLeft: 20 }}
-                    loading={loadingSign}
-                  >
+                    loading={loadingSign}>
                     Signer
                   </Button>
                 </Form.Item>
@@ -682,8 +743,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   display: "flex",
                   alignItems: "flex-end",
                   justifyContent: "space-between",
-                }}
-              >
+                }}>
                 <Typography.Text strong style={{ color: "red" }}>
                   Echec de la vérification d'identité !
                 </Typography.Text>
@@ -692,8 +752,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   onClick={() => {
                     setOpen(false);
                     setOpen1(true);
-                  }}
-                >
+                  }}>
                   Réessayer
                 </Button>
               </div>
@@ -709,8 +768,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             <div
               style={{
                 display: "flex",
-              }}
-            >
+              }}>
               <embed
                 type="application/pdf"
                 src={URL.createObjectURL(base64toBlob(dataPDF))}
@@ -733,8 +791,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             flexDirection: "row",
             gap: 24,
             marginBottom: 30,
-          }}
-        >
+          }}>
           <div
             style={{
               width: "25%",
@@ -742,24 +799,21 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               boxShadow: "0 0 2px black",
               paddingInline: 20,
               backgroundColor: "rgb(43, 43, 43)",
-            }}
-          >
+            }}>
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "flex-start",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               <h5
                 style={{
                   fontFamily: "Segoe UI, Arial, sans-serif",
                   fontSize: 16,
                   color: "rgba(255, 255, 255, 0.6)",
                   margin: 0,
-                }}
-              >
+                }}>
                 Total des demandes
               </h5>
               <DatabaseOutlined style={{ fontSize: 20, color: "white" }} />
@@ -768,8 +822,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               style={{
                 color: "#fff",
                 margin: "10px 0",
-              }}
-            >
+              }}>
               {databrute.length}
             </h1>
           </div>
@@ -808,15 +861,13 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           marginBottom: 20,
           alignItems: "flex-end",
           width: "100%",
-        }}
-      >
+        }}>
         <div
           style={{
             flex: 1,
             height: 1,
             backgroundColor: "rgba(0, 0, 0, 0.1)",
-          }}
-        ></div>
+          }}></div>
         <div style={{ display: "flex", width: 40 }}>
           <ConfigProvider
             theme={{
@@ -834,8 +885,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   colorPrimaryHover: "#5A3827",
                 },
               },
-            }}
-          >
+            }}>
             <Popover
               placement="rightTop"
               content={
@@ -843,8 +893,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   <Checkbox
                     indeterminate={indeterminate}
                     onChange={onCheckAllChange}
-                    checked={checkAll}
-                  >
+                    checked={checkAll}>
                     Tout selectionné
                   </Checkbox>
                   <Divider />
@@ -856,14 +905,12 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 </div>
               }
               title="Filtre"
-              trigger="click"
-            >
+              trigger="click">
               <Button
                 style={{ width: 40 }}
                 icon={
                   <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
-                }
-              ></Button>
+                }></Button>
             </Popover>
           </ConfigProvider>
         </div>
@@ -877,8 +924,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               rowHoverBg: "#fff",
             },
           },
-        }}
-      >
+        }}>
         <Table
           columns={columns}
           dataSource={dataWithKeys}

@@ -59,7 +59,7 @@ function MyRequestList() {
     const fetchData = async () => {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
-  
+
       try {
         const response = await axios.get(`${API_URL}/allRequest`, {
           headers: {
@@ -71,11 +71,15 @@ function MyRequestList() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
             const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
 
@@ -86,21 +90,27 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             });
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
-          message.error("Une erreur s'est produite lors de la récupération des données.");
+          message.error(
+            "Une erreur s'est produite lors de la récupération des données."
+          );
         }
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   const statusControle = (item) => {
     switch (item) {
@@ -109,8 +119,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<SyncOutlined spin />}
             color="#108ee9"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             En cours
           </Tag>
         );
@@ -119,8 +128,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<CheckCircleOutlined />}
             color="#87d068"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             Complete
           </Tag>
         );
@@ -129,8 +137,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           <Tag
             icon={<CloseCircleOutlined />}
             color="#f50"
-            style={{ width: 90 }}
-          >
+            style={{ width: 90 }}>
             Rejetée
           </Tag>
         );
@@ -162,8 +169,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 display: "flex",
                 justifyContent: "space-between",
                 gap: 10,
-              }}
-            >
+              }}>
               {it
                 .split(" ")
                 .slice(0, -1)
@@ -175,8 +181,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   fontWeight: "bold",
                   boxShadow: "0 0 2px black",
                 }}
-                bordered={false}
-              >
+                bordered={false}>
                 EXT
               </Tag>
             </List.Item>
@@ -205,108 +210,140 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
     const params = new URLSearchParams({
       id: record.id,
     }).toString();
-  try {
-    
-
-    const response = await axios.delete(`${API_URL}/deleteRequest?${params}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.data.success) {
-      window.location.reload();
-    } else {
-      message.error(response.data.error);
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});const newAccessToken = refreshResponse.data.access_token;
-        localStorage.setItem("accessToken", newAccessToken);
-        const retryResponse = await axios.delete(`${API_URL}/deleteRequest?${params}`, {
+    try {
+      const response = await axios.delete(
+        `${API_URL}/deleteRequest?${params}`,
+        {
           headers: {
-            Authorization: `Bearer ${newAccessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
-        });
-
-        if (retryResponse.data.success) {
-          window.location.reload();
-        } else {
-          message.error(retryResponse.data.error);
         }
-      } catch (refreshError) {
-        console.error("Erreur lors du rafraîchissement du token :", refreshError);
-        message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
-      }
-    } else {
-      console.error("Erreur lors de l'annulation :", error);
-      message.error("Une erreur s'est produite lors de l'annulation.");
-    }
-  }
-};
+      );
 
-const handleViewPDF = async (record) => {
-  setLoad(true);
-  const accessToken = localStorage.getItem("accessToken");
-const params = new URLSearchParams({
+      if (response.data.success) {
+        window.location.reload();
+      } else {
+        message.error(response.data.error);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+          const retryResponse = await axios.delete(
+            `${API_URL}/deleteRequest?${params}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
+          if (retryResponse.data.success) {
+            window.location.reload();
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
+        }
+      } else {
+        console.error("Erreur lors de l'annulation :", error);
+        message.error("Une erreur s'est produite lors de l'annulation.");
+      }
+    }
+  };
+
+  const handleViewPDF = async (record) => {
+    setLoad(true);
+    const accessToken = localStorage.getItem("accessToken");
+    const params = new URLSearchParams({
       id: record.id,
     }).toString();
-  try {
-    
-
-    const response = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.data.success) {
-      setDataPDF(response.data.result);
-      setOpen(true);
-    } else {
-      message.error(response.data.error);
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-  headers: {
-    Authorization: `Bearer ${refreshToken}`,
-  },
-});const newAccessToken = refreshResponse.data.access_token;
-        localStorage.setItem("accessToken", newAccessToken);
-
-        const retryResponse = await axios.post(`${API_URL}/getPDF?${params}`, {}, {
+    try {
+      const response = await axios.post(
+        `${API_URL}/getPDF?${params}`,
+        {},
+        {
           headers: {
-            Authorization: `Bearer ${newAccessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
-        });
-
-        if (retryResponse.data.success) {
-          setDataPDF(retryResponse.data.result);
-          setOpen(true);
-        } else {
-          message.error(retryResponse.data.error);
         }
-      } catch (refreshError) {
-        console.error("Erreur lors du rafraîchissement du token :", refreshError);
-        message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+      );
+
+      if (response.data.success) {
+        setDataPDF(response.data.result);
+        setOpen(true);
+      } else {
+        message.error(response.data.error);
       }
-    } else {
-      console.error("Erreur lors de la récupération du PDF :", error);
-      message.error("Une erreur s'est produite lors de la récupération du PDF.");
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshToken = localStorage.getItem("refreshToken");
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+          const newAccessToken = refreshResponse.data.access_token;
+          localStorage.setItem("accessToken", newAccessToken);
+
+          const retryResponse = await axios.post(
+            `${API_URL}/getPDF?${params}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
+          if (retryResponse.data.success) {
+            setDataPDF(retryResponse.data.result);
+            setOpen(true);
+          } else {
+            message.error(retryResponse.data.error);
+          }
+        } catch (refreshError) {
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
+        }
+      } else {
+        console.error("Erreur lors de la récupération du PDF :", error);
+        message.error(
+          "Une erreur s'est produite lors de la récupération du PDF."
+        );
+      }
+    } finally {
+      setLoad(false);
     }
-  } finally {
-    setLoad(false);
-  }
-};
+  };
 
   const mois = [
     "Janvier",
@@ -397,8 +434,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             description="Annuler la demande"
             okText="Oui"
             cancelText="Non"
-            onConfirm={() => handleCancel(record)}
-          >
+            onConfirm={() => handleCancel(record)}>
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "red" }} />}
@@ -435,8 +471,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             <div
               style={{
                 display: "flex",
-              }}
-            >
+              }}>
               <embed
                 type="application/pdf"
                 src={URL.createObjectURL(base64toBlob(dataPDF))}
@@ -459,8 +494,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
             flexDirection: "row",
             gap: 24,
             marginBottom: 30,
-          }}
-        >
+          }}>
           <div
             style={{
               width: "25%",
@@ -468,24 +502,21 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               boxShadow: "0 0 2px black",
               paddingInline: 20,
               backgroundColor: "rgb(43, 43, 43)",
-            }}
-          >
+            }}>
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "flex-start",
                 marginTop: "20px",
-              }}
-            >
+              }}>
               <h5
                 style={{
                   fontFamily: "Segoe UI, Arial, sans-serif",
                   fontSize: 16,
                   color: "rgba(255, 255, 255, 0.6)",
                   margin: 0,
-                }}
-              >
+                }}>
                 Total des demandes
               </h5>
               <DatabaseOutlined style={{ fontSize: 20, color: "white" }} />
@@ -494,8 +525,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               style={{
                 color: "#fff",
                 margin: "10px 0",
-              }}
-            >
+              }}>
               {databrute.length}
             </h1>
           </div>
@@ -534,21 +564,18 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
           alignItems: "flex-end",
           width: "100%",
           marginBottom: 20,
-        }}
-      >
+        }}>
         <div
           style={{
             flex: 1,
             height: 1,
             backgroundColor: "rgba(0, 0, 0, 0.1)",
-          }}
-        ></div>
+          }}></div>
         <div
           style={{
             display: "flex",
             width: 40,
-          }}
-        >
+          }}>
           <ConfigProvider
             theme={{
               components: {
@@ -565,8 +592,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   colorPrimaryHover: "#5A3827",
                 },
               },
-            }}
-          >
+            }}>
             <Popover
               placement="rightTop"
               content={
@@ -574,8 +600,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                   <Checkbox
                     indeterminate={indeterminate}
                     onChange={onCheckAllChange}
-                    checked={checkAll}
-                  >
+                    checked={checkAll}>
                     Tout selectionné
                   </Checkbox>
                   <Divider />
@@ -587,14 +612,12 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
                 </div>
               }
               title="Filtre"
-              trigger="click"
-            >
+              trigger="click">
               <Button
                 style={{ width: 40 }}
                 icon={
                   <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
-                }
-              ></Button>
+                }></Button>
             </Popover>
           </ConfigProvider>
         </div>
@@ -609,8 +632,7 @@ const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
               colorPrimary: "#5A3827",
             },
           },
-        }}
-      >
+        }}>
         <Table
           columns={columns}
           dataSource={dataWithKeys}
