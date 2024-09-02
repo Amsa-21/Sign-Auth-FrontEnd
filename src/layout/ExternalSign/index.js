@@ -41,6 +41,7 @@ function ExternalSign() {
   const webcamRef = useRef(null);
   const { name } = useParams();
   const { doc } = useParams();
+  const { refreshToken } = useParams();
   const [nom, setNom] = useState("");
   const [open, setOpen] = useState(false);
   const [dataPDF, setDataPDF] = useState("");
@@ -52,30 +53,41 @@ function ExternalSign() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoad(true);
+        setLoad(true)
         const params = new URLSearchParams({
           filename: doc,
         }).toString();
-        const response = await axios.post(`${API_URL}/getExtPDF?${params}`);
-
-        if (response.data.success) {
-          setDataPDF(response.data.result);
+        const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        });
+        const newAccessToken = refreshResponse.data.access_token;
+        localStorage.setItem("accessToken", newAccessToken);
+        const retryResponse = await axios.post(`${API_URL}/getExtPDF?${params}`, {}, {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
+        if (retryResponse.data.success) {
+          setDataPDF(retryResponse.data.result);
+        } else {
+          message.error(retryResponse.data.error);
         }
-      } catch (error) {
-        console.error(error);
-        message.error(error.message);
+      } catch (refreshError) {
+        console.error("Erreur lors du rafraîchissement du token :", refreshError);
       } finally {
         setLoad(false);
       }
     };
-
     fetchData();
-  }, [doc]);
-
+  }, [doc, refreshToken]);
+  
   const capture = async () => {
     try {
       setLoading(true);
-      handleSignPDF(webcamRef.current.getScreenshot());
+      const img = webcamRef.current.getScreenshot();
+      await handleSignPDF(img);
     } catch (error) {
       console.error(error);
       message.error(error.toString());
@@ -84,53 +96,82 @@ function ExternalSign() {
       setOpencap(false);
     }
   };
-
+  
   const handleSignPDF = async (img) => {
     try {
-      setLoad(true);
+      setLoad(true); 
       const formData = new FormData();
       formData.append("user", name);
       formData.append("filename", doc);
       formData.append("image", img);
-      const response = await axios.post(
+      const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      });
+      const newAccessToken = refreshResponse.data.access_token;
+      localStorage.setItem("accessToken", newAccessToken);
+      const retryResponse = await axios.post(
         `${API_URL}/externalSignPDF`,
         formData,
-        {}
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        }
       );
-      if (response.data.success) {
+      if (retryResponse.data.success) {
         setFinish(true);
       } else {
         notification.error({
-          message: response.data.error,
+          message: retryResponse.data.error,
           placement: "bottomRight",
           duration: 5,
         });
         setOpen(false);
       }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
+    } catch (refreshError) {
+      console.error("Erreur lors du rafraîchissement du token :", refreshError);
+      message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
     } finally {
       setLoad(false);
     }
   };
-
+  
   const handleRefuse = async () => {
+    const params = new URLSearchParams({
+      filename: doc,
+    }).toString();
     try {
-      const params = new URLSearchParams({
-        filename: doc,
-      }).toString();
-      const response = await axios.post(
-        `${API_URL}/refuseExtRequest?${params}`
+      setLoad(true);
+      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      });
+      const newAccessToken = refreshResponse.data.access_token;
+      localStorage.setItem("accessToken", newAccessToken);
+      const retryResponse = await axios.post(
+        `${API_URL}/refuseExtRequest?${params}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        }
       );
-      if (response.data.success) {
+      if (retryResponse.data.success) {
         setFinish(true);
       } else {
-        message.error(response.data.error);
+        message.error(retryResponse.data.error);
       }
-    } catch (error) {
-      console.error(error);
-      message.error(error.message);
+    } catch (refreshError) {
+      console.error("Erreur lors du rafraîchissement du token :", refreshError);
+      message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+    } finally {
+      setLoad(false);
     }
   };
 

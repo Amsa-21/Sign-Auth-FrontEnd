@@ -26,7 +26,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<Connexion />} />
       <Route path="/subscription" element={<Subscription />} />
-      <Route path="/extSign/:name/:doc" element={<ExternalSign />} />
+      <Route path="/extSign/:name/:doc/:refreshToken" element={<ExternalSign />} />
       {renderRoutes()}
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
