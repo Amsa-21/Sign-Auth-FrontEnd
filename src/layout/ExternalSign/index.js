@@ -13,6 +13,7 @@ import {
   ConfigProvider,
   Popconfirm,
   Result,
+  Skeleton,
 } from "antd";
 import {
   UserOutlined,
@@ -48,7 +49,7 @@ function ExternalSign() {
   const [load, setLoad] = useState(false);
   const [loading, setLoading] = useState(false);
   const [opencap, setOpencap] = useState(false);
-  const [finish, setFinish] = useState(false);
+  const [finish, setFinish] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,10 +84,9 @@ function ExternalSign() {
           message.error(retryResponse.data.error);
         }
       } catch (refreshError) {
-        console.error(
-          "Erreur lors du rafraîchissement du token :",
-          refreshError
-        );
+        if (refreshError.response && refreshError.response.status === 401) {
+          setFinish(2);
+        }
       } finally {
         setLoad(false);
       }
@@ -115,29 +115,19 @@ function ExternalSign() {
       formData.append("user", name);
       formData.append("filename", doc);
       formData.append("image", img);
-      const refreshResponse = await axios.post(
-        `${API_URL}/refresh`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`,
-          },
-        }
-      );
-      const newAccessToken = refreshResponse.data.access_token;
-      localStorage.setItem("accessToken", newAccessToken);
+      let access_token = localStorage.getItem("accessToken");
       const retryResponse = await axios.post(
         `${API_URL}/externalSignPDF`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${newAccessToken}`,
+            Authorization: `Bearer ${access_token}`,
           },
         }
       );
       if (retryResponse.data.success) {
-        setFinish(true);
+        setFinish(1);
       } else {
         notification.error({
           message: retryResponse.data.error,
@@ -162,29 +152,18 @@ function ExternalSign() {
     }).toString();
     try {
       setLoad(true);
-      const refreshToken = localStorage.getItem("refreshToken");
-      const refreshResponse = await axios.post(
-        `${API_URL}/refresh`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`,
-          },
-        }
-      );
-      const newAccessToken = refreshResponse.data.access_token;
-      localStorage.setItem("accessToken", newAccessToken);
+      let access_token = localStorage.getItem("accessToken");
       const retryResponse = await axios.post(
         `${API_URL}/refuseExtRequest?${params}`,
         {},
         {
           headers: {
-            Authorization: `Bearer ${newAccessToken}`,
+            Authorization: `Bearer ${access_token}`,
           },
         }
       );
       if (retryResponse.data.success) {
-        setFinish(true);
+        setFinish(1);
       } else {
         message.error(retryResponse.data.error);
       }
@@ -310,7 +289,7 @@ function ExternalSign() {
               type="default"
               onClick={capture}
               loading={loading}
-              style={{ width: 150, fontSize: 14 }}>
+              style={{ height: 40, fontSize: 14 }}>
               Prendre la photo
             </Button>
           </ConfigProvider>
@@ -322,16 +301,20 @@ function ExternalSign() {
         width={688}
         height={520}>
         <Divider />
-        <Webcam
-          audio={false}
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          videoConstraints={videoConstraints}
-          minScreenshotWidth={200}
-          minScreenshotHeight={200}
-          mirrored={true}
-          style={{ borderRadius: "6px" }}
-        />
+        {!loading ? (
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            minScreenshotWidth={200}
+            minScreenshotHeight={200}
+            mirrored={true}
+            style={{ borderRadius: "6px" }}
+          />
+        ) : (
+          <Skeleton.Image active={loading} />
+        )}
       </Modal>
       <Layout.Content
         style={{
@@ -340,7 +323,7 @@ function ExternalSign() {
           justifyContent: "center",
           backgroundColor: "#F5F1E9",
         }}>
-        {!finish ? (
+        {finish === 0 ? (
           <div
             style={{
               display: "flex",
@@ -430,7 +413,7 @@ function ExternalSign() {
               </div>
             )}
           </div>
-        ) : (
+        ) : finish === 1 ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
               style={{
@@ -465,6 +448,51 @@ function ExternalSign() {
                     }}>
                     <Button
                       type="default"
+                      onClick={() => navigate("/subscription")}>
+                      Créer un compte
+                    </Button>
+                  </ConfigProvider>,
+                ]}
+              />
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                backgroundColor: "white",
+                borderRadius: 7,
+                padding: 20,
+                justifyContent: "center",
+                boxShadow: "0 0 2px black",
+                width: 700,
+              }}>
+              <Result
+                status="403"
+                title="Page expirée"
+                subTitle="L'accès à cette page n'est plus autorisé. 
+                Le lien a probablement expiré ou le traitement du document a déjà été effectué."
+                extra={[
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Button: {
+                          defaultBg: "#5A3827",
+                          defaultHoverBg: "#fff",
+                          defaultColor: "#fff",
+                          defaultHoverColor: "#5A3827",
+                          defaultHoverBorderColor: "#5A3827",
+                          defaultBorderColor: "#5A3827",
+                          defaultActiveColor: "#5A3827",
+                          defaultActiveBg: "#8a8a8a",
+                          defaultActiveBorderColor: "#5A3827",
+                        },
+                      },
+                    }}>
+                    <Button
+                      type="default"
+                      style={{ height: 40 }}
                       onClick={() => navigate("/subscription")}>
                       Créer un compte
                     </Button>
