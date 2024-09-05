@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message, Button, Form, Input, Typography, ConfigProvider } from "antd";
 import "../../container/Sidenav/index.css";
-import logo from "./images/logo.png";
+import logo from "./images/logo.webp";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -58,6 +58,7 @@ function Connexion() {
     <div
       style={{
         display: "flex",
+        height: "100vh",
       }}>
       <div
         style={{
@@ -177,17 +178,13 @@ function Connexion() {
                 placeholder="Entrer votre mot de passe"
               />
             </Form.Item>
-            <Form.Item
-              style={{
-                display: "grid",
-                justifyContent: "center",
-              }}>
+            <Form.Item>
               <Button
                 type="default"
                 style={{
                   height: 40,
-                  width: 400,
                   fontSize: 16,
+                  width: 400,
                   fontWeight: "bold",
                 }}
                 htmlType="submit"
