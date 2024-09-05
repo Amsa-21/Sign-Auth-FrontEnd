@@ -289,7 +289,7 @@ function MyRequestList() {
 
       if (response.data.success) {
         setDataPDF(response.data.result);
-        setOpen(true);
+        setLoad(false);
       } else {
         message.error(response.data.error);
       }
@@ -321,7 +321,7 @@ function MyRequestList() {
 
           if (retryResponse.data.success) {
             setDataPDF(retryResponse.data.result);
-            setOpen(true);
+            setLoad(false);
           } else {
             message.error(retryResponse.data.error);
           }
@@ -341,7 +341,7 @@ function MyRequestList() {
         );
       }
     } finally {
-      setLoad(false);
+      setOpen(true);
     }
   };
 

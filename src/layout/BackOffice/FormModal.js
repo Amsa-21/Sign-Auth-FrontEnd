@@ -33,8 +33,7 @@ function CollectionCreateForm(onFormInstanceReady) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="Sonatel" />
       </Form.Item>
       <Form.Item
@@ -45,8 +44,7 @@ function CollectionCreateForm(onFormInstanceReady) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="Senegal" />
       </Form.Item>
       <Form.Item
@@ -57,8 +55,7 @@ function CollectionCreateForm(onFormInstanceReady) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="SN" maxLength={2} />
       </Form.Item>
       <Form.Item
@@ -69,8 +66,7 @@ function CollectionCreateForm(onFormInstanceReady) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="" />
       </Form.Item>
     </Form>
@@ -105,8 +101,7 @@ function CollectionCreateFormModal({
         } catch (error) {
           console.error("Failed:", error);
         }
-      }}
-    >
+      }}>
       {CollectionCreateForm((instance) => {
         setFormInstance(instance);
       })}
@@ -131,8 +126,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="Sonatel" />
       </Form.Item>
       <Form.Item
@@ -143,8 +137,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="Senegal" />
       </Form.Item>
       <Form.Item
@@ -155,8 +148,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="SN" maxLength={2} />
       </Form.Item>
       <Form.Item
@@ -167,8 +159,7 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
             required: true,
             message: "Field cannot be empty!",
           },
-        ]}
-      >
+        ]}>
         <Input placeholder="" />
       </Form.Item>
     </Form>
@@ -204,8 +195,7 @@ function CollectionEditFormModal({
         } catch (error) {
           console.error("Failed:", error);
         }
-      }}
-    >
+      }}>
       {CollectionEditForm((instance) => {
         setFormInstance(instance);
       }, initialValues)}
@@ -224,7 +214,7 @@ function FormModal() {
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
-  
+
       try {
         setLoading(true);
         const response = await axios.get(`${API_URL}/ownMember`, {
@@ -237,12 +227,16 @@ function FormModal() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-              headers: {
-                Authorization: `Bearer ${refreshToken}`,
-              },
-            });
-  
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
+
             const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.get(`${API_URL}/ownMember`, {
@@ -252,8 +246,13 @@ function FormModal() {
             });
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
@@ -263,7 +262,7 @@ function FormModal() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -279,7 +278,7 @@ function FormModal() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         message.success("Add successful");
         setData(response.data.result);
@@ -292,21 +291,29 @@ function FormModal() {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.post(`${API_URL}/addMember`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.post(
+            `${API_URL}/addMember`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             message.success("Add successful");
             setData(retryResponse.data.result);
@@ -316,8 +323,13 @@ function FormModal() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de l'ajout :", error);
@@ -327,15 +339,12 @@ function FormModal() {
       setConfirmLoading(false);
     }
   };
-  
+
   const onEdit = async (values) => {
     const accessToken = localStorage.getItem("accessToken");
     setConfirmLoading(true);
     const formData = new FormData();
-      formData.append(
-        "member",
-        JSON.stringify({ ...editingRecord, ...values })
-      );
+    formData.append("member", JSON.stringify({ ...editingRecord, ...values }));
     try {
       const response = await axios.post(`${API_URL}/editOne`, formData, {
         headers: {
@@ -343,7 +352,7 @@ function FormModal() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         message.success("Edit successful");
         setData(response.data.result);
@@ -356,21 +365,29 @@ function FormModal() {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.post(`${API_URL}/editOne`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.post(
+            `${API_URL}/editOne`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             message.success("Edit successful");
             setData(retryResponse.data.result);
@@ -380,8 +397,13 @@ function FormModal() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de l'édition :", error);
@@ -395,15 +417,15 @@ function FormModal() {
   const handleDelete = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
     const params = new URLSearchParams({
-        id: record.id,
-      }).toString();
-    try {  
+      id: record.id,
+    }).toString();
+    try {
       const response = await axios.delete(`${API_URL}/deleteOne?${params}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.data.success) {
         message.success("Delete successful");
         setData(response.data.result);
@@ -415,20 +437,27 @@ function FormModal() {
       if (error.response && error.response.status === 401) {
         try {
           const refreshToken = localStorage.getItem("refreshToken");
-          const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          });
-  
+          const refreshResponse = await axios.post(
+            `${API_URL}/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
           const newAccessToken = refreshResponse.data.access_token;
           localStorage.setItem("accessToken", newAccessToken);
-          const retryResponse = await axios.delete(`${API_URL}/deleteOne?${params}`, {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-  
+          const retryResponse = await axios.delete(
+            `${API_URL}/deleteOne?${params}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+
           if (retryResponse.data.success) {
             message.success("Delete successful");
             setData(retryResponse.data.result);
@@ -437,15 +466,20 @@ function FormModal() {
             message.error(retryResponse.data.error);
           }
         } catch (refreshError) {
-          console.error("Erreur lors du rafraîchissement du token :", refreshError);
-          message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+          console.error(
+            "Erreur lors du rafraîchissement du token :",
+            refreshError
+          );
+          message.error(
+            "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+          );
         }
       } else {
         console.error("Erreur lors de la suppression :", error);
         message.error(error.message);
       }
     }
-  };  
+  };
 
   const onCancel = () => {
     setOpen(false);
@@ -495,12 +529,11 @@ function FormModal() {
           <Divider type="vertical" />
           <Popconfirm
             placement="topLeft"
-            title="Are you sure to delete this member?"
-            description="Delete this member"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() => handleDelete(record)}
-          >
+            title="Êtes-vous sûr de vouloir supprimer ce membre ?"
+            description="Supprimer ce membre"
+            okText="Oui"
+            cancelText="Non"
+            onConfirm={() => handleDelete(record)}>
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "rgb(256,0,0)" }} />}
@@ -542,43 +575,38 @@ function FormModal() {
               colorPrimary: "#5A3827",
             },
           },
-        }}
-      >
+        }}>
         <div
           style={{
             display: "flex",
             width: "100%",
             alignItems: "flex-end",
             marginBottom: 20,
-          }}
-        >
+          }}>
           <div
             style={{
               flex: 1,
               height: 1,
               backgroundColor: "rgba(0, 0, 0, 0.2)",
-            }}
-          ></div>
-          <Button onClick={() => setOpen(true)}>
+            }}></div>
+          <Button onClick={() => setOpen(true)} style={{ height: 40 }}>
             Ajouter un nouveau membre
           </Button>
         </div>
-
-        <Table
-          columns={columns}
-          dataSource={dataWithKeys}
-          size="small"
-          bordered={false}
-          style={{
-            overflow: "auto",
-            boxShadow: "0 0 2px black",
-            borderRadius: 7,
-          }}
-          pagination={false}
-          loading={loading}
-        />
       </ConfigProvider>
-
+      <Table
+        columns={columns}
+        dataSource={dataWithKeys}
+        size="small"
+        bordered={false}
+        style={{
+          overflow: "auto",
+          boxShadow: "0 0 2px black",
+          borderRadius: 7,
+        }}
+        pagination={false}
+        loading={loading}
+      />
       <CollectionCreateFormModal
         confirmLoading={confirmLoading}
         open={open}

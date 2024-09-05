@@ -367,7 +367,7 @@ function RequestList() {
 
       if (response.data.success) {
         setDataPDF(response.data.result);
-        setOpen2(true);
+        setLoad(false);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -397,7 +397,7 @@ function RequestList() {
 
           if (retryResponse.data.success) {
             setDataPDF(retryResponse.data.result);
-            setOpen2(true);
+            setLoad(false);
           }
         } catch (refreshError) {
           console.error(
@@ -413,7 +413,7 @@ function RequestList() {
         message.error(error.message);
       }
     } finally {
-      setLoad(false);
+      setOpen2(true);
     }
   };
 

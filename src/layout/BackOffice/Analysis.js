@@ -318,14 +318,15 @@ function Analysis() {
                         type="default"
                         key="console"
                         loading={loading}
-                        onClick={() => handleAdd(data.result)}>
+                        onClick={() => handleAdd(data.result)}
+                        style={{ height: 40 }}>
                         Ajouter à ma propre liste de confiance approuvée
                       </Button>
                     </ConfigProvider>
                   }
                   style={{
                     backgroundColor: "white",
-                    borderRadius: 6,
+                    borderRadius: 7,
                     boxShadow: "0 0 2px black",
                   }}
                 />

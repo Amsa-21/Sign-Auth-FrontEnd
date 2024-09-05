@@ -1,17 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import background from "./images/bg.jpg";
-import bg from "./images/background.jpg";
-import {
-  message,
-  Button,
-  Form,
-  Input,
-  Typography,
-  Image,
-  ConfigProvider,
-} from "antd";
+import { message, Button, Form, Input, Typography, ConfigProvider } from "antd";
+import "../../container/Sidenav/index.css";
+import logo from "./images/logo.png";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -65,139 +57,158 @@ function Connexion() {
   return (
     <div
       style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        display: "flex",
+        backgroundColor: "white",
+        justifyContent: "center",
+        height: "100vh",
       }}>
       <div
         style={{
           display: "flex",
-          width: "100%",
-          justifyContent: "center",
-          height: "100vh",
-          backdropFilter: "blur(10px) brightness(70%)",
-          overflow: "auto",
+          width: 800,
+          backgroundColor: "#2B2B2B",
+          padding: 50,
         }}>
         <div
           style={{
             display: "flex",
-            alignItems: "center",
             flexDirection: "column",
+            width: "100%",
             gap: 40,
-            marginBlock: 70,
+            marginBlock: 10,
           }}>
-          <div style={{ textAlign: "center", width: 600 }}>
-            <Typography.Title style={{ fontSize: 30, color: "white" }}>
-              Accédez à votre compte pour signer et protéger vos documents en
-              toute sécurité.
-            </Typography.Title>
-          </div>
-          <div
+          <img
+            src={logo}
+            alt="logo du site"
+            width={300}
+            style={{ marginLeft: 30 }}
+          />
+          <h2 style={{ fontSize: 30, color: "#f5f1e9" }}>
+            Prêt à signer vos documents en toute sécurité ?
+          </h2>
+          <p
             style={{
-              borderRadius: 10,
-              height: 650,
-              width: 500,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              boxShadow: "0 0 50px black",
+              fontSize: 16,
+              textAlign: "justify",
+              color: "rgba(245,241,232,.6)",
             }}>
-            <Image
-              preview={false}
-              alt="Background image"
-              src={background}
-              height={325}
-              width={500}
-              style={{ borderRadius: "10px 10px 0 0" }}
-            />
-            <ConfigProvider
-              theme={{
-                components: {
-                  Form: {
-                    labelColor: "white",
-                  },
-                  Button: {
-                    defaultBg: "#5A3827",
-                    defaultHoverBg: "#F5F1E9",
-                    defaultColor: "#F5F1E9",
-                    defaultHoverColor: "#5A3827",
-                    defaultHoverBorderColor: "#F5F1E9",
-                    defaultBorderColor: "#5A3827",
-                    defaultActiveColor: "#5A3827",
-                    defaultActiveBorderColor: "#5A3827",
-                  },
-                  Typography: {
-                    colorLink: "white",
-                    colorLinkHover: "gray",
-                  },
-                },
-              }}>
-              <Form
-                style={{
-                  padding: "25px",
-                  marginInline: 50,
-                }}
-                onFinish={handleSubmit}
-                autoComplete="off"
-                colon={false}
-                layout="vertical"
-                form={form}>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez renseigner votre email !",
-                    },
-                  ]}>
-                  <Input
-                    type="email"
-                    size="medium"
-                    placeholder="Entrer votre email"
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Mot de passe"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Veuillez renseigner votre mot de passe !",
-                    },
-                  ]}>
-                  <Input.Password
-                    size="medium"
-                    placeholder="Entrer votre mot de passe"
-                  />
-                </Form.Item>
-                <Form.Item
-                  style={{
-                    display: "grid",
-                    justifyContent: "center",
-                  }}>
-                  <Button
-                    type="default"
-                    style={{
-                      width: 150,
-                      marginTop: 15,
-                    }}
-                    htmlType="submit"
-                    loading={loading}>
-                    Se connecter
-                  </Button>
-                </Form.Item>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}>
-                  <Typography.Link underline={true} onClick={handleCreate}>
-                    Créer un nouveau compte
-                  </Typography.Link>
-                </div>
-              </Form>
-            </ConfigProvider>
-          </div>
+            Améliorez vos processus de signature avec notre plateforme de
+            signature électronique sécurisée, notre vérification d'identité
+            avancée, et notre génération de certificats de conformité.
+            Simplifiez la gestion de vos documents avec nos outils pratiques et
+            nos ressources.
+          </p>
         </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          width: "100%",
+          gap: 20,
+          marginBlock: 70,
+        }}>
+        <div style={{ width: 400 }}>
+          <h1 style={{ fontSize: 30 }}>Identifiez-vous</h1>
+        </div>
+        <ConfigProvider
+          theme={{
+            components: {
+              Form: {
+                labelColor: "black",
+                labelFontSize: 14,
+              },
+              Button: {
+                defaultBg: "#5A3827",
+                defaultHoverBg: "#F5F1E9",
+                defaultColor: "#F5F1E9",
+                defaultHoverColor: "#5A3827",
+                defaultBorderColor: "#5A3827",
+                defaultActiveColor: "#5A3827",
+                defaultActiveBorderColor: "#5A3827",
+                defaultHoverBorderColor: "#5A3827",
+              },
+              Typography: {
+                colorLink: "#5A3827",
+                colorLinkHover: "gray",
+                fontSize: 16,
+              },
+            },
+          }}>
+          <Form
+            onFinish={handleSubmit}
+            autoComplete="off"
+            style={{ width: 400 }}
+            colon={false}
+            layout="vertical"
+            form={form}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Veuillez renseigner votre email !",
+                },
+              ]}>
+              <Input
+                type="email"
+                size="medium"
+                placeholder="Entrer votre email"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Mot de passe"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Veuillez renseigner votre mot de passe !",
+                },
+              ]}>
+              <Input.Password
+                size="medium"
+                placeholder="Entrer votre mot de passe"
+              />
+            </Form.Item>
+            <Form.Item
+              style={{
+                display: "grid",
+                justifyContent: "center",
+              }}>
+              <Button
+                type="default"
+                style={{
+                  height: 40,
+                  width: 400,
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+                htmlType="submit"
+                loading={loading}>
+                Identifiez-vous
+              </Button>
+            </Form.Item>
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                backgroundColor: "rgba(0,0,0,0.2)",
+              }}></div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "left",
+                marginTop: 15,
+              }}>
+              <Typography.Link underline={false} onClick={handleCreate}>
+                Créer un nouveau compte
+              </Typography.Link>
+            </div>
+          </Form>
+        </ConfigProvider>
       </div>
     </div>
   );

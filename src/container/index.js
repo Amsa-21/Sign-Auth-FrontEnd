@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import Sidenav from "./Sidenav";
+import logo from "./images/logo.png";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -296,7 +297,12 @@ function HomeLayout({ children }) {
             alignItems: "center",
           }}
           onClick={() => navigate("/")}>
-          <h2 style={{ color: "white", marginTop: 15 }}>Mandarga</h2>
+          <img
+            src={logo}
+            alt="logo du site"
+            width={120}
+            style={{ marginLeft: 25 }}
+          />
         </Typography.Link>
         <div
           style={{
