@@ -9,10 +9,10 @@ import {
   Spin,
   ConfigProvider,
 } from "antd";
-import bg from "./images/background.jpg";
+import logo from "./images/logo.png";
 import VideoRecorder from "react-video-recorder-18";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -45,7 +45,7 @@ function Subscription() {
 
   const prev = () => {
     if (current === 0) {
-      navigate("login");
+      navigate("/login");
     } else {
       setCurrent(current - 1);
     }
@@ -91,15 +91,13 @@ function Subscription() {
             <Form.Item
               name="prenom"
               label="Prénom"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="nom"
               label="Nom"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
@@ -110,16 +108,14 @@ function Subscription() {
             <Form.Item
               name="date"
               label="Date de naissance"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input type="date" style={{ width: 235 }} />
             </Form.Item>
           </div>
           <Form.Item
             name="numero"
             label="Téléphone"
-            rules={[{ required: true }]}
-          >
+            rules={[{ required: true }]}>
             <Input type="numero" />
           </Form.Item>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -129,15 +125,13 @@ function Subscription() {
               rules={[
                 { min: 8, message: "Le mot de passe est trop court" },
                 { required: true, message: "Ce champ est requis" },
-              ]}
-            >
+              ]}>
               <Input.Password style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="password2"
               label="Confirmer le mot de passe"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input.Password style={{ width: 235 }} />
             </Form.Item>
           </div>
@@ -145,15 +139,13 @@ function Subscription() {
             <Form.Item
               name="organisation"
               label="Organisation"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input style={{ width: 235 }} />
             </Form.Item>
             <Form.Item
               name="poste"
               label="Poste"
-              rules={[{ required: true, message: "Ce champ est requis" }]}
-            >
+              rules={[{ required: true, message: "Ce champ est requis" }]}>
               <Input style={{ width: 235 }} />
             </Form.Item>
           </div>
@@ -168,12 +160,19 @@ function Subscription() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-          }}
-        >
-          <div style={{ width: "50vh", height: "50vh" }}>
+            alignItems: "center",
+          }}>
+          <div style={{ width: 500, height: 500 }}>
             <VideoRecorder onRecordingComplete={onRecordingComplete} />
           </div>
-          <div style={{ marginBlock: "10px" }}>
+          <div
+            style={{
+              marginBlock: "10px",
+              backgroundColor: "rgba(0,0,0,.5)",
+              padding: 10,
+              textAlign: "justify",
+              width: "100%",
+            }}>
             <Typography.Text style={{ color: "yellow" }}>
               * Enregistrez une vidéo de 10 secondes en pivotant votre visage
               afin de capturer le maximum d'informations.
@@ -191,12 +190,10 @@ function Subscription() {
               display: "flex",
               justifyContent: "center",
               width: "50%",
-            }}
-          >
+            }}>
             {user.email && (
               <Typography.Text
-                style={{ color: "white", fontSize: 16, textAlign: "center" }}
-              >
+                style={{ color: "black", fontSize: 16, textAlign: "center" }}>
                 Votre compte a été crée avec succès. Le code secret de signature
                 est envoyé sur cette adresse Email:{" "}
                 <b>{user.email[0].toUpperCase() + user.email.slice(1)}</b>.
@@ -217,141 +214,177 @@ function Subscription() {
   return (
     <div
       style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+        display: "flex",
+      }}>
       <div
         style={{
           display: "flex",
-          width: "100%",
-          justifyContent: "center",
-          height: "100vh",
-          backdropFilter: "blur(10px) brightness(70%)",
-          overflow: "auto",
-        }}
-      >
+          width: 800,
+          backgroundColor: "#2B2B2B",
+          padding: 50,
+        }}>
         <div
           style={{
             display: "flex",
-            alignItems: "center",
             flexDirection: "column",
+            width: "100%",
             gap: 40,
-            marginBlock: 70,
-          }}
-        >
-          <ConfigProvider
-            theme={{
-              components: {
-                Steps: {
-                  colorText: "white",
-                  colorPrimary: "#5A3827",
-                  colorSplit: "rgba(255, 255, 255, 0.5)",
-                  colorTextQuaternary: "white",
-                },
-                Form: {
-                  labelColor: "white",
-                },
-                Button: {
-                  defaultBg: "#5A3827",
-                  defaultHoverBg: "#F5F1E9",
-                  defaultColor: "#F5F1E9",
-                  defaultHoverColor: "#5A3827",
-                  defaultHoverBorderColor: "#F5F1E9",
-                  defaultBorderColor: "#5A3827",
-                  defaultActiveColor: "#5A3827",
-                  defaultActiveBorderColor: "#5A3827",
-                },
+            marginBlock: 10,
+            height: "100vh",
+          }}>
+          <img
+            src={logo}
+            alt="logo du site"
+            width={300}
+            style={{ marginLeft: 30 }}
+          />
+          <h2 style={{ fontSize: 30, color: "#f5f1e9" }}>
+            Prêt à signer vos documents en toute sécurité ?
+          </h2>
+          <p
+            style={{
+              fontSize: 16,
+              textAlign: "justify",
+              color: "rgba(245,241,232,.6)",
+            }}>
+            Améliorez vos processus de signature avec notre plateforme de
+            signature électronique sécurisée, notre vérification d'identité
+            avancée, et notre génération de certificats de conformité.
+            Simplifiez la gestion de vos documents avec nos outils pratiques et
+            nos ressources.
+          </p>
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        }}>
+        <ConfigProvider
+          theme={{
+            components: {
+              Steps: {
+                colorText: "black",
+                colorPrimary: "#5A3827",
+                colorSplit: "rgba(0, 0, 0, 0.5)",
+                colorTextQuaternary: "white",
               },
-            }}
-          >
+              Form: {
+                labelColor: "black",
+              },
+              Input: {
+                colorBorder: "#5A3827",
+                hoverBorderColor: "grey",
+                activeBorderColor: "grey",
+              },
+              Button: {
+                defaultBg: "#5A3827",
+                defaultHoverBg: "#fff",
+                defaultColor: "#F5F1E9",
+                defaultHoverColor: "#5A3827",
+                defaultHoverBorderColor: "#5A3827",
+                defaultBorderColor: "#5A3827",
+                defaultActiveColor: "#5A3827",
+                defaultActiveBorderColor: "#5A3827",
+              },
+            },
+          }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              padding: 50,
+              height: 200,
+              borderBottom: "1px solid rgba(0,0,0,0.2)",
+            }}>
             <Steps style={{ width: 500 }} current={current} items={items} />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                padding: 40,
-                gap: 30,
-                borderRadius: 10,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                boxShadow: "0 0 50px black",
-                maxWidth: "min-content",
-              }}
-            >
-              <Spin fullscreen spinning={loading} />
-              <Form layout="vertical" form={form} onFinish={next}>
-                <div style={{ minWidth: 500 }}>{steps[current].content}</div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "right",
-                    marginBlockStart: 25,
-                  }}
-                >
-                  {current >= 0 && current <= 1 && (
-                    <ConfigProvider
-                      theme={{
-                        components: {
-                          Button: {
-                            defaultBg: "#F5F1e9 ",
-                            defaultHoverBg: "#5A3827",
-                            defaultColor: "#5A3827",
-                            defaultHoverColor: "#F5F1e9 ",
-                            defaultHoverBorderColor: "#5A3827",
-                            defaultBorderColor: "#F5F1e9 ",
-                            defaultActiveBg: "#5A3827",
-                            defaultActiveBorderColor: "#F5F1e9",
-                            defaultActiveColor: "#F5F1e9",
-                          },
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              paddingBlock: 70,
+              flexDirection: "column",
+              width: "100%",
+            }}>
+            <Spin fullscreen spinning={loading} />
+            <Form layout="vertical" form={form} onFinish={next}>
+              <div style={{ width: 500 }}>{steps[current].content}</div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  marginBlockStart: 25,
+                }}>
+                {current >= 0 && current <= 1 && (
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Button: {
+                          defaultBg: "#fff",
+                          defaultHoverBg: "#5A3827",
+                          defaultColor: "#5A3827",
+                          defaultHoverColor: "#F5F1e9 ",
+                          defaultHoverBorderColor: "#5A3827",
+                          defaultBorderColor: "#5A3827 ",
+                          defaultActiveBg: "#5A3827",
+                          defaultActiveBorderColor: "#F5F1e9",
+                          defaultActiveColor: "#F5F1e9",
                         },
-                      }}
-                    >
-                      <Button
-                        type="default"
-                        style={{
-                          margin: "0 20px",
-                          width: 120,
-                        }}
-                        onClick={() => prev()}
-                      >
-                        Retour
-                      </Button>
-                    </ConfigProvider>
-                  )}
-                  {current < steps.length - 2 && (
-                    <Button
-                      style={{
-                        width: 120,
-                      }}
-                      type="default"
-                      htmlType="submit"
-                    >
-                      Suivant
-                    </Button>
-                  )}
-                  {current === steps.length - 2 && (
+                      },
+                    }}>
                     <Button
                       type="default"
                       style={{
-                        width: 120,
+                        margin: "0 20px",
+                        width: 115,
+                        height: 40,
                       }}
-                      onClick={handleFinish}
-                    >
-                      Enregister
+                      onClick={() => prev()}>
+                      Retour
                     </Button>
-                  )}
-                  {current === steps.length - 1 && (
-                    <Button type="default" onClick={() => navigate("/login")}>
+                  </ConfigProvider>
+                )}
+                {current < steps.length - 2 && (
+                  <Button
+                    style={{
+                      width: 115,
+                      height: 40,
+                    }}
+                    type="default"
+                    htmlType="submit">
+                    Suivant
+                  </Button>
+                )}
+                {current === steps.length - 2 && (
+                  <Button
+                    type="default"
+                    style={{
+                      width: 115,
+                      height: 40,
+                    }}
+                    onClick={handleFinish}>
+                    Enregister
+                  </Button>
+                )}
+                {current === steps.length - 1 && (
+                  <Link to={"/login"}>
+                    <Button
+                      type="default"
+                      style={{
+                        height: 40,
+                      }}>
                       Retourner à la page de connexion
                     </Button>
-                  )}
-                </div>
-              </Form>
-            </div>
-          </ConfigProvider>
-        </div>
+                  </Link>
+                )}
+              </div>
+            </Form>
+          </div>
+        </ConfigProvider>
       </div>
     </div>
   );

@@ -58,9 +58,6 @@ function Connexion() {
     <div
       style={{
         display: "flex",
-        backgroundColor: "white",
-        justifyContent: "center",
-        height: "100vh",
       }}>
       <div
         style={{
@@ -76,6 +73,7 @@ function Connexion() {
             width: "100%",
             gap: 40,
             marginBlock: 10,
+            height: "100%",
           }}>
           <img
             src={logo}
@@ -108,7 +106,7 @@ function Connexion() {
           flexDirection: "column",
           width: "100%",
           gap: 20,
-          marginBlock: 70,
+          backgroundColor: "#F5F1E9",
         }}>
         <div style={{ width: 400 }}>
           <h1 style={{ fontSize: 30 }}>Identifiez-vous</h1>
@@ -119,6 +117,11 @@ function Connexion() {
               Form: {
                 labelColor: "black",
                 labelFontSize: 14,
+              },
+              Input: {
+                colorBorder: "#5A3827",
+                hoverBorderColor: "grey",
+                activeBorderColor: "grey",
               },
               Button: {
                 defaultBg: "#5A3827",
@@ -134,6 +137,7 @@ function Connexion() {
                 colorLink: "#5A3827",
                 colorLinkHover: "gray",
                 fontSize: 16,
+                colorLinkActive: "black",
               },
             },
           }}>

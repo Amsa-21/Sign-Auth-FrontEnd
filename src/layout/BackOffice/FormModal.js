@@ -571,9 +571,6 @@ function FormModal() {
               defaultActiveBorderColor: "#5A3827",
               borderRadius: "6px 6px 6px 0px ",
             },
-            Spin: {
-              colorPrimary: "#5A3827",
-            },
           },
         }}>
         <div
@@ -593,20 +590,20 @@ function FormModal() {
             Ajouter un nouveau membre
           </Button>
         </div>
+        <Table
+          columns={columns}
+          dataSource={dataWithKeys}
+          size="small"
+          bordered={false}
+          style={{
+            overflow: "auto",
+            boxShadow: "0 0 2px black",
+            borderRadius: 7,
+          }}
+          pagination={false}
+          loading={loading}
+        />
       </ConfigProvider>
-      <Table
-        columns={columns}
-        dataSource={dataWithKeys}
-        size="small"
-        bordered={false}
-        style={{
-          overflow: "auto",
-          boxShadow: "0 0 2px black",
-          borderRadius: 7,
-        }}
-        pagination={false}
-        loading={loading}
-      />
       <CollectionCreateFormModal
         confirmLoading={confirmLoading}
         open={open}

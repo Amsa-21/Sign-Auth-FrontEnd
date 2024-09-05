@@ -15,6 +15,7 @@ import {
   ConfigProvider,
   Divider,
   Result,
+  Spin,
 } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -227,8 +228,12 @@ function Analysis() {
               colorPrimaryHover: "#8a8a8a",
               colorPrimary: "#5A3827",
             },
+            Spin: {
+              colorPrimary: "#5A3827",
+            },
           },
         }}>
+        <Spin fullscreen spinning={uploading} />
         <div
           style={{
             display: "flex",
