@@ -13,7 +13,7 @@ import logo from "./images/logo.png";
 import VideoRecorder from "react-video-recorder-18";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-
+import "../../container/Sidenav/index.css";
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
 function Subscription() {
@@ -88,65 +88,59 @@ function Subscription() {
       content: (
         <>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Form.Item
-              name="prenom"
-              label="Prénom"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input style={{ width: 235 }} />
+            <Form.Item name="prenom" label="Prénom">
+              <Input style={{ width: 235 }} required />
             </Form.Item>
-            <Form.Item
-              name="nom"
-              label="Nom"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input style={{ width: 235 }} />
+            <Form.Item name="nom" label="Nom">
+              <Input style={{ width: 235 }} required />
             </Form.Item>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-              <Input type="email" style={{ width: 235 }} />
+            <Form.Item name="email" label="Email">
+              <Input type="email" style={{ width: 235 }} required />
             </Form.Item>
             <Form.Item
               name="date"
               label="Date de naissance"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input type="date" style={{ width: 235 }} />
+              rules={[
+                {
+                  validator: (_, value) => {
+                    if (!value) {
+                      return Promise.resolve();
+                    }
+                    const birthDate = new Date(value);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    if (age < 18) {
+                      return Promise.reject("Vous devez avoir au moins 18 ans");
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}>
+              <Input type="date" style={{ width: 235 }} required />
             </Form.Item>
           </div>
-          <Form.Item
-            name="numero"
-            label="Téléphone"
-            rules={[{ required: true }]}>
-            <Input type="numero" />
+          <Form.Item name="numero" label="Téléphone">
+            <Input type="numero" required />
           </Form.Item>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item
               name="password"
               label="Mot de passe"
-              rules={[
-                { min: 8, message: "Le mot de passe est trop court" },
-                { required: true, message: "Ce champ est requis" },
-              ]}>
-              <Input.Password style={{ width: 235 }} />
+              rules={[{ min: 8, message: "Le mot de passe est trop court" }]}>
+              <Input.Password style={{ width: 235 }} required />
             </Form.Item>
-            <Form.Item
-              name="password2"
-              label="Confirmer le mot de passe"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input.Password style={{ width: 235 }} />
+            <Form.Item name="password2" label="Confirmer le mot de passe">
+              <Input.Password style={{ width: 235 }} required />
             </Form.Item>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Form.Item
-              name="organisation"
-              label="Organisation"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input style={{ width: 235 }} />
+            <Form.Item name="organisation" label="Organisation">
+              <Input style={{ width: 235 }} required />
             </Form.Item>
-            <Form.Item
-              name="poste"
-              label="Poste"
-              rules={[{ required: true, message: "Ce champ est requis" }]}>
-              <Input style={{ width: 235 }} />
+            <Form.Item name="poste" label="Poste">
+              <Input style={{ width: 235 }} required />
             </Form.Item>
           </div>
         </>
@@ -297,7 +291,7 @@ function Subscription() {
               justifyContent: "center",
               width: "100%",
               padding: 50,
-              height: 200,
+              height: 150,
               borderBottom: "1px solid rgba(0,0,0,0.2)",
             }}>
             <Steps style={{ width: 500 }} current={current} items={items} />

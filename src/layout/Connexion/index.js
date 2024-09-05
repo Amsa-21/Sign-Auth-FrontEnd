@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message, Button, Form, Input, Typography, ConfigProvider } from "antd";
 import "../../container/Sidenav/index.css";
-import logo from "./images/logo.webp";
+import logo from "./images/logo.png";
+import "../../container/Sidenav/index.css";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -149,33 +150,19 @@ function Connexion() {
             colon={false}
             layout="vertical"
             form={form}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: "Veuillez renseigner votre email !",
-                },
-              ]}>
+            <Form.Item label="Email" name="email">
               <Input
                 type="email"
                 size="medium"
                 placeholder="Entrer votre email"
+                required
               />
             </Form.Item>
-            <Form.Item
-              label="Mot de passe"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Veuillez renseigner votre mot de passe !",
-                },
-              ]}>
+            <Form.Item label="Mot de passe" name="password">
               <Input.Password
                 size="medium"
                 placeholder="Entrer votre mot de passe"
+                required
               />
             </Form.Item>
             <Form.Item>

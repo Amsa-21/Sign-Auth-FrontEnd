@@ -20,7 +20,7 @@ import {
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import Sidenav from "./Sidenav";
-import logo from "./images/logo.webp";
+import logo from "./images/logo.png";
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
