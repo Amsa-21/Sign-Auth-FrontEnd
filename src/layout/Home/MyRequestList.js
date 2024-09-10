@@ -112,99 +112,6 @@ function MyRequestList() {
     fetchData();
   }, []);
 
-  const statusControle = (item) => {
-    switch (item) {
-      case 0:
-        return (
-          <Tag
-            icon={<SyncOutlined spin />}
-            color="#108ee9"
-            style={{ width: 90 }}>
-            En cours
-          </Tag>
-        );
-      case 1:
-        return (
-          <Tag
-            icon={<CheckCircleOutlined />}
-            color="#87d068"
-            style={{ width: 90 }}>
-            Complete
-          </Tag>
-        );
-      case 2:
-        return (
-          <Tag
-            icon={<CloseCircleOutlined />}
-            color="#f50"
-            style={{ width: 90 }}>
-            Rejetée
-          </Tag>
-        );
-      default:
-    }
-  };
-
-  let stat = checkedList.map((item, _) => ({
-    status:
-      item === "Complete"
-        ? 1
-        : item === "En cours"
-        ? 0
-        : item === "Rejetée"
-        ? 2
-        : null,
-  }));
-
-  let dataWithKeys = data.map((item, index) => ({
-    ...item,
-    signataires: (
-      <List
-        dataSource={item.signers}
-        renderItem={(it) =>
-          it.includes("@") ? (
-            <List.Item
-              key={it}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 10,
-              }}>
-              {it
-                .split(" ")
-                .slice(0, -1)
-                .map((elem) => elem)
-                .join(" ")}
-              <Tag
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                  boxShadow: "0 0 2px black",
-                }}
-                bordered={false}>
-                EXT
-              </Tag>
-            </List.Item>
-          ) : (
-            <List.Item key={it}>
-              {it
-                .split(" ")
-                .slice(0, -1)
-                .map((elem) => elem)
-                .join(" ")}
-            </List.Item>
-          )
-        }
-      />
-    ),
-    statut: statusControle(item.status),
-    key: item.id || index,
-  }));
-  dataWithKeys = dataWithKeys.filter(
-    (item) =>
-      item.person === person && stat.some((s) => s.status === item.status)
-  );
-
   const handleCancel = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
     const params = new URLSearchParams({
@@ -344,6 +251,100 @@ function MyRequestList() {
       setOpen(true);
     }
   };
+
+  const statusControle = (item, c, s) => {
+    switch (item) {
+      case 0:
+        return (
+          <Tag
+            icon={<SyncOutlined spin />}
+            color="#108ee9"
+            style={{ width: 90 }}>
+            {c}/{s}
+          </Tag>
+        );
+      case 1:
+        return (
+          <Tag
+            icon={<CheckCircleOutlined />}
+            color="#87d068"
+            style={{ width: 90 }}>
+            Complete
+          </Tag>
+        );
+      case 2:
+        return (
+          <Tag
+            icon={<CloseCircleOutlined />}
+            color="#f50"
+            style={{ width: 90 }}>
+            Rejetée
+          </Tag>
+        );
+      default:
+    }
+  };
+
+  let stat = checkedList.map((item, _) => ({
+    status:
+      item === "Complete"
+        ? 1
+        : item === "En cours"
+        ? 0
+        : item === "Rejetée"
+        ? 2
+        : null,
+  }));
+
+  let dataWithKeys = data.map((item, index) => ({
+    ...item,
+    signataires: (
+      <List
+        dataSource={item.signers}
+        renderItem={(it) =>
+          it.includes("@") ? (
+            <List.Item
+              key={it}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 10,
+              }}>
+              {it
+                .split(" ")
+                .slice(0, -1)
+                .map((elem) => elem)
+                .join(" ")}
+              <Tag
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  boxShadow: "0 0 2px black",
+                }}
+                bordered={false}>
+                EXT
+              </Tag>
+            </List.Item>
+          ) : (
+            <List.Item key={it}>
+              {it
+                .split(" ")
+                .slice(0, -1)
+                .map((elem) => elem)
+                .join(" ")}
+            </List.Item>
+          )
+        }
+      />
+    ),
+    statut: statusControle(item.status, item.cursign, item.nbresign),
+    key: item.id || index,
+  }));
+
+  dataWithKeys = dataWithKeys.filter(
+    (item) =>
+      item.person === person && stat.some((s) => s.status === item.status)
+  );
 
   const mois = [
     "Janvier",

@@ -464,13 +464,7 @@ function RequestList() {
   let dataWithKeys = data.map((item, index) => ({
     ...item,
     signataires: item.signers,
-    statut: item.signatures.includes(person) ? (
-      <Tag icon={<CheckCircleOutlined />} color="#87d068" style={{ width: 85 }}>
-        Complete
-      </Tag>
-    ) : (
-      statusControle(item.status)
-    ),
+    statut: statusControle(item.status),
     key: item.id || index,
     signats: item.signatures.includes(person) ? true : false,
   }));
