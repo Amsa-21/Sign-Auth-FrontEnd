@@ -216,6 +216,7 @@ function Subscription() {
           width: 800,
           backgroundColor: "#2B2B2B",
           padding: 50,
+          height: "100vh",
         }}>
         <div
           style={{
@@ -224,7 +225,6 @@ function Subscription() {
             width: "100%",
             gap: 40,
             marginBlock: 10,
-            height: "100vh",
           }}>
           <img
             src={logo}
