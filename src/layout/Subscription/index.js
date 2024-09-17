@@ -73,7 +73,9 @@ function Subscription() {
       if (response.data.success) {
         setCurrent(current + 1);
       } else {
-        message.warning("Veuillez enregistrer une bonne vidéo pour continuer.");
+        message.warning(
+          "Veuillez enregistrer une vidéo de meilleure qualité pour continuer. Assurez-vous d'être bien éclairé et que votre visage soit clairement visible."
+        );
       }
     } catch (error) {
       console.error(error);
