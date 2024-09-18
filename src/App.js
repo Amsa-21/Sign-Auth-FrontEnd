@@ -1,6 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Connexion from "./layout/Connexion";
 import Subscription from "./layout/Subscription";
 import ExternalSign from "./layout/ExternalSign";
@@ -22,6 +21,7 @@ const renderRoutes = () => {
 };
 
 function App() {
+  const navigate = useNavigate();
   return (
     <Routes>
       <Route path="/login" element={<Connexion />} />
@@ -31,7 +31,7 @@ function App() {
         element={<ExternalSign />}
       />
       {renderRoutes()}
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="*" element={navigate("/login")} />
     </Routes>
   );
 }
