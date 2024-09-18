@@ -115,8 +115,8 @@ function ExternalSign() {
       formData.append("user", name);
       formData.append("filename", doc);
       formData.append("image", img);
-      let access_token = localStorage.getItem("accessToken");
-      const retryResponse = await axios.post(
+      const access_token = localStorage.getItem("accessToken");
+      const response = await axios.post(
         `${API_URL}/externalSignPDF`,
         formData,
         {
@@ -126,21 +126,25 @@ function ExternalSign() {
           },
         }
       );
-      if (retryResponse.data.success) {
+      if (response.data.success) {
         setFinish(1);
       } else {
         notification.error({
-          message: retryResponse.data.error,
+          message: response.data.error,
           placement: "bottomRight",
           duration: 5,
         });
         setOpen(false);
       }
-    } catch (refreshError) {
-      console.error("Erreur lors du rafraîchissement du token :", refreshError);
-      message.error(
-        "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
-      );
+    } catch (error) {
+      console.error("Erreur lors de la signature du PDF :", error);
+      if (error.response && error.response.status === 401) {
+        message.error("Votre session a expiré. Veuillez recharger la page.");
+      } else {
+        message.error(
+          "Une erreur s'est produite lors de la signature du PDF. Veuillez réessayer."
+        );
+      }
     } finally {
       setLoad(false);
     }
@@ -153,7 +157,7 @@ function ExternalSign() {
     try {
       setLoad(true);
       let access_token = localStorage.getItem("accessToken");
-      const retryResponse = await axios.post(
+      const response = await axios.post(
         `${API_URL}/refuseExtRequest?${params}`,
         {},
         {
@@ -162,16 +166,20 @@ function ExternalSign() {
           },
         }
       );
-      if (retryResponse.data.success) {
+      if (response.data.success) {
         setFinish(1);
       } else {
-        message.error(retryResponse.data.error);
+        message.error(response.data.error);
       }
-    } catch (refreshError) {
-      console.error("Erreur lors du rafraîchissement du token :", refreshError);
-      message.error(
-        "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
-      );
+    } catch (error) {
+      console.error("Erreur lors du refus de la demande :", error);
+      if (error.response && error.response.status === 401) {
+        message.error("Votre session a expiré. Veuillez recharger la page.");
+      } else {
+        message.error(
+          "Une erreur s'est produite. Veuillez réessayer plus tard."
+        );
+      }
     } finally {
       setLoad(false);
     }
