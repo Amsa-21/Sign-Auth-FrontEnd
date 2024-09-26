@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HomeLayout from "../../container";
 import Tabs from "../component/Tabs";
 import Intern from "./Intern";
@@ -6,6 +6,13 @@ import Extern from "./Extern";
 
 function NewRequest() {
   document.getElementById("title").innerHTML = "Nouvelle demande - Mandarga";
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   const items = [
     {

@@ -560,6 +560,9 @@ function FormModal() {
               rowHoverBg: "#fff",
               colorPrimary: "#5A3827",
             },
+            Spin: {
+              colorPrimary: "#5A3827",
+            },
             Button: {
               defaultBg: "#5A3827",
               defaultHoverBg: "#fff",

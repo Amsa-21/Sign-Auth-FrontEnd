@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HomeLayout from "../../container";
 import RequestList from "./RequestList";
 import MyRequestList from "./MyRequestList";
@@ -6,6 +6,13 @@ import Tabs from "../component/Tabs";
 
 function Home() {
   document.getElementById("title").innerHTML = "Accueil - Mandarga";
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   const items = [
     {

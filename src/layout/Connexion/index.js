@@ -39,6 +39,7 @@ function Connexion() {
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
+        console.log(error);
         message.error(
           "Erreur d'authentification. Veuillez vérifier vos identifiants."
         );

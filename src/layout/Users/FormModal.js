@@ -41,9 +41,6 @@ function CollectionEditForm(onFormInstanceReady, initialValues) {
       <Form.Item name="email" label="Email" rules={[{ required: true }]}>
         <Input type="email" />
       </Form.Item>
-      <Form.Item name="password" label="Password" rules={[{ required: true }]}>
-        <Input type="password" />
-      </Form.Item>
       <Form.Item
         name="telephone"
         label="Téléphone"
@@ -123,6 +120,7 @@ function CollectionEditFormModal({
       }}>
       <Modal
         open={open}
+        onCancel={onCancel}
         onClose={onCancel}
         destroyOnClose
         centered
@@ -371,11 +369,6 @@ function FormModal() {
       key: "email",
     },
     {
-      title: "Password",
-      dataIndex: "password",
-      key: "password",
-    },
-    {
       title: "Téléphone",
       dataIndex: "telephone",
       key: "telephone",
@@ -436,6 +429,7 @@ function FormModal() {
             headerBg: "#2b2b2b",
             headerColor: "white",
             rowHoverBg: "#fff",
+            colorPrimary: "#5A3827",
           },
           Spin: {
             colorPrimary: "#5A3827",
@@ -468,7 +462,6 @@ function FormModal() {
             nom: editingRecord.nom,
             date: editingRecord.date,
             email: editingRecord.email,
-            password: editingRecord.password,
             telephone: editingRecord.telephone,
             organisation: editingRecord.organisation,
             poste: editingRecord.poste,

@@ -97,8 +97,7 @@ function ExternalSign() {
   const capture = async () => {
     try {
       setLoading(true);
-      const img = webcamRef.current.getScreenshot();
-      await handleSignPDF(img);
+      await handleSignPDF(webcamRef.current.getScreenshot());
     } catch (error) {
       console.error(error);
       message.error(error.toString());

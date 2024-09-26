@@ -15,17 +15,7 @@ function App() {
         element={<ExternalSign />}
       />
       {routes.map((route) => (
-        <Route
-          key={route.key}
-          path={route.path}
-          element={
-            localStorage.getItem("accessToken") !== null ? (
-              route.component
-            ) : (
-              <Connexion />
-            )
-          }
-        />
+        <Route key={route.key} path={route.path} element={route.component} />
       ))}
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>

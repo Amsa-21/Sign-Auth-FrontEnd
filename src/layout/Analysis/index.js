@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FilePdfFilled, EyeFilled, CloseCircleFilled } from "@ant-design/icons";
 import {
   Typography,
@@ -22,6 +22,13 @@ function Analysis() {
   const [fileInfo, setFileInfo] = useState(null);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      window.location.href = "/login";
+    }
+  }, []);
 
   const handleFileUpload = async (file) => {
     if (uploading) return;

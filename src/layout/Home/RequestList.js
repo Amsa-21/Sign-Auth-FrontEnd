@@ -16,7 +16,6 @@ import {
   Spin,
   Popover,
   Checkbox,
-  Skeleton,
 } from "antd";
 import {
   SignatureFilled,
@@ -30,6 +29,7 @@ import {
   ReloadOutlined,
   UnorderedListOutlined,
   CloseCircleFilled,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import Card from "../component/Card";
 import Webcam from "react-webcam";
@@ -625,32 +625,33 @@ function RequestList() {
       <Modal
         open={open1}
         title="Scan du visage"
-        centered
         footer={
-          <ConfigProvider
-            theme={{
-              components: {
-                Button: {
-                  defaultBg: "#5A3827",
-                  defaultHoverBg: "#fff",
-                  defaultColor: "#fff",
-                  defaultHoverColor: "#5A3827",
-                  defaultHoverBorderColor: "#5A3827",
-                  defaultBorderColor: "#5A3827",
-                  defaultActiveColor: "#5A3827",
-                  defaultActiveBg: "#8a8a8a",
-                  defaultActiveBorderColor: "#5A3827",
+          loading ? null : (
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    defaultBg: "#5A3827",
+                    defaultHoverBg: "#fff",
+                    defaultColor: "#fff",
+                    defaultHoverColor: "#5A3827",
+                    defaultHoverBorderColor: "#5A3827",
+                    defaultBorderColor: "#5A3827",
+                    defaultActiveColor: "#5A3827",
+                    defaultActiveBg: "#8a8a8a",
+                    defaultActiveBorderColor: "#5A3827",
+                  },
                 },
-              },
-            }}>
-            <Button
-              type="default"
-              style={{ height: 40 }}
-              onClick={capture}
-              loading={loading}>
-              Prendre la photo
-            </Button>
-          </ConfigProvider>
+              }}>
+              <Button
+                type="default"
+                style={{ height: 40 }}
+                onClick={capture}
+                loading={loading}>
+                Prendre la photo
+              </Button>
+            </ConfigProvider>
+          )
         }
         onCancel={() => {
           setOpen1(false);
@@ -660,7 +661,10 @@ function RequestList() {
         height={520}>
         <Divider />
         {loading ? (
-          <Skeleton active paragraph={{ rows: 14 }} />
+          <div style={{ display: "flex", gap: 10 }}>
+            <LoadingOutlined spin />
+            <h3>Vérification de l'identité...</h3>
+          </div>
         ) : (
           <Webcam
             audio={false}

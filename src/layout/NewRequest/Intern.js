@@ -32,96 +32,100 @@ function Intern() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-    const handleSubmit = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-    
-      if (fileInfo === null) {
-        message.warning("Aucun document n'est téléchargé !");
-        return;
-      } else if (signers.length === 0) {
-        message.warning("Aucun signataire n'est choisi !");
-        return;
-      } else if (object.trim() === "" || comment.trim() === "") {
-        message.warning("Veuillez renseigner l'objet et le commentaire !");
-        return;
-      } else {
-          const formData = new FormData();
-          formData.append("fichier", fileInfo);
-          formData.append("demandeur", person);
-          formData.append("signataires", JSON.stringify(signers));
-          formData.append("objet", object);
-          formData.append("commentaire", comment);
-        try {
-          setUploading(true);
-          
-    
-          const response = await axios.post(
-            `${API_URL}/addRequest`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-    
-          if (response.data.success) {
-            message.success("Demande créée avec succès !");
-            navigate("/");
-          } else {
-            notification.error({
-              message: response.data.error,
-              placement: "bottomRight",
-              duration: 5,
-            });
-          }
-        } catch (error) {
-          if (error.response && error.response.status === 401) {
-            try {
-              const refreshToken = localStorage.getItem("refreshToken");
-              const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (fileInfo === null) {
+      message.warning("Aucun document n'est téléchargé !");
+      return;
+    } else if (signers.length === 0) {
+      message.warning("Aucun signataire n'est choisi !");
+      return;
+    } else if (object.trim() === "" || comment.trim() === "") {
+      message.warning("Veuillez renseigner l'objet et le commentaire !");
+      return;
+    } else {
+      const formData = new FormData();
+      formData.append("fichier", fileInfo);
+      formData.append("demandeur", person);
+      formData.append("signataires", signers);
+      formData.append("objet", object);
+      formData.append("commentaire", comment);
+      try {
+        setUploading(true);
+
+        const response = await axios.post(`${API_URL}/addRequest`, formData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.data.success) {
+          message.success("Demande créée avec succès !");
+          navigate("/");
+        } else {
+          notification.error({
+            message: response.data.error,
+            placement: "bottomRight",
+            duration: 5,
+          });
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshToken = localStorage.getItem("refreshToken");
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
                 headers: {
                   Authorization: `Bearer ${refreshToken}`,
                 },
-              });
-    
-              const newAccessToken = refreshResponse.data.access_token;
-              localStorage.setItem("accessToken", newAccessToken);
-
-              const retryResponse = await axios.post(
-                `${API_URL}/addRequest`,
-                formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${newAccessToken}`,
-                  },
-                }
-              );
-    
-              if (retryResponse.data.success) {
-                message.success("Demande créée avec succès !");
-                navigate("/");
-              } else {
-                notification.error({
-                  message: retryResponse.data.error,
-                  placement: "bottomRight",
-                  duration: 5,
-                });
               }
-            } catch (refreshError) {
-              console.error("Erreur lors du rafraîchissement du token :", refreshError);
-              message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            );
+
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+
+            const retryResponse = await axios.post(
+              `${API_URL}/addRequest`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${newAccessToken}`,
+                },
+              }
+            );
+
+            if (retryResponse.data.success) {
+              message.success("Demande créée avec succès !");
+              navigate("/");
+            } else {
+              notification.error({
+                message: retryResponse.data.error,
+                placement: "bottomRight",
+                duration: 5,
+              });
             }
-          } else {
-            console.error(error);
-            message.error(error.message);
+          } catch (refreshError) {
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
-        } finally {
-          setUploading(false);
+        } else {
+          console.error(error);
+          message.error(error.message);
         }
+      } finally {
+        setUploading(false);
       }
-    };
-    
+    }
+  };
+
   const props = {
     name: "file",
     multiple: false,
@@ -152,7 +156,7 @@ function Intern() {
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
-      
+
       try {
         const response = await axios.get(`${API_URL}/allUsers`, {
           headers: {
@@ -164,15 +168,19 @@ function Intern() {
         if (error.response && error.response.status === 401) {
           try {
             const refreshToken = localStorage.getItem("refreshToken");
-            const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
-              headers: {
-                Authorization: `Bearer ${refreshToken}`,
-              },
-            });
-  
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
+              }
+            );
+
             const newAccessToken = refreshResponse.data.access_token;
             localStorage.setItem("accessToken", newAccessToken);
-            
+
             const retryResponse = await axios.get(`${API_URL}/allUsers`, {
               headers: {
                 Authorization: `Bearer ${newAccessToken}`,
@@ -180,8 +188,13 @@ function Intern() {
             });
             setData(retryResponse.data.result);
           } catch (refreshError) {
-            console.error("Erreur lors du rafraîchissement du token :", refreshError);
-            message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
         } else {
           console.error("Erreur lors de la récupération des données :", error);
@@ -189,9 +202,9 @@ function Intern() {
         }
       }
     };
-  
+
     fetchData();
-  }, []);  
+  }, []);
 
   const handleChange = (value) => {
     setSigners(value);
@@ -217,8 +230,7 @@ function Intern() {
             <div
               style={{
                 display: "flex",
-              }}
-            >
+              }}>
               <embed
                 type="application/pdf"
                 src={URL.createObjectURL(fileInfo)}
@@ -266,20 +278,17 @@ function Intern() {
               defaultActiveBorderColor: "#5A3827",
             },
           },
-        }}
-      >
+        }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             marginBottom: 10,
-          }}
-        >
+          }}>
           <Upload.Dragger
             {...props}
-            style={{ backgroundColor: "rgba(100, 100, 100, 0.2" }}
-          >
+            style={{ backgroundColor: "rgba(100, 100, 100, 0.2" }}>
             <Typography.Title level={4}>
               Importer votre fichier PDF
             </Typography.Title>
@@ -294,8 +303,7 @@ function Intern() {
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Typography.Text code>
                 {fileInfo.name}
                 <Divider type="vertical" />
@@ -310,8 +318,7 @@ function Intern() {
               <Typography.Link
                 underline
                 style={{ color: "rgb(90,56,39)" }}
-                onClick={() => setOpen(true)}
-              >
+                onClick={() => setOpen(true)}>
                 <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
                 Aperçu
               </Typography.Link>
@@ -334,8 +341,7 @@ function Intern() {
                 overlayStyle={{
                   pointerEvents: "none",
                 }}
-                title={omittedValues.map(({ label }) => label).join(", ")}
-              >
+                title={omittedValues.map(({ label }) => label).join(", ")}>
                 <span>Voir plus</span>
               </Tooltip>
             )}
@@ -359,20 +365,17 @@ function Intern() {
             display: "flex",
             justifyContent: "flex-end",
             marginBlock: 30,
-          }}
-        >
+          }}>
           <Button
             onClick={handleSubmit}
             style={{ height: 40, width: 125 }}
-            loading={uploading}
-          >
+            loading={uploading}>
             <span
               style={{
                 fontFamily: "Arial, Helvetica, sans-serif",
                 fontWeight: "bold",
                 fontSize: 14,
-              }}
-            >
+              }}>
               Créer
             </span>
           </Button>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HomeLayout from "../../container";
 import { ConfigProvider, Tabs } from "antd";
 import {
@@ -13,15 +13,22 @@ import Analysis from "./Analysis";
 function BackOffice() {
   document.getElementById("title").innerHTML = "BackOffice - Mandarga";
 
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      window.location.href = "/login";
+    }
+  }, []);
+
   const items = [
     {
-      label: "Own Approved Trust List Member",
+      label: "Liste de confiance personnelle",
       key: 1,
       children: <FormModal />,
       icon: <UnorderedListOutlined />,
     },
     {
-      label: "Analysis",
+      label: "Analyse",
       key: 2,
       children: <Analysis />,
       icon: <ScanOutlined />,
@@ -47,8 +54,7 @@ function BackOffice() {
                   itemActiveColor: "#2b2b2b",
                 },
               },
-            }}
-          >
+            }}>
             <Tabs animated={true} centered defaultActiveKey={1} items={items} />
           </ConfigProvider>
         </div>
