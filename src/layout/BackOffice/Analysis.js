@@ -34,9 +34,20 @@ function Analysis() {
     result: null,
     correlation: {},
   });
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
 
   const handleAdd = async (values) => {
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const formData = new FormData();
     formData.append("member", JSON.stringify(values));
     try {
@@ -59,8 +70,7 @@ function Analysis() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        const refreshToken = localStorage.getItem("refreshToken");
+      if (error.response && error.response.status === 401 && refreshToken) {
         const refreshResponse = await axios.post(
           `${API_URL}/refresh`,
           {},
@@ -99,6 +109,9 @@ function Analysis() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de l'ajout :", error);
         message.error("Add failed");
@@ -112,6 +125,10 @@ function Analysis() {
     if (uploading) return;
 
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const formData = new FormData();
     formData.append("fichier", file);
     try {
@@ -124,9 +141,8 @@ function Analysis() {
       message.success("Successfully uploaded");
       setData(response.data);
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -160,6 +176,9 @@ function Analysis() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors du téléchargement du fichier :", error);
         message.error(error.message);

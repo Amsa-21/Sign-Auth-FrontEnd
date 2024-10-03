@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FilePdfFilled, EyeFilled, CloseCircleFilled } from "@ant-design/icons";
 import {
   Typography,
@@ -22,6 +23,14 @@ function Analysis() {
   const [fileInfo, setFileInfo] = useState(null);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -32,8 +41,12 @@ function Analysis() {
 
   const handleFileUpload = async (file) => {
     if (uploading) return;
-
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
+
     const formData = new FormData();
     formData.append("fichier", file);
 
@@ -51,9 +64,8 @@ function Analysis() {
       console.log(response.data);
       setData(response.data);
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -86,6 +98,9 @@ function Analysis() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors du téléchargement du fichier :", error);
         message.error(error.message);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Divider,
   message,
@@ -210,10 +211,22 @@ function FormModal() {
   const [data, setData] = useState([]);
   const [editingRecord, setEditingRecord] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
+      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      if (refreshToken) {
+        refreshToken = localStorage.getItem("refreshToken");
+      }
 
       try {
         setLoading(true);
@@ -224,9 +237,8 @@ function FormModal() {
         });
         setData(response.data.result);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && refreshToken) {
           try {
-            const refreshToken = localStorage.getItem("refreshToken");
             const refreshResponse = await axios.post(
               `${API_URL}/refresh`,
               {},
@@ -254,6 +266,9 @@ function FormModal() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
         } else {
           console.error("Erreur lors de la récupération des données :", error);
           message.error(error.message);
@@ -264,10 +279,14 @@ function FormModal() {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const onCreate = async (values) => {
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const formData = new FormData();
     formData.append("member", JSON.stringify(values));
     setConfirmLoading(true);
@@ -288,9 +307,8 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -331,6 +349,9 @@ function FormModal() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de l'ajout :", error);
         message.error("Add failed");
@@ -342,6 +363,10 @@ function FormModal() {
 
   const onEdit = async (values) => {
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     setConfirmLoading(true);
     const formData = new FormData();
     formData.append("member", JSON.stringify({ ...editingRecord, ...values }));
@@ -362,9 +387,8 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -405,6 +429,9 @@ function FormModal() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de l'édition :", error);
         message.error(error.message);
@@ -416,6 +443,10 @@ function FormModal() {
 
   const handleDelete = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const params = new URLSearchParams({
       id: record.id,
     }).toString();
@@ -434,9 +465,8 @@ function FormModal() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -474,6 +504,9 @@ function FormModal() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de la suppression :", error);
         message.error(error.message);

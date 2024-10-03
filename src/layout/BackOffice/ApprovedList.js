@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CaretRightOutlined } from "@ant-design/icons";
 import {
@@ -15,10 +16,22 @@ const API_URL = process.env.REACT_APP_API_BASE_URL;
 function ApprovedList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
+      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      if (refreshToken) {
+        refreshToken = localStorage.getItem("refreshToken");
+      }
 
       try {
         setLoading(true);
@@ -29,9 +42,8 @@ function ApprovedList() {
         });
         setData(response.data.result);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && refreshToken) {
           try {
-            const refreshToken = localStorage.getItem("refreshToken");
             const refreshResponse = await axios.post(
               `${API_URL}/refresh`,
               {},
@@ -60,6 +72,9 @@ function ApprovedList() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
         } else {
           console.error("Erreur lors de la récupération des données :", error);
           message.error("Loading failed");
@@ -70,7 +85,7 @@ function ApprovedList() {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const groupByCodePaysRegion = () => {
     const groupedData = {};

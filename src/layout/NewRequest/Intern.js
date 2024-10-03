@@ -32,9 +32,20 @@ function Intern() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
+
   const handleSubmit = async () => {
     const accessToken = localStorage.getItem("accessToken");
-
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     if (fileInfo === null) {
       message.warning("Aucun document n'est téléchargé !");
       return;
@@ -71,9 +82,8 @@ function Intern() {
           });
         }
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && refreshToken) {
           try {
-            const refreshToken = localStorage.getItem("refreshToken");
             const refreshResponse = await axios.post(
               `${API_URL}/refresh`,
               {},
@@ -116,6 +126,9 @@ function Intern() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
         } else {
           console.error(error);
           message.error(error.message);
@@ -156,6 +169,10 @@ function Intern() {
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = localStorage.getItem("accessToken");
+      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      if (refreshToken) {
+        refreshToken = localStorage.getItem("refreshToken");
+      }
 
       try {
         const response = await axios.get(`${API_URL}/allUsers`, {
@@ -165,9 +182,8 @@ function Intern() {
         });
         setData(response.data.result);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && refreshToken) {
           try {
-            const refreshToken = localStorage.getItem("refreshToken");
             const refreshResponse = await axios.post(
               `${API_URL}/refresh`,
               {},
@@ -196,6 +212,9 @@ function Intern() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
         } else {
           console.error("Erreur lors de la récupération des données :", error);
           message.error(error.message);
@@ -204,7 +223,7 @@ function Intern() {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (value) => {
     setSigners(value);
@@ -359,7 +378,6 @@ function Intern() {
             onChange={(e) => setComment(e.target.value)}
           />
         </div>
-
         <div
           style={{
             display: "flex",

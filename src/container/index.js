@@ -33,17 +33,20 @@ function HomeLayout({ children }) {
   const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
+
   const handleLogout = async () => {
     const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    const clearLocalStorage = () => {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("telephone");
-      localStorage.removeItem("role");
-    };
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
 
     try {
       await axios.post(
@@ -60,7 +63,6 @@ function HomeLayout({ children }) {
     } catch (error) {
       if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -93,6 +95,9 @@ function HomeLayout({ children }) {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de la déconnexion :", error);
         message.error("Une erreur s'est produite lors de la déconnexion.");
@@ -116,6 +121,10 @@ function HomeLayout({ children }) {
     formData.append("tel", localStorage.getItem("telephone"));
 
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
 
     try {
       const response = await axios.post(`${API_URL}/changePassword`, formData, {
@@ -131,9 +140,8 @@ function HomeLayout({ children }) {
         message.error("Mot de passe actuel incorrect !");
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -171,6 +179,9 @@ function HomeLayout({ children }) {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de la mise à jour du mot de passe :", error);
         message.error(

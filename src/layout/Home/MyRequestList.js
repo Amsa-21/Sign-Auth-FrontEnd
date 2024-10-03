@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   message,
@@ -54,11 +55,23 @@ function MyRequestList() {
   const onCheckAllChange = (e) => {
     setCheckedList(e.target.checked ? plainOptions : []);
   };
+  const navigate = useNavigate();
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const accessToken = localStorage.getItem("accessToken");
+      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      if (refreshToken) {
+        refreshToken = localStorage.getItem("refreshToken");
+      }
 
       try {
         const response = await axios.get(`${API_URL}/allRequest`, {
@@ -68,9 +81,8 @@ function MyRequestList() {
         });
         setData(response.data.result);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 401 && refreshToken) {
           try {
-            const refreshToken = localStorage.getItem("refreshToken");
             const refreshResponse = await axios.post(
               `${API_URL}/refresh`,
               {},
@@ -98,6 +110,9 @@ function MyRequestList() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
         } else {
           console.error("Erreur lors de la récupération des données :", error);
           message.error(
@@ -110,10 +125,14 @@ function MyRequestList() {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const handleCancel = async (record) => {
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const params = new URLSearchParams({
       id: record.id,
     }).toString();
@@ -133,9 +152,8 @@ function MyRequestList() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -170,6 +188,9 @@ function MyRequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de l'annulation :", error);
         message.error("Une erreur s'est produite lors de l'annulation.");
@@ -180,6 +201,10 @@ function MyRequestList() {
   const handleViewPDF = async (record) => {
     setLoad(true);
     const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
     const params = new URLSearchParams({
       id: record.id,
     }).toString();
@@ -201,9 +226,8 @@ function MyRequestList() {
         message.error(response.data.error);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response && error.response.status === 401 && refreshToken) {
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
           const refreshResponse = await axios.post(
             `${API_URL}/refresh`,
             {},
@@ -241,6 +265,9 @@ function MyRequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
+      } else if (error.response.status === 401) {
+        clearLocalStorage();
+        navigate("/login");
       } else {
         console.error("Erreur lors de la récupération du PDF :", error);
         message.error(

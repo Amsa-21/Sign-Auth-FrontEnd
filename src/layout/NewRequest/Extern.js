@@ -34,105 +34,133 @@ function Extern() {
   const person =
     localStorage.getItem("username") + " " + localStorage.getItem("telephone");
 
-    const handleSubmit = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-    
-      if (fileInfo === null) {
-        message.warning("Aucun document n'est téléchargé !");
-        return;
-      } else if (
-        prenom.trim() === "" ||
-        nom.trim() === "" ||
-        email.trim() === ""
-      ) {
-        message.warning("Veuillez renseigner le prénom, le nom et l'email du destinataire !");
-        return;
-      } else if (object.trim() === "" || comment.trim() === "") {
-        message.warning("Veuillez renseigner l'objet et le commentaire !");
-        return;
-      } else {
-        const formData = new FormData();
-        formData.append("fichier", fileInfo);
-        formData.append("demandeur", person);
-        formData.append(
-          "signataires",
-          extSigners
-            .map(
-              (elem) =>
-                `${elem.prenom.charAt(0).toUpperCase()}${elem.prenom.slice(1)} ${elem.nom.toUpperCase()} ${elem.email.charAt(0).toUpperCase()}${elem.email.slice(1)}`
-            )
-            .join(", ")
-        );
-        formData.append("objet", object);
-        formData.append("commentaire", comment);
-        try {
-          setUploading(true);
-          const response = await axios.post(
-            `${API_URL}/addExternalRequest`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-    
-          if (response.data.success) {
-            message.success("Demande créée avec succès !");
-            navigate("/");
-          } else {
-            notification.error({
-              message: response.data.error,
-              placement: "bottomRight",
-              duration: 5,
-            });
+  const clearLocalStorage = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("telephone");
+    localStorage.removeItem("role");
+  };
+
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    if (refreshToken) {
+      refreshToken = localStorage.getItem("refreshToken");
+    }
+
+    if (fileInfo === null) {
+      message.warning("Aucun document n'est téléchargé !");
+      return;
+    } else if (
+      prenom.trim() === "" ||
+      nom.trim() === "" ||
+      email.trim() === ""
+    ) {
+      message.warning(
+        "Veuillez renseigner le prénom, le nom et l'email du destinataire !"
+      );
+      return;
+    } else if (object.trim() === "" || comment.trim() === "") {
+      message.warning("Veuillez renseigner l'objet et le commentaire !");
+      return;
+    } else {
+      const formData = new FormData();
+      formData.append("fichier", fileInfo);
+      formData.append("demandeur", person);
+      formData.append(
+        "signataires",
+        extSigners
+          .map(
+            (elem) =>
+              `${elem.prenom.charAt(0).toUpperCase()}${elem.prenom.slice(
+                1
+              )} ${elem.nom.toUpperCase()} ${elem.email
+                .charAt(0)
+                .toUpperCase()}${elem.email.slice(1)}`
+          )
+          .join(", ")
+      );
+      formData.append("objet", object);
+      formData.append("commentaire", comment);
+      try {
+        setUploading(true);
+        const response = await axios.post(
+          `${API_URL}/addExternalRequest`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
           }
-        } catch (error) {
-          if (error.response && error.response.status === 401) {
-            try {
-              const refreshToken = localStorage.getItem("refreshToken");
-              const refreshResponse = await axios.post(`${API_URL}/refresh`, {}, {
+        );
+
+        if (response.data.success) {
+          message.success("Demande créée avec succès !");
+          navigate("/");
+        } else {
+          notification.error({
+            message: response.data.error,
+            placement: "bottomRight",
+            duration: 5,
+          });
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401 && refreshToken) {
+          try {
+            const refreshResponse = await axios.post(
+              `${API_URL}/refresh`,
+              {},
+              {
                 headers: {
                   Authorization: `Bearer ${refreshToken}`,
                 },
-              });
-    
-              const newAccessToken = refreshResponse.data.access_token;
-              localStorage.setItem("accessToken", newAccessToken);
-              const retryResponse = await axios.post(
-                `${API_URL}/addExternalRequest`,
-                formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${newAccessToken}`,
-                  },
-                }
-              );
-    
-              if (retryResponse.data.success) {
-                message.success("Demande créée avec succès !");
-                navigate("/");
-              } else {
-                notification.error({
-                  message: retryResponse.data.error,
-                  placement: "bottomRight",
-                  duration: 5,
-                });
               }
-            } catch (refreshError) {
-              console.error("Erreur lors du rafraîchissement du token :", refreshError);
-              message.error("Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter.");
+            );
+
+            const newAccessToken = refreshResponse.data.access_token;
+            localStorage.setItem("accessToken", newAccessToken);
+            const retryResponse = await axios.post(
+              `${API_URL}/addExternalRequest`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${newAccessToken}`,
+                },
+              }
+            );
+
+            if (retryResponse.data.success) {
+              message.success("Demande créée avec succès !");
+              navigate("/");
+            } else {
+              notification.error({
+                message: retryResponse.data.error,
+                placement: "bottomRight",
+                duration: 5,
+              });
             }
-          } else {
-            console.error(error);
-            message.error(error.message);
+          } catch (refreshError) {
+            console.error(
+              "Erreur lors du rafraîchissement du token :",
+              refreshError
+            );
+            message.error(
+              "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
+            );
           }
-        } finally {
-          setUploading(false);
+        } else if (error.response.status === 401) {
+          clearLocalStorage();
+          navigate("/login");
+        } else {
+          console.error(error);
+          message.error(error.message);
         }
+      } finally {
+        setUploading(false);
       }
-    };
-    
+    }
+  };
 
   const props = {
     name: "file",
@@ -171,8 +199,7 @@ function Extern() {
             <div
               style={{
                 display: "flex",
-              }}
-            >
+              }}>
               <embed
                 type="application/pdf"
                 src={URL.createObjectURL(fileInfo)}
@@ -214,20 +241,17 @@ function Extern() {
               defaultActiveBorderColor: "#5A3827",
             },
           },
-        }}
-      >
+        }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             marginBottom: 10,
-          }}
-        >
+          }}>
           <Upload.Dragger
             {...props}
-            style={{ backgroundColor: "rgba(100, 100, 100, 0.2" }}
-          >
+            style={{ backgroundColor: "rgba(100, 100, 100, 0.2" }}>
             <Typography.Title level={4}>
               Importer votre fichier PDF
             </Typography.Title>
@@ -242,8 +266,7 @@ function Extern() {
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Typography.Text code>
                 {fileInfo.name}
                 <Divider type="vertical" />
@@ -258,8 +281,7 @@ function Extern() {
               <Typography.Link
                 underline
                 style={{ color: "rgb(90,56,39)" }}
-                onClick={() => setOpen(true)}
-              >
+                onClick={() => setOpen(true)}>
                 <EyeFilled style={{ color: "rgb(90,56,39)", marginRight: 7 }} />
                 Aperçu
               </Typography.Link>
@@ -307,24 +329,21 @@ function Extern() {
                       );
                     }
                   }
-                }}
-              >
+                }}>
                 Ajouter
               </Button>
             }
             onCancel={() => {
               setOpen1(false);
             }}
-            destroyOnClose={true}
-          >
+            destroyOnClose={true}>
             <Divider />
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: 10,
-              }}
-            >
+              }}>
               <div style={{ display: "flex", gap: 10 }}>
                 <Input
                   placeholder="Prénom"
@@ -353,8 +372,7 @@ function Extern() {
                 Input: { borderRadius: "6px 0 0 6px" },
                 Button: { borderRadius: "0 6px 6px 0" },
               },
-            }}
-          >
+            }}>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <Input
                 placeholder="Ajouter un ou plusieurs signataire(s) externe(s)"
@@ -371,8 +389,7 @@ function Extern() {
                     fontFamily: "Arial, Helvetica, sans-serif",
                     fontWeight: "bold",
                     fontSize: 14,
-                  }}
-                >
+                  }}>
                   +
                 </span>
               </Button>
@@ -396,20 +413,17 @@ function Extern() {
             display: "flex",
             justifyContent: "flex-end",
             marginBlock: 30,
-          }}
-        >
+          }}>
           <Button
             onClick={handleSubmit}
             style={{ height: 40, width: 125 }}
-            loading={uploading}
-          >
+            loading={uploading}>
             <span
               style={{
                 fontFamily: "Arial, Helvetica, sans-serif",
                 fontWeight: "bold",
                 fontSize: 14,
-              }}
-            >
+              }}>
               Créer
             </span>
           </Button>

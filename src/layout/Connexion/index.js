@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { message, Button, Form, Input, Typography, ConfigProvider } from "antd";
+import {
+  message,
+  Button,
+  Form,
+  Input,
+  Typography,
+  ConfigProvider,
+  Checkbox,
+} from "antd";
 import "../../container/Sidenav/index.css";
 import logo from "./images/logo.png";
 import "../../container/Sidenav/index.css";
@@ -12,6 +20,7 @@ function Connexion() {
   document.getElementById("title").innerHTML = "Connexion - Mandarga";
 
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -21,11 +30,15 @@ function Connexion() {
       const response = await axios.post(`${API_URL}/login`, {
         email: values.email,
         password: values.password,
+        remind: checked,
       });
+
       const data = response.data;
       if (data.success) {
         localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("refreshToken", data.refresh_token);
+        if (checked) {
+          localStorage.setItem("refreshToken", data.refresh_token);
+        }
         localStorage.setItem("username", data.username);
         localStorage.setItem("telephone", data.telephone);
         localStorage.setItem("role", data.role);
@@ -55,6 +68,10 @@ function Connexion() {
   function handleCreate() {
     navigate("/subscription");
   }
+
+  const onChange = (e) => {
+    setChecked(e.target.checked);
+  };
 
   return (
     <div
@@ -123,8 +140,14 @@ function Connexion() {
               },
               Input: {
                 colorBorder: "#5A3827",
-                hoverBorderColor: "grey",
+                colorPrimaryHover: "#5A3827",
                 activeBorderColor: "grey",
+              },
+              Checkbox: {
+                colorPrimary: "#5A3827",
+                colorBorder: "#5A3827",
+                hoverBorderColor: "grey",
+                colorPrimaryHover: "#5A3827",
               },
               Button: {
                 defaultBg: "#5A3827",
@@ -165,6 +188,11 @@ function Connexion() {
                 placeholder="Entrer votre mot de passe"
                 required
               />
+            </Form.Item>
+            <Form.Item name="reminder">
+              <Checkbox onChange={onChange} checked={checked} size="medium">
+                Se souvenir de moi
+              </Checkbox>
             </Form.Item>
             <Form.Item>
               <Button
