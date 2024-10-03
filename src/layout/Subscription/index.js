@@ -91,58 +91,110 @@ function Subscription() {
         <>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="prenom" label="Prénom">
-              <Input style={{ width: 235 }} required />
+              <Input
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez votre prénom"
+              />
             </Form.Item>
             <Form.Item name="nom" label="Nom">
-              <Input style={{ width: 235 }} required />
+              <Input
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez votre nom"
+              />
             </Form.Item>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="email" label="Email">
-              <Input type="email" style={{ width: 235 }} required />
+              <Input
+                type="email"
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez votre email"
+              />
             </Form.Item>
             <Form.Item
-              name="date"
-              label="Date de naissance"
+              name="numero"
+              label="Téléphone"
               rules={[
                 {
-                  validator: (_, value) => {
-                    if (!value) {
-                      return Promise.resolve();
-                    }
-                    const birthDate = new Date(value);
-                    const today = new Date();
-                    const age = today.getFullYear() - birthDate.getFullYear();
-                    if (age < 18) {
-                      return Promise.reject("Vous devez avoir au moins 18 ans");
-                    }
-                    return Promise.resolve();
-                  },
+                  pattern: /^[0-9\b]+$/,
+                  message: "Numéro de téléphone invalide",
+                },
+                {
+                  min: 9,
+                  message: "Numéro de téléphone trop court",
                 },
               ]}>
-              <Input type="date" style={{ width: 235 }} required />
+              <Input
+                type="tel"
+                required
+                style={{ width: 235 }}
+                placeholder="Entrez votre numéro de téléphone"
+              />
             </Form.Item>
           </div>
-          <Form.Item name="numero" label="Téléphone">
-            <Input type="numero" required />
+          <Form.Item
+            name="date"
+            label="Date de naissance"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) {
+                    return Promise.resolve();
+                  }
+                  const birthDate = new Date(value);
+                  const today = new Date();
+                  const age = today.getFullYear() - birthDate.getFullYear();
+                  if (age < 18) {
+                    return Promise.reject("Vous devez avoir au moins 18 ans");
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}>
+            <Input
+              type="date"
+              style={{ width: 235 }}
+              required
+              placeholder="Sélectionnez votre date de naissance"
+            />
           </Form.Item>
+
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item
               name="password"
               label="Mot de passe"
               rules={[{ min: 8, message: "Le mot de passe est trop court" }]}>
-              <Input.Password style={{ width: 235 }} required />
+              <Input.Password
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez votre mot de passe"
+              />
             </Form.Item>
             <Form.Item name="password2" label="Confirmer le mot de passe">
-              <Input.Password style={{ width: 235 }} required />
+              <Input.Password
+                style={{ width: 235 }}
+                required
+                placeholder="Confirmez votre mot de passe"
+              />
             </Form.Item>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Form.Item name="organisation" label="Organisation">
-              <Input style={{ width: 235 }} required />
+              <Input
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez le nom de votre organisation"
+              />
             </Form.Item>
             <Form.Item name="poste" label="Poste">
-              <Input style={{ width: 235 }} required />
+              <Input
+                style={{ width: 235 }}
+                required
+                placeholder="Entrez votre poste"
+              />
             </Form.Item>
           </div>
         </>
