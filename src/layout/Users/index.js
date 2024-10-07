@@ -6,7 +6,7 @@ function Users() {
   document.getElementById("title").innerHTML = "Utilisateurs - Mandarga";
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/login";
     }

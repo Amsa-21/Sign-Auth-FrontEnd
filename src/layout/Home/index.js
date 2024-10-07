@@ -8,7 +8,7 @@ function Home() {
   document.getElementById("title").innerHTML = "Accueil - Mandarga";
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/login";
     }

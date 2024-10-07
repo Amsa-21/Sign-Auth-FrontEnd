@@ -295,7 +295,7 @@ function Subscription() {
             width={300}
             style={{ marginLeft: 30 }}
           />
-          <h2 style={{ fontSize: 30, color: "#f5f1e9" }}>
+          <h2 style={{ fontSize: 30, color: "#f5f1e9", textAlign: "justify" }}>
             Prêt à signer vos documents en toute sécurité ?
           </h2>
           <p

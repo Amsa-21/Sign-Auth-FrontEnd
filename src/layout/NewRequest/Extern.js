@@ -32,21 +32,23 @@ function Extern() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const person =
-    localStorage.getItem("username") + " " + localStorage.getItem("telephone");
+    sessionStorage.getItem("username") +
+    " " +
+    sessionStorage.getItem("telephone");
 
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   const handleSubmit = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
 
     if (fileInfo === null) {
@@ -119,7 +121,7 @@ function Extern() {
             );
 
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.post(
               `${API_URL}/addExternalRequest`,
               formData,

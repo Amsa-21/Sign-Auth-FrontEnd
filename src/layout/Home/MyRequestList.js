@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AnimatedNumber from "../component/AnimatedNumber";
 import {
   message,
   Button,
@@ -40,7 +41,9 @@ function MyRequestList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const person =
-    localStorage.getItem("username") + " " + localStorage.getItem("telephone");
+    sessionStorage.getItem("username") +
+    " " +
+    sessionStorage.getItem("telephone");
 
   const plainOptions = ["Complete", "En cours", "Rejetée"];
   const defaultCheckedList = plainOptions;
@@ -57,20 +60,20 @@ function MyRequestList() {
   };
   const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const accessToken = localStorage.getItem("accessToken");
-      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      const accessToken = sessionStorage.getItem("accessToken");
+      let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
       if (refreshToken) {
-        refreshToken = localStorage.getItem("refreshToken");
+        refreshToken = sessionStorage.getItem("refreshToken");
       }
 
       try {
@@ -93,7 +96,7 @@ function MyRequestList() {
               }
             );
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
 
             const retryResponse = await axios.get(`${API_URL}/allRequest`, {
               headers: {
@@ -128,10 +131,10 @@ function MyRequestList() {
   }, [navigate]);
 
   const handleCancel = async (record) => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const params = new URLSearchParams({
       id: record.id,
@@ -164,7 +167,7 @@ function MyRequestList() {
             }
           );
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.delete(
             `${API_URL}/deleteRequest?${params}`,
             {
@@ -200,10 +203,10 @@ function MyRequestList() {
 
   const handleViewPDF = async (record) => {
     setLoad(true);
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const params = new URLSearchParams({
       id: record.id,
@@ -238,7 +241,7 @@ function MyRequestList() {
             }
           );
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
 
           const retryResponse = await axios.post(
             `${API_URL}/getPDF?${params}`,
@@ -554,7 +557,7 @@ function MyRequestList() {
                 color: "#fff",
                 margin: "10px 0",
               }}>
-              {databrute.length}
+              <AnimatedNumber number={databrute.length} />
             </h1>
           </div>
           <Card
@@ -564,7 +567,11 @@ function MyRequestList() {
                 style={{ fontSize: 20, color: "rgb(0, 0, 0)" }}
               />
             }
-            value={databrute.filter((item) => item.status === 1).length}
+            value={
+              <AnimatedNumber
+                number={databrute.filter((item) => item.status === 1).length}
+              />
+            }
             color="#87d068"
           />
           <Card
@@ -572,7 +579,11 @@ function MyRequestList() {
             icon={
               <ReloadOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
-            value={databrute.filter((item) => item.status === 0).length}
+            value={
+              <AnimatedNumber
+                number={databrute.filter((item) => item.status === 0).length}
+              />
+            }
             color="#108ee9"
           />
           <Card
@@ -580,7 +591,11 @@ function MyRequestList() {
             icon={
               <CloseOutlined style={{ fontSize: 20, color: "rgb(0, 0, 0)" }} />
             }
-            value={databrute.filter((item) => item.status === 2).length}
+            value={
+              <AnimatedNumber
+                number={databrute.filter((item) => item.status === 2).length}
+              />
+            }
             color="#ff5500"
           />
         </div>

@@ -25,15 +25,15 @@ function Analysis() {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/login";
     }
@@ -41,10 +41,10 @@ function Analysis() {
 
   const handleFileUpload = async (file) => {
     if (uploading) return;
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
 
     const formData = new FormData();
@@ -77,7 +77,7 @@ function Analysis() {
           );
 
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
             `${API_URL}/metadatafrompdf`,
             formData,

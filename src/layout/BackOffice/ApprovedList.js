@@ -18,19 +18,19 @@ function ApprovedList() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      const accessToken = sessionStorage.getItem("accessToken");
+      let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
       if (refreshToken) {
-        refreshToken = localStorage.getItem("refreshToken");
+        refreshToken = sessionStorage.getItem("refreshToken");
       }
 
       try {
@@ -55,7 +55,7 @@ function ApprovedList() {
             );
 
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.get(`${API_URL}/data`, {
               headers: {
                 Authorization: `Bearer ${newAccessToken}`,

@@ -35,13 +35,13 @@ function Connexion() {
 
       const data = response.data;
       if (data.success) {
-        localStorage.setItem("accessToken", data.access_token);
+        sessionStorage.setItem("accessToken", data.access_token);
         if (checked) {
-          localStorage.setItem("refreshToken", data.refresh_token);
+          sessionStorage.setItem("refreshToken", data.refresh_token);
         }
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("telephone", data.telephone);
-        localStorage.setItem("role", data.role);
+        sessionStorage.setItem("username", data.username);
+        sessionStorage.setItem("telephone", data.telephone);
+        sessionStorage.setItem("role", data.role);
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${data.access_token}`;
@@ -101,7 +101,7 @@ function Connexion() {
             width={300}
             style={{ marginLeft: 30 }}
           />
-          <h2 style={{ fontSize: 30, color: "#f5f1e9" }}>
+          <h2 style={{ fontSize: 30, color: "#f5f1e9", textAlign: "justify" }}>
             Prêt à signer vos documents en toute sécurité ?
           </h2>
           <p

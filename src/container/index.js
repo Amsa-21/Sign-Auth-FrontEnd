@@ -29,23 +29,23 @@ function HomeLayout({ children }) {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const username = localStorage.getItem("username");
-  const role = localStorage.getItem("role");
+  const username = sessionStorage.getItem("username");
+  const role = sessionStorage.getItem("role");
   const navigate = useNavigate();
 
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   const handleLogout = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
 
     try {
@@ -73,7 +73,7 @@ function HomeLayout({ children }) {
             }
           );
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
 
           await axios.post(
             `${API_URL}/logout`,
@@ -118,12 +118,12 @@ function HomeLayout({ children }) {
     setLoading(true);
     const formData = new FormData();
     formData.append("datas", JSON.stringify(values));
-    formData.append("tel", localStorage.getItem("telephone"));
+    formData.append("tel", sessionStorage.getItem("telephone"));
 
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
 
     try {
@@ -152,7 +152,7 @@ function HomeLayout({ children }) {
             }
           );
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
 
           const retryResponse = await axios.post(
             `${API_URL}/changePassword`,

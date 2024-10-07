@@ -8,7 +8,7 @@ function NewRequest() {
   document.getElementById("title").innerHTML = "Nouvelle demande - Mandarga";
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       window.location.href = "/login";
     }

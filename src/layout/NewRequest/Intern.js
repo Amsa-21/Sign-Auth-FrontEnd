@@ -30,21 +30,23 @@ function Intern() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const person =
-    localStorage.getItem("username") + " " + localStorage.getItem("telephone");
+    sessionStorage.getItem("username") +
+    " " +
+    sessionStorage.getItem("telephone");
 
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   const handleSubmit = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     if (fileInfo === null) {
       message.warning("Aucun document n'est téléchargé !");
@@ -95,7 +97,7 @@ function Intern() {
             );
 
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
 
             const retryResponse = await axios.post(
               `${API_URL}/addRequest`,
@@ -168,10 +170,10 @@ function Intern() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      const accessToken = sessionStorage.getItem("accessToken");
+      let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
       if (refreshToken) {
-        refreshToken = localStorage.getItem("refreshToken");
+        refreshToken = sessionStorage.getItem("refreshToken");
       }
 
       try {
@@ -195,7 +197,7 @@ function Intern() {
             );
 
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
 
             const retryResponse = await axios.get(`${API_URL}/allUsers`, {
               headers: {
@@ -236,7 +238,7 @@ function Intern() {
   }));
 
   options = options.filter(
-    (element) => element.tel !== localStorage.getItem("telephone")
+    (element) => element.tel !== sessionStorage.getItem("telephone")
   );
 
   return (

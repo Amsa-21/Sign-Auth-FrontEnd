@@ -213,19 +213,19 @@ function FormModal() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+      const accessToken = sessionStorage.getItem("accessToken");
+      let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
       if (refreshToken) {
-        refreshToken = localStorage.getItem("refreshToken");
+        refreshToken = sessionStorage.getItem("refreshToken");
       }
 
       try {
@@ -250,7 +250,7 @@ function FormModal() {
             );
 
             const newAccessToken = refreshResponse.data.access_token;
-            localStorage.setItem("accessToken", newAccessToken);
+            sessionStorage.setItem("accessToken", newAccessToken);
             const retryResponse = await axios.get(`${API_URL}/ownMember`, {
               headers: {
                 Authorization: `Bearer ${newAccessToken}`,
@@ -282,10 +282,10 @@ function FormModal() {
   }, [navigate]);
 
   const onCreate = async (values) => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const formData = new FormData();
     formData.append("member", JSON.stringify(values));
@@ -320,7 +320,7 @@ function FormModal() {
           );
 
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
             `${API_URL}/addMember`,
             formData,
@@ -362,10 +362,10 @@ function FormModal() {
   };
 
   const onEdit = async (values) => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     setConfirmLoading(true);
     const formData = new FormData();
@@ -400,7 +400,7 @@ function FormModal() {
           );
 
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
             `${API_URL}/editOne`,
             formData,
@@ -442,10 +442,10 @@ function FormModal() {
   };
 
   const handleDelete = async (record) => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const params = new URLSearchParams({
       id: record.id,
@@ -478,7 +478,7 @@ function FormModal() {
           );
 
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.delete(
             `${API_URL}/deleteOne?${params}`,
             {

@@ -6,7 +6,7 @@ import "./index.css";
 function Sidenav() {
   const location = useLocation();
   const [routesDisplayed, setRoutesDisplayed] = useState([]);
-  const role = localStorage.getItem("role");
+  const role = sessionStorage.getItem("role");
 
   useEffect(() => {
     if (role.toLowerCase() === "user") {
@@ -24,8 +24,7 @@ function Sidenav() {
             key={index}
             className={`list-sidenav ${
               item.path === location.pathname ? "active" : ""
-            }`}
-          >
+            }`}>
             <b></b>
             <b></b>
             <Link to={item.path}>

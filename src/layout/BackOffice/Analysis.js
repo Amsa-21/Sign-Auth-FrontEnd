@@ -35,18 +35,18 @@ function Analysis() {
     correlation: {},
   });
   const clearLocalStorage = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("telephone");
-    localStorage.removeItem("role");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("telephone");
+    sessionStorage.removeItem("role");
   };
 
   const handleAdd = async (values) => {
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const formData = new FormData();
     formData.append("member", JSON.stringify(values));
@@ -82,7 +82,7 @@ function Analysis() {
         );
         try {
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
             `${API_URL}/addMemberFromAnalysis`,
             formData,
@@ -124,10 +124,10 @@ function Analysis() {
   const handleFileUpload = async (file) => {
     if (uploading) return;
 
-    const accessToken = localStorage.getItem("accessToken");
-    let refreshToken = Boolean(localStorage.getItem("refreshToken"));
+    const accessToken = sessionStorage.getItem("accessToken");
+    let refreshToken = Boolean(sessionStorage.getItem("refreshToken"));
     if (refreshToken) {
-      refreshToken = localStorage.getItem("refreshToken");
+      refreshToken = sessionStorage.getItem("refreshToken");
     }
     const formData = new FormData();
     formData.append("fichier", file);
@@ -154,7 +154,7 @@ function Analysis() {
           );
 
           const newAccessToken = refreshResponse.data.access_token;
-          localStorage.setItem("accessToken", newAccessToken);
+          sessionStorage.setItem("accessToken", newAccessToken);
           const retryResponse = await axios.post(
             `${API_URL}/getPDFInfo`,
             formData,

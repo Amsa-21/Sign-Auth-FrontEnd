@@ -68,7 +68,7 @@ function ExternalSign() {
           }
         );
         const newAccessToken = refreshResponse.data.access_token;
-        localStorage.setItem("accessToken", newAccessToken);
+        sessionStorage.setItem("accessToken", newAccessToken);
         const retryResponse = await axios.post(
           `${API_URL}/getExtPDF?${params}`,
           {},
@@ -114,7 +114,7 @@ function ExternalSign() {
       formData.append("user", name);
       formData.append("filename", doc);
       formData.append("image", img);
-      const access_token = localStorage.getItem("accessToken");
+      const access_token = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${API_URL}/externalSignPDF`,
         formData,
@@ -155,7 +155,7 @@ function ExternalSign() {
     }).toString();
     try {
       setLoad(true);
-      let access_token = localStorage.getItem("accessToken");
+      let access_token = sessionStorage.getItem("accessToken");
       const response = await axios.post(
         `${API_URL}/refuseExtRequest?${params}`,
         {},
