@@ -135,7 +135,7 @@ function RequestList() {
               "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
             );
           }
-        } else if (error.response.status === 401) {
+        } else if (error.response && error.response.status === 401) {
           clearLocalStorage();
           navigate("/login");
         } else {
@@ -211,7 +211,7 @@ function RequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
-      } else if (error.response.status === 401) {
+      } else if (error.response && error.response.status === 401) {
         clearLocalStorage();
         navigate("/login");
       } else {
@@ -299,7 +299,7 @@ function RequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
-      } else if (error.response.status === 401) {
+      } else if (error.response && error.response.status === 401) {
         clearLocalStorage();
         navigate("/login");
       } else {
@@ -374,7 +374,7 @@ function RequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
-      } else if (error.response.status === 401) {
+      } else if (error.response && error.response.status === 401) {
         clearLocalStorage();
         navigate("/login");
       } else {
@@ -447,7 +447,7 @@ function RequestList() {
             "Une erreur s'est produite lors du rafraîchissement du token. Veuillez vous reconnecter."
           );
         }
-      } else if (error.response.status === 401) {
+      } else if (error.response && error.response.status === 401) {
         clearLocalStorage();
         navigate("/login");
       } else {
