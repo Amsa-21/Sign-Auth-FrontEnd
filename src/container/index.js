@@ -315,58 +315,67 @@ function HomeLayout({ children }) {
             style={{ marginLeft: 25 }}
           />
         </Typography.Link>
-        <div
-          style={{
-            display: "flex",
-            height: "fit-content",
-            color: "white",
-            gap: 10,
+        <ConfigProvider
+          theme={{
+            components: {
+              Dropdown: { controlItemBgHover: "#f5f1e9", colorText: "#5A3827" },
+            },
           }}>
-          <UserOutlined style={{ fontSize: 18, color: "white" }} />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-            }}>
-            {role === "Admin" ? (
-              <>
-                <Typography.Text style={{ fontSize: 16, color: "white" }}>
-                  Bienvenue, {username}
-                </Typography.Text>
-                <Typography.Text
-                  italic={true}
-                  style={{ fontSize: 12, color: "#8A8A8A" }}>
-                  Administrateur
-                </Typography.Text>
-              </>
-            ) : (
-              <>
-                <Typography.Text style={{ fontSize: 16, color: "white" }}>
-                  Bienvenue, {username}
-                </Typography.Text>
-                <Typography.Text
-                  italic={true}
-                  style={{ fontSize: 12, color: "#8A8A8A" }}>
-                  Utilisateur interne
-                </Typography.Text>
-              </>
-            )}
-          </div>
           <Dropdown
             menu={{
               items,
             }}
+            trigger={"click"}
             onOpenChange={() => setOpen(!open)}>
-            <CaretDownOutlined
-              rotate={open ? 180 : 0}
+            <div
               style={{
-                fontSize: 18,
+                display: "flex",
+                height: "fit-content",
                 color: "white",
-              }}
-            />
+                gap: 10,
+                cursor: "pointer",
+              }}>
+              <UserOutlined style={{ fontSize: 18, color: "white" }} />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}>
+                {role === "Admin" ? (
+                  <>
+                    <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                      Bienvenue, {username}
+                    </Typography.Text>
+                    <Typography.Text
+                      italic={true}
+                      style={{ fontSize: 12, color: "#8A8A8A" }}>
+                      Administrateur
+                    </Typography.Text>
+                  </>
+                ) : (
+                  <>
+                    <Typography.Text style={{ fontSize: 16, color: "white" }}>
+                      Bienvenue, {username}
+                    </Typography.Text>
+                    <Typography.Text
+                      italic={true}
+                      style={{ fontSize: 12, color: "#8A8A8A" }}>
+                      Utilisateur interne
+                    </Typography.Text>
+                  </>
+                )}
+              </div>
+              <CaretDownOutlined
+                rotate={open ? 180 : 0}
+                style={{
+                  fontSize: 18,
+                  color: "white",
+                }}
+              />
+            </div>
           </Dropdown>
-        </div>
+        </ConfigProvider>
       </Layout.Header>
       <Layout>
         <Layout.Sider>
