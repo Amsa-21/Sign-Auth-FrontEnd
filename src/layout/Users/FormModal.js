@@ -423,7 +423,7 @@ function FormModal() {
         <>
           <Button
             type="text"
-            icon={<EditFilled twoToneColor="rgb(90,56,39)" />}
+            icon={<EditFilled twoToneColor="#2b2b2b" />}
             onClick={() => handleEdit(record)}
           />
           <Divider type="vertical" />
@@ -435,7 +435,7 @@ function FormModal() {
             onConfirm={() => handleDelete(record)}>
             <Button
               type="text"
-              icon={<DeleteFilled style={{ color: "rgb(256,0,0)" }} />}
+              icon={<DeleteFilled style={{ color: "#2b2b2b" }} />}
             />
           </Popconfirm>
         </>

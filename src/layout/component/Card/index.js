@@ -10,34 +10,30 @@ function Card({ title, icon, value, color }) {
         boxShadow: `0 0 2px black`,
         paddingInline: 20,
         backgroundColor: "white",
-      }}
-    >
+      }}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
           marginTop: "20px",
-        }}
-      >
+        }}>
         <h5
           style={{
             fontFamily: "Segoe UI, Arial, sans-serif",
             fontSize: 16,
             color: "rgba(0, 0, 0, 0.6)",
             margin: 0,
-          }}
-        >
+          }}>
           {title}
         </h5>
         {icon}
       </div>
       <h1
         style={{
-          color: color,
+          color: "#2b2b2b",
           margin: "10px 0",
-        }}
-      >
+        }}>
         {value}
       </h1>
     </div>

@@ -318,7 +318,7 @@ function HomeLayout({ children }) {
         <ConfigProvider
           theme={{
             components: {
-              Dropdown: { controlItemBgHover: "#f5f1e9", colorText: "#5A3827" },
+              Dropdown: { controlItemBgHover: "#f5f1e9", colorText: "#2b2b2b" },
             },
           }}>
           <Dropdown

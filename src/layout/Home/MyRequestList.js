@@ -288,7 +288,7 @@ function MyRequestList() {
         return (
           <Tag
             icon={<SyncOutlined spin />}
-            color="#108ee9"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             {c}/{s}
           </Tag>
@@ -297,7 +297,7 @@ function MyRequestList() {
         return (
           <Tag
             icon={<CheckCircleOutlined />}
-            color="#87d068"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             Complete
           </Tag>
@@ -306,7 +306,7 @@ function MyRequestList() {
         return (
           <Tag
             icon={<CloseCircleOutlined />}
-            color="#f50"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             Rejetée
           </Tag>
@@ -399,12 +399,11 @@ function MyRequestList() {
       align: "center",
       width: 155,
       render: (_, record) => {
-        const [time, date] = record.date.split(" ");
-        const [hours, minutes] = time.split(":");
-        const [day, month] = date.split("/");
-        return `${parseInt(day)} ${mois[parseInt(month) - 1]} à ${parseInt(
-          hours
-        )}h ${parseInt(minutes)}mn`;
+        const date = record.date.split(" ")[1];
+        const [day, month, year] = date.split("/");
+        return `${parseInt(day).toString().padStart(2, "0")} ${
+          mois[parseInt(month) - 1]
+        } ${parseInt(year)}`;
       },
     },
     {
@@ -426,8 +425,8 @@ function MyRequestList() {
     },
     {
       title: "Durée",
-      dataIndex: "dated",
-      key: "dated",
+      dataIndex: "date",
+      key: "date",
       width: 150,
       render: (_, record) => {
         const [time, date] = record.date.split(" ");
@@ -456,7 +455,7 @@ function MyRequestList() {
           <Button
             type="text"
             onClick={() => handleViewPDF(record)}
-            icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
+            icon={<EyeFilled style={{ color: "#2b2b2b" }} />}
           />
           <Divider type="vertical" />
           <Popconfirm
@@ -468,7 +467,7 @@ function MyRequestList() {
             onConfirm={() => handleCancel(record)}>
             <Button
               type="text"
-              icon={<DeleteFilled style={{ color: "red" }} />}
+              icon={<DeleteFilled style={{ color: "#2b2b2b" }} />}
             />
           </Popconfirm>
         </>
@@ -572,7 +571,6 @@ function MyRequestList() {
                 number={databrute.filter((item) => item.status === 1).length}
               />
             }
-            color="#87d068"
           />
           <Card
             title="Demandes en cours"
@@ -584,7 +582,6 @@ function MyRequestList() {
                 number={databrute.filter((item) => item.status === 0).length}
               />
             }
-            color="#108ee9"
           />
           <Card
             title="Demandes rejetées"
@@ -596,7 +593,6 @@ function MyRequestList() {
                 number={databrute.filter((item) => item.status === 2).length}
               />
             }
-            color="#ff5500"
           />
         </div>
       )}
@@ -622,16 +618,12 @@ function MyRequestList() {
           <ConfigProvider
             theme={{
               components: {
-                Radio: {
-                  colorPrimary: "#5A3827",
-                  colorPrimaryHover: "#5A3827",
-                },
                 Button: {
                   colorPrimaryHover: "#5A3827",
                   borderRadius: "6px 6px 6px 0",
                 },
                 Checkbox: {
-                  colorPrimary: "#5A3827",
+                  colorPrimary: "#2b2b2b",
                   colorPrimaryHover: "#5A3827",
                 },
               },
@@ -659,7 +651,7 @@ function MyRequestList() {
               <Button
                 style={{ width: 40 }}
                 icon={
-                  <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
+                  <FilterOutlined style={{ fontSize: 20, color: "#2b2b2b" }} />
                 }></Button>
             </Popover>
           </ConfigProvider>

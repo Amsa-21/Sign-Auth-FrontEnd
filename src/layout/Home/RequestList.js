@@ -465,7 +465,7 @@ function RequestList() {
         return (
           <Tag
             icon={<SyncOutlined spin />}
-            color="#108ee9"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             En cours
           </Tag>
@@ -474,7 +474,7 @@ function RequestList() {
         return (
           <Tag
             icon={<CheckCircleOutlined />}
-            color="#87d068"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             Complete
           </Tag>
@@ -483,7 +483,7 @@ function RequestList() {
         return (
           <Tag
             icon={<CloseCircleOutlined />}
-            color="#f50"
+            color="#2b2b2b"
             style={{ width: 90 }}>
             Rejetée
           </Tag>
@@ -549,12 +549,11 @@ function RequestList() {
       align: "center",
       width: 155,
       render: (_, record) => {
-        const [time, date] = record.date.split(" ");
-        const [hours, minutes] = time.split(":");
-        const [day, month] = date.split("/");
-        return `${parseInt(day)} ${mois[parseInt(month) - 1]} à ${parseInt(
-          hours
-        )}h ${parseInt(minutes)}mn`;
+        const date = record.date.split(" ")[1];
+        const [day, month, year] = date.split("/");
+        return `${parseInt(day).toString().padStart(2, "0")} ${
+          mois[parseInt(month) - 1]
+        } ${parseInt(year)}`;
       },
     },
     {
@@ -615,13 +614,13 @@ function RequestList() {
               <Button
                 type="text"
                 onClick={() => handleViewPDF(record)}
-                icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
+                icon={<EyeFilled style={{ color: "#2b2b2b" }} />}
               />
               <Divider type="vertical" />
               <Button
                 type="text"
                 onClick={() => handleSign(record)}
-                icon={<SignatureFilled style={{ color: "#87d068" }} />}
+                icon={<SignatureFilled style={{ color: "#2b2b2b" }} />}
               />
               <Divider type="vertical" />
               <Popconfirm
@@ -633,7 +632,7 @@ function RequestList() {
                 onConfirm={() => handleRefuse(record)}>
                 <Button
                   type="text"
-                  icon={<CloseCircleFilled style={{ color: "#ff5500" }} />}
+                  icon={<CloseCircleFilled style={{ color: "#2b2b2b" }} />}
                 />
               </Popconfirm>
             </>
@@ -643,7 +642,7 @@ function RequestList() {
             <Button
               type="text"
               onClick={() => handleViewPDF(record)}
-              icon={<EyeFilled style={{ color: "rgb(90,56,39)" }} />}
+              icon={<EyeFilled style={{ color: "#2b2b2b" }} />}
             />
           );
         }
@@ -878,7 +877,6 @@ function RequestList() {
                 number={databrute.filter((item) => item.status === 1).length}
               />
             }
-            color="#87d068"
           />
           <Card
             title="Demandes en cours"
@@ -890,7 +888,6 @@ function RequestList() {
                 number={databrute.filter((item) => item.status === 0).length}
               />
             }
-            color="#108ee9"
           />
           <Card
             title="Demandes rejetées"
@@ -902,7 +899,6 @@ function RequestList() {
                 number={databrute.filter((item) => item.status === 2).length}
               />
             }
-            color="#ff5500"
           />
         </div>
       )}
@@ -924,16 +920,12 @@ function RequestList() {
           <ConfigProvider
             theme={{
               components: {
-                Radio: {
-                  colorPrimary: "#5A3827",
-                  colorPrimaryHover: "#5A3827",
-                },
                 Button: {
                   colorPrimaryHover: "#5A3827",
                   borderRadius: "6px 6px 6px 0",
                 },
                 Checkbox: {
-                  colorPrimary: "#5A3827",
+                  colorPrimary: "#2b2b2b",
                   colorPrimaryHover: "#5A3827",
                 },
               },
@@ -961,7 +953,7 @@ function RequestList() {
               <Button
                 style={{ width: 40 }}
                 icon={
-                  <FilterOutlined style={{ fontSize: 20, color: "5A3827" }} />
+                  <FilterOutlined style={{ fontSize: 20, color: "#2b2b2b" }} />
                 }></Button>
             </Popover>
           </ConfigProvider>

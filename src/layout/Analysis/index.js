@@ -61,7 +61,6 @@ function Analysis() {
           },
         }
       );
-      console.log(response.data);
       setData(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401 && refreshToken) {
@@ -87,7 +86,6 @@ function Analysis() {
               },
             }
           );
-          console.log(retryResponse.data);
           setData(retryResponse.data);
         } catch (refreshError) {
           console.error(
